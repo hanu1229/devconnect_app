@@ -1,4 +1,4 @@
-import 'package:devconnect_app/app/layout/myapp.dart';
+import 'package:devconnect_app/app/layout/main_app.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -10,11 +10,13 @@ class DevConnect extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner : false,
+      debugShowCheckedModeBanner: false,
       theme : ThemeData(
         scaffoldBackgroundColor : Colors.white,
       ),
-      home : MyApp(),
+      // 앱 탭 이름
+      title: "DevConnect",
+      home : MainApp(),
     );
   }
 
