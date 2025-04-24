@@ -1,4 +1,4 @@
-import 'package:devconnect_app/home.dart';
+import 'package:devconnect_app/app/layout/myapp.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -14,7 +14,7 @@ class DevConnect extends StatelessWidget {
       theme : ThemeData(
         scaffoldBackgroundColor : Colors.white,
       ),
-      home : Home(),
+      home : MyApp(),
     );
   }
 

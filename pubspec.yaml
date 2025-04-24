@@ -28,14 +28,20 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  # 비동기 통신 라이브러리 추가
+  dio: ^5.8.0+1
+  # 비동기 전역변수 라이브러리 추가
+  shared_preferences: ^2.5.3
+
+  # 경험치 바
+  percent_indicator: ^4.2.5
+  # 플러터SDK 라이브러리 추가
   flutter:
     sdk: flutter
-
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
-  dio: ^5.8.0+1
-
+  fluttertoast : ^8.2.12
 dev_dependencies:
   flutter_test:
     sdk: flutter
