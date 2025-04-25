@@ -1,6 +1,7 @@
 import 'package:devconnect_app/app/company/company_login.dart';
 import 'package:devconnect_app/app/component/custimbottombar.dart';
 import 'package:devconnect_app/app/developer/profile.dart';
+import 'package:devconnect_app/app/layout/home.dart';
 import 'package:devconnect_app/style/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
@@ -14,7 +15,7 @@ class _MainAppState extends State<MainApp> {
   int selectedIndex = 0;
 
   final List<Widget> pages = [
-    Text("프로젝트"),
+    Home(),
     Text("게시물1 페이지"),
     Profile(), // 가운데 탭
     Companylogin(), // 임시 로그인 창
