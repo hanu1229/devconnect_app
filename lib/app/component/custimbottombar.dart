@@ -54,7 +54,7 @@ class CustomBottomNavBar extends StatelessWidget {
                     "프로필",
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.blue,
+                      color: Colors.white,
                     ),
                   ),
                 ],
@@ -83,14 +83,14 @@ class CustomBottomNavBar extends StatelessWidget {
               AnimatedScale(
                 scale: isSelected ? 1.2 : 1.0,
                 duration: Duration(milliseconds: 200),
-                child: Icon(icon, color: isSelected ? Colors.blue : Colors.grey),
+                child: Icon(icon, color: isSelected ? Colors.white : Colors.grey),
               ),
               SizedBox(height: 4),
               AnimatedDefaultTextStyle(
                 duration: Duration(milliseconds: 200),
                 style: TextStyle(
                   fontSize: 12,
-                  color: isSelected ? Colors.blue : Colors.white,
+                  color: isSelected ? Colors.white : Colors.grey,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                 ),
                 child: Text(label),
