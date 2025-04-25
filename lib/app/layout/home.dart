@@ -44,7 +44,7 @@ class _HomeState extends State<Home> {
       body : Center(
         child : Column(
           children: [
-            Text("일반 폰트", style : TextStyle(fontSize : 24, color : AppColors.subColor)),
+            Text("일반 폰트", style : TextStyle(fontSize : 24, color : AppColors.white)),
             Text("네이버 나눔 고딕 폰트", style : TextStyle(fontFamily : "NanumGothic", fontSize : 24,)),
           ],
         ),

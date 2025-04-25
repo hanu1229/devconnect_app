@@ -1,3 +1,4 @@
+import 'package:devconnect_app/app/company/company_login.dart';
 import 'package:devconnect_app/app/component/custimbottombar.dart';
 import 'package:devconnect_app/app/member/profile.dart';
 import 'package:devconnect_app/style/app_colors.dart';
@@ -16,7 +17,7 @@ class _MainAppState extends State<MainApp> {
     Text("프로젝트"),
     Text("게시물1 페이지"),
     Profile(), // 가운데 탭
-    Text("게시물2 페이지"),
+    Companylogin(), // 임시 로그인 창
     Text("게시물3 페이지"),
   ];
 
@@ -34,9 +35,10 @@ class _MainAppState extends State<MainApp> {
       appBar: AppBar(
         title: Text(
           pageTitle[selectedIndex],
-          style: TextStyle(color: AppColors.textColor),
+          style: TextStyle(color: AppColors.black),
         ),
-        backgroundColor: AppColors.bgColor,
+        backgroundColor: AppColors.white,
+        shape : Border(bottom : BorderSide(color : Color(0x5F000000), width : 1)),
       ),
       body: Stack(
         children: [

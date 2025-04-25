@@ -1,3 +1,4 @@
+import 'package:devconnect_app/style/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
@@ -83,14 +84,14 @@ class CustomBottomNavBar extends StatelessWidget {
               AnimatedScale(
                 scale: isSelected ? 1.2 : 1.0,
                 duration: Duration(milliseconds: 200),
-                child: Icon(icon, color: isSelected ? Colors.blue : Colors.grey),
+                child: Icon(icon, color: isSelected ? Colors.white : Colors.grey),
               ),
               SizedBox(height: 4),
               AnimatedDefaultTextStyle(
                 duration: Duration(milliseconds: 200),
                 style: TextStyle(
                   fontSize: 12,
-                  color: isSelected ? Colors.blue : Colors.white,
+                  color: isSelected ? Colors.white : Colors.grey,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                 ),
                 child: Text(label),
