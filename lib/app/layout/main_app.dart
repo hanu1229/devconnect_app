@@ -1,6 +1,6 @@
 import 'package:devconnect_app/app/company/company_login.dart';
 import 'package:devconnect_app/app/component/custimbottombar.dart';
-import 'package:devconnect_app/app/member/profile.dart';
+import 'package:devconnect_app/app/developer/profile.dart';
 import 'package:devconnect_app/style/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';

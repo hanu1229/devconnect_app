@@ -3,13 +3,12 @@ import 'package:flutter/material.dart';
 
 class LogIn extends StatefulWidget{
   @override
-  State<StatefulWidget> createState() {
-    // TODO: implement createState
-    throw UnimplementedError();
+  _LogInState createState() {
+    return _LogInState();
   }
 }
 
-class _LogIn extends State< LogIn >{
+class _LogInState extends State< LogIn >{
   @override
   Widget build(BuildContext context) {
     return Scaffold(

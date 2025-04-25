@@ -55,7 +55,7 @@ class CustomBottomNavBar extends StatelessWidget {
                     "프로필",
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.blue,
+                      color: Colors.white,
                     ),
                   ),
                 ],
