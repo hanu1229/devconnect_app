@@ -16,7 +16,7 @@ class CustomBottomNavBar extends StatelessWidget {
 
     return Container(
       height: 80,
-      color: Colors.white,
+      color: Colors.black87,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
@@ -42,10 +42,10 @@ class CustomBottomNavBar extends StatelessWidget {
                     lineWidth: 5.0,
                     percent: 0.25,
                     center: CircleAvatar(
-                      radius: 22,
+                      radius: 25,
                       backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=3'),
                     ),
-                    progressColor: isProfileSelected ? Colors.blue : Colors.grey,
+                    progressColor: Colors.blue,
                     backgroundColor: Colors.grey.shade300,
                     circularStrokeCap: CircularStrokeCap.round,
                   ),
@@ -54,7 +54,7 @@ class CustomBottomNavBar extends StatelessWidget {
                     "프로필",
                     style: TextStyle(
                       fontSize: 12,
-                      color: isProfileSelected ? Colors.blue : Colors.grey,
+                      color: Colors.blue,
                     ),
                   ),
                 ],
@@ -69,27 +69,35 @@ class CustomBottomNavBar extends StatelessWidget {
   Widget _navItem(IconData icon, String label, int index) {
     final isSelected = index == selectedIndex;
 
-    return GestureDetector(
-      onTap: () => onTap(index),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          AnimatedScale(
-            scale: isSelected ? 1.2 : 1.0, // 선택 시 약간 확대
-            duration: Duration(milliseconds: 200),
-            child: Icon(icon, color: isSelected ? Colors.blue : Colors.grey),
+    return Expanded( // 터치 가능한 공간을 균등 분할
+      child: InkWell(
+        onTap: () => onTap(index),
+        borderRadius: BorderRadius.circular(12),
+        splashColor: Colors.blue.withOpacity(0.2),
+        highlightColor: Colors.transparent,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AnimatedScale(
+                scale: isSelected ? 1.2 : 1.0,
+                duration: Duration(milliseconds: 200),
+                child: Icon(icon, color: isSelected ? Colors.blue : Colors.grey),
+              ),
+              SizedBox(height: 4),
+              AnimatedDefaultTextStyle(
+                duration: Duration(milliseconds: 200),
+                style: TextStyle(
+                  fontSize: 12,
+                  color: isSelected ? Colors.blue : Colors.white,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                ),
+                child: Text(label),
+              ),
+            ],
           ),
-          SizedBox(height: 4),
-          AnimatedDefaultTextStyle(
-            duration: Duration(milliseconds: 200),
-            style: TextStyle(
-              fontSize: 12,
-              color: isSelected ? Colors.blue : Colors.grey,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-            ),
-            child: Text(label),
-          ),
-        ],
+        ),
       ),
     );
   }
