@@ -42,8 +42,9 @@ class _MainAppState extends State<MainApp> {
         currentIndex: selectedIndex,
         onTap: (index) => setState(() => selectedIndex = index),
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
+        backgroundColor : AppColors.textColor,
+        selectedItemColor: Colors.lightBlue,
+        unselectedItemColor: AppColors.bgColor,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.folder), label: '프로젝트'),
           BottomNavigationBarItem(icon: Icon(Icons.article), label: '게시물1'),
