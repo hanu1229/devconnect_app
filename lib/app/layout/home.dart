@@ -32,8 +32,7 @@ class _HomeState extends State<Home> {
         ? Padding(
       padding: const EdgeInsets.all(16.0),
       child: Center(child: CircularProgressIndicator()),
-    )
-        : SizedBox.shrink();
+    ) : SizedBox.shrink();
   }
 
   void _loadMoreData() async {
@@ -56,7 +55,6 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('무한 스크롤')),
       body: ListView.builder(
         scrollDirection : Axis.vertical,
         controller: _scrollController,
