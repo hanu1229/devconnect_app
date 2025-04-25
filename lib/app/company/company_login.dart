@@ -19,7 +19,7 @@ class _CompanyLogin extends State<Companylogin>{
     return Scaffold(
       backgroundColor: Colors.blue,
       body: Container(
-        padding: EdgeInsets.all(30),
+        padding: EdgeInsets.all(50),
         margin: EdgeInsets.fromLTRB(60, 120, 60, 120),  // left, top , light, bottom
         decoration: BoxDecoration(
           color: Colors.white,
@@ -48,7 +48,9 @@ class _CompanyLogin extends State<Companylogin>{
                 (Set<WidgetState> states) {
                   if(states.contains(WidgetState.pressed)){
                   return Colors.blue.shade700;
-                }}
+                }
+                return Colors.blue; // 기본 배경색은 파란색
+                }
             ),),),
             SizedBox(height: 20,),
             TextButton(onPressed: ()=>{}, child: Text("회원가입")),
