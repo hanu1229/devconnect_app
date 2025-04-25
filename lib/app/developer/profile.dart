@@ -1,5 +1,8 @@
-import 'package:devconnect_app/style/app_colors.dart';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+
+String path = "http://localhost:8080/api/developer";
 
 class Profile extends StatefulWidget{
   @override
@@ -9,104 +12,124 @@ class Profile extends StatefulWidget{
 }
 
 class _ProfileState extends State< Profile >{
+
+  @override
+  void initState() {
+
+  } // f end
+
+  Dio dio = Dio();
+
+  // List< Map<String, Object> > = dList;
+
+  void findByBno() async {
+    final response = await dio.get( path + "/info" );
+    final data = response.data;
+    if( data != null ){
+
+    }
+  } // f end
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-                padding: EdgeInsets.all( 10 ),
-                color: Color(0xfff2f2f2),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.of( context ).size.height,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: EdgeInsets.all( 20 ),
+                color: Color(0xfffbfbfb),
                 width: double.infinity,
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("계정 관리",style: TextStyle(
-                      fontSize: 23,
-                      fontWeight: FontWeight.bold,
+                    Text("계정 관리",
+                      style: TextStyle(
+                        fontFamily: "NanumGothic",
+                        fontSize: 23,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    textAlign: TextAlign.left,
+
+                    SizedBox( height: 20 ,),
+
+                    Text("기본 정보",
+                      style: TextStyle(
+                        fontFamily: "NanumGothic",
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    Text("기본 정보",style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),),
+
+                    SizedBox( height: 20 ,),
+
                     SizedBox(
                       height: 200,
                       width: double.infinity,
                       child: Card(
                         shape: RoundedRectangleBorder(
                           borderRadius:
-                            BorderRadius.circular(12),
-                          side: BorderSide( width: 1, color: Colors.grey ),
+                          BorderRadius.circular(12),
+                          side: BorderSide(
+                            width: 1,
+                            color: Color(0xffccdbe3),
+                          ),
                         ),
-                        elevation: 4,
+                        elevation: 0,
                         color: Colors.white,
                       ),
                     ),
-                    Card(
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular( 12 ),
-                      ),
-                      child: Container(
-                        height: 200,
-                        width: double.infinity,
-                        child: Column(
-                          children: [
-                            Text('아이디'),
-                            SizedBox( height: 10, ),
-                            Text('내정보 변경'),
-                          ],
+
+                    SizedBox( height: 20,),
+
+                    SizedBox(
+                      height: 200,
+                      width: double.infinity,
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                          BorderRadius.circular(12),
+                          side: BorderSide(
+                            width: 1,
+                            color: Color(0xffccdbe3),
+                          ),
                         ),
+                        elevation: 0,
+                        color: Colors.white,
                       ),
                     ),
 
-                    SizedBox( height: 5,),
+                    SizedBox( height: 20,),
 
-                    Card(
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular( 12 ),
-                      ),
-                      child: Container(
-                        height: 200,
-                        width: double.infinity,
-                        child: Column(
-                          children: [
-                            Text('아이디'),
-                            SizedBox( height: 10, ),
-                            Text('내정보 변경'),
-                          ],
+                    SizedBox(
+                      height: 200,
+                      width: double.infinity,
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                          BorderRadius.circular(12),
+                          side: BorderSide(
+                            width: 1,
+                            color: Color(0xffccdbe3),
+                          ),
                         ),
+                        elevation: 0,
+                        color: Colors.white,
                       ),
                     ),
 
-                    SizedBox( height: 5,),
-
-                    Card(
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular( 12 ),
-                      ),
-                      child: Container(
-                        height: 200,
-                        width: double.infinity,
-                        child: Column(
-                          children: [
-                            Text('아이디'),
-                            SizedBox( height: 10, ),
-                            Text('내정보 변경'),
-                          ],
-                        ),
-                      ),
-                    ),
-
+                    SizedBox( height: 90 ,),
 
                   ],
                 )
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
       )
     );
