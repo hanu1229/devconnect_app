@@ -10,4 +10,8 @@ class AppColors {
   static const Color mainColor = Color(0xFF658A69);
   // #253f39
   static const Color subColor = Color(0xFF253F39);
+  // #000000
+  static const Color textColor = Color(0xFF000000);
+  // #FFFFFF
+  static const Color bgColor = Color(0xFFFFFFFF);
 }

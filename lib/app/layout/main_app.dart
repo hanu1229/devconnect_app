@@ -1,5 +1,6 @@
 import 'package:devconnect_app/app/component/custimbottombar.dart';
 import 'package:devconnect_app/app/member/profile.dart';
+import 'package:devconnect_app/style/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
@@ -33,9 +34,9 @@ class _MainAppState extends State<MainApp> {
       appBar: AppBar(
         title: Text(
           pageTitle[selectedIndex],
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: AppColors.textColor),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.bgColor,
       ),
       body: Stack(
         children: [
