@@ -20,14 +20,19 @@ class _ProfileState extends State< Profile >{
 
   Dio dio = Dio();
 
-  // List< Map<String, Object> > = dList;
+  Map<String, Object> dList = {};
 
-  void findByBno() async {
-    final response = await dio.get( path + "/info" );
-    final data = response.data;
-    if( data != null ){
+  void onInfo( token ) async {
+    try{
+      dio.options.headers['Authorization'] = token;
+      final response = await dio.get( path + "/info" );
+      final data = response.data;
+      if( data != '' ){
+        setState(() {
 
-    }
+        });
+      }
+    }catch( e ){ print( e ); }
   } // f end
 
   @override
@@ -48,15 +53,6 @@ class _ProfileState extends State< Profile >{
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("계정 관리",
-                      style: TextStyle(
-                        fontFamily: "NanumGothic",
-                        fontSize: 23,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-
-                    SizedBox( height: 20 ,),
 
                     Text("기본 정보",
                       style: TextStyle(
@@ -69,7 +65,7 @@ class _ProfileState extends State< Profile >{
                     SizedBox( height: 20 ,),
 
                     SizedBox(
-                      height: 200,
+                      height: 300,
                       width: double.infinity,
                       child: Card(
                         shape: RoundedRectangleBorder(
@@ -82,6 +78,67 @@ class _ProfileState extends State< Profile >{
                         ),
                         elevation: 0,
                         color: Colors.white,
+                        child: Padding(
+                          padding: EdgeInsets.all( 20 ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("아이디"),
+
+                              SizedBox( height: 12,),
+
+                              TextField(
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Color(0xfffbfbfb),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular( 12 ),
+                                    borderSide: BorderSide(
+                                      width: 1.5,
+                                      color: Color(0xffd5dae1),
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular( 12 ),
+                                    borderSide: BorderSide(
+                                      width: 2.5,
+                                      color: Color(0xffa5adba),
+                                    )
+                                  ),
+                                ),
+                              ),
+
+                              SizedBox( height: 12,),
+
+                              Text("이메일"),
+
+                              SizedBox( height: 12,),
+
+                              TextField(
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Color(0xfffbfbfb),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular( 12 ),
+                                    borderSide: BorderSide(
+                                      width: 1.5,
+                                      color: Color(0xffd5dae1),
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular( 12 ),
+                                      borderSide: BorderSide(
+                                        width: 2.5,
+                                        color: Color(0xffa5adba),
+                                      )
+                                  ),
+                                ),
+                              ),
+
+                            ],
+                          ),
+                        )
                       ),
                     ),
 
@@ -103,7 +160,7 @@ class _ProfileState extends State< Profile >{
                         color: Colors.white,
                       ),
                     ),
-
+                    
                     SizedBox( height: 20,),
 
                     SizedBox(

@@ -22,7 +22,7 @@ class _MainAppState extends State<MainApp> {
   final List<String> pageTitle = [
     '프로젝트',
     '게시물1',
-    '프로필',
+    '계정 관리',
     '게시물2',
     '게시물3',
   ];
@@ -33,7 +33,11 @@ class _MainAppState extends State<MainApp> {
       appBar: AppBar(
         title: Text(
           pageTitle[selectedIndex],
-          style: TextStyle( color: AppColors.textColor ),
+          style: TextStyle(
+            color: AppColors.textColor,
+            fontFamily: "NanumGothic",
+            fontWeight: FontWeight.bold,
+          ),
         ),
         backgroundColor: AppColors.bgColor,
         shape: Border( bottom: BorderSide( color: Color(0xffccdbe3), width: 1 )),
