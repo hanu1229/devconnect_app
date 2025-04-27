@@ -1,4 +1,5 @@
 import 'package:devconnect_app/app/layout/main_app.dart';
+import 'package:devconnect_app/style/app_colors.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -13,6 +14,11 @@ class DevConnect extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme : ThemeData(
         scaffoldBackgroundColor : Colors.white,
+        fontFamily : "NanumGothic",
+        appBarTheme : AppBarTheme(
+          backgroundColor : AppColors.white,
+          shape : Border(bottom : BorderSide(color : Color(0x5F000000), width : 1)),
+        ),
       ),
       // 앱 탭 이름
       title: "DevConnect",

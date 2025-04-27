@@ -10,10 +10,15 @@ class AppColors {
   // static const Color mainColor = Color(0xFF658A69);
   // #253f39
   // static const Color subColor = Color(0xFF253F39);
-  // #000000
+  /// #000000
   static const Color black = Color(0xFF000000);
-  // #FFFFFF
+  /// #FFFFFF
   static const Color white = Color(0xFFFFFFFF);
-  // #2196f3
+  /// Button 배경 색상 | #2196F3
   static const Color buttonColor = Color(0xFF2196F3);
+  /// Button 글자 색상 | #FFFFFF
+  static const Color buttonTextColor = Color(0xFFFFFFFF);
+  /// TextField 테두리 색상
+  static const Color borderColor = Color(0xFF000000);
+
 }
