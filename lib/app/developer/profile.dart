@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-String baseUrl = "http://192.168.40.97:8080";
+String baseUrl = "http://localhost:8080";
 
 class Profile extends StatefulWidget{
   @override

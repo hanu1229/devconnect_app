@@ -17,7 +17,7 @@ class DevConnect extends StatelessWidget {
         fontFamily : "NanumGothic",
         appBarTheme : AppBarTheme(
           backgroundColor : AppColors.bgColor,
-          shape : Border(bottom : BorderSide(color : Color(0x5F000000), width : 1)),
+          shape : Border(bottom : BorderSide(color : AppColors.appBarColor, width : 1)),
         ),
       ),
       // 앱 탭 이름

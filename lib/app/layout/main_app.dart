@@ -4,13 +4,12 @@ import 'package:devconnect_app/app/developer/profile.dart';
 import 'package:devconnect_app/app/layout/home.dart';
 import 'package:devconnect_app/app/project/project_write.dart';
 import 'package:devconnect_app/app/developer/DeveloperLogin.dart';
-import 'package:devconnect_app/app/developer/profile.dart';
 import 'package:devconnect_app/style/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class MainApp extends StatefulWidget {
   @override
-  _MainAppState createState() => _MainAppState();
+  State<MainApp> createState() => _MainAppState();
 }
 
 class _MainAppState extends State<MainApp> {
@@ -28,7 +27,7 @@ class _MainAppState extends State<MainApp> {
     '프로젝트',
     '프로젝트 등록',
     '계정 관리',
-    '게시물2',
+    '기업 로그인',
     '개발자 로그인',
   ];
 
@@ -48,8 +47,6 @@ class _MainAppState extends State<MainApp> {
         ),
         // backgroundColor: AppColors.bgColor,
         // shape : Border(bottom : BorderSide(color : Color(0x5F000000), width : 1)),
-        backgroundColor: AppColors.bgColor,
-        shape: Border( bottom: BorderSide( color: AppColors.appBarColor, width: 1 )),
       ),
       body: pages[selectedIndex],
       bottomNavigationBar: CustomBottomNavBar(
