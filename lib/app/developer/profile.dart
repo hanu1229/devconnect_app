@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-String path = "http://localhost:8080/api/developer";
+String baseUrl = "http://localhost:8080";
 
 class Profile extends StatefulWidget{
   @override
@@ -19,14 +19,12 @@ class _ProfileState extends State< Profile >{
 
   // 상태변수
   int mno = 0;
-  String did = "";
-  String dname = "";
   // 수정 상태 확인
   bool isUpdate = false;
 
   @override
   void initState() {
-
+    loginCheck();
   } // f end
 
   // 로그인 상태 확인
@@ -45,31 +43,44 @@ class _ProfileState extends State< Profile >{
     }
   } // f end
 
-  Map<String, Object> dList = {};
+  // 회원정보 가져오기
+  Map<String, dynamic> developer = {};
 
   void onInfo( token ) async {
     try{
       dio.options.headers['Authorization'] = token;
-      final response = await dio.get( path + "/info" );
+      final response = await dio.get("${baseUrl}/api/developer/info");
       final data = response.data;
       if( data != '' ){
         setState(() {
-          dList = data;
+          developer = data;
         });
       }
     }catch( e ){ print( e ); }
   } // f end
 
+  TextEditingController didController = TextEditingController();
+  TextEditingController dpwdController = TextEditingController();
+  TextEditingController dnameController = TextEditingController();
+  TextEditingController demailController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+
+    if( developer.isEmpty ){ return Center( child: CircularProgressIndicator(), ); }
+
+    final image = developer['dprofile'];
+    String imgUrl = "${baseUrl}/upload/${image}";
+
+    // if( !isLogIn ){ Navigator.pushNamed( context, MainApp() ) }
+
     return Scaffold(
       body: SingleChildScrollView(
         child: ConstrainedBox(
           constraints: BoxConstraints(
-            minHeight: MediaQuery.of( context ).size.height,
+            minHeight: MediaQuery.of( context ).size.height * 0.7,
           ),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             children: [
               Container(
                 padding: EdgeInsets.all( 20 ),
@@ -78,7 +89,6 @@ class _ProfileState extends State< Profile >{
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
                     Text("기본 정보",
                       style: TextStyle(
                         fontFamily: "NanumGothic",
@@ -87,161 +97,207 @@ class _ProfileState extends State< Profile >{
                       ),
                     ),
 
-                    SizedBox( height: 20 ,),
+                    SizedBox( height: 10 ,),
 
                     // 첫번째 Card
                     SizedBox(
                       width: double.infinity,
-                      child: Padding(
-                        padding: EdgeInsets.all( 10 ),
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius:
-                            BorderRadius.circular(12),
-                            side: BorderSide(
-                              width: 1,
-                              color: AppColors.cardBorderColor,
-                            ),
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                          BorderRadius.circular(12),
+                          side: BorderSide(
+                            width: 1,
+                            color: AppColors.cardBorderColor,
                           ),
-                          elevation: 0,
-                          color: Colors.white,
-                          child: Padding(
-                            padding: EdgeInsets.all( 20 ),
-                            child:
-                            !isUpdate
-                                ? // 수정버튼 클릭 전
-                            Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                        ),
+                        elevation: 0,
+                        color: Colors.white,
+                        child: Padding(
+                          padding: EdgeInsets.all( 20 ),
+                          child:
+                          !isUpdate
+                            ? // 수정버튼 클릭 전
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(999),
+                                child: Container(
+                                  width: 100, height: 100,
+                                  child: Image.network(
+                                    imgUrl,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+
+                              SizedBox( height: 12,),
+
+                              Text( developer['did'] ),
+
+                              SizedBox( height: 12,),
+
+                              OutlinedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    isUpdate = true;
+                                    didController.text = developer['did'];
+                                    dnameController.text = developer['dname'];
+                                    demailController.text = developer['demail'];
+                                  });
+                                },
+                                child: Text("수정"),
+                              )
+                            ]
+                          )
+                            : // 수정버튼 클릭 후
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Center(
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(999),
+                                  child: Container(
+                                    width: 100, height: 100,
+                                    child: Image.network(
+                                      imgUrl,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+                              SizedBox( height: 12,),
+
+                              Text("아이디"),
+
+                              SizedBox( height: 12,),
+
+                              TextField(
+                                controller: didController,
+                                readOnly: true,
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: AppColors.textFieldBGColor,
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular( 8 ),
+                                    borderSide: BorderSide(
+                                      width: 1.5,
+                                      color: AppColors.textFieldColor,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular( 8 ),
+                                    borderSide: BorderSide(
+                                      width: 1.5,
+                                      color: AppColors.textFieldColor,
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+                              SizedBox( height: 12,),
+
+                              Text("이름"),
+
+                              SizedBox( height: 12,),
+
+                              TextField(
+                                controller: dnameController,
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: AppColors.textFieldBGColor,
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular( 8 ),
+                                    borderSide: BorderSide(
+                                      width: 1.5,
+                                      color: AppColors.textFieldColor,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular( 8 ),
+                                    borderSide: BorderSide(
+                                      width: 3,
+                                      color: AppColors.focusColor,
+                                    )
+                                  ),
+                                ),
+                              ),
+
+                              SizedBox( height: 12,),
+
+                              Text("이메일"),
+
+                              SizedBox( height: 12,),
+
+                              TextField(
+                                controller: demailController,
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: AppColors.textFieldBGColor,
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular( 8 ),
+                                    borderSide: BorderSide(
+                                      width: 1.5,
+                                      color: AppColors.textFieldColor,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular( 8 ),
+                                    borderSide: BorderSide(
+                                      width: 3,
+                                      color: AppColors.focusColor,
+                                    )
+                                  ),
+                                ),
+                              ),
+
+                              SizedBox( height: 15,),
+
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                  Text("테스트"),
-                                  OutlinedButton(
-                                    onPressed: () => { setState(() => { isUpdate = true }) },
-                                    child: Text("수정"),
-                                  )
-                                ]
-                            )
-                                : // 수정버튼 클릭 후
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("아이디"),
-
-                                SizedBox( height: 12,),
-
-                                TextField(
-                                  decoration: InputDecoration(
-                                    filled: true,
-                                    fillColor: AppColors.textFieldBGColor,
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular( 12 ),
-                                      borderSide: BorderSide(
-                                        width: 1.5,
-                                        color: AppColors.textFieldColor,
-                                      ),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular( 12 ),
-                                      borderSide: BorderSide(
-                                        width: 3,
-                                        color: AppColors.focusColor,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-
-                                SizedBox( height: 12,),
-
-                                Text("이름"),
-
-                                SizedBox( height: 12,),
-
-                                TextField(
-                                  decoration: InputDecoration(
-                                    filled: true,
-                                    fillColor: AppColors.textFieldBGColor,
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular( 12 ),
-                                      borderSide: BorderSide(
-                                        width: 1.5,
-                                        color: AppColors.textFieldColor,
-                                      ),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular( 12 ),
-                                        borderSide: BorderSide(
-                                          width: 3,
-                                          color: AppColors.focusColor,
-                                        )
-                                    ),
-                                  ),
-                                ),
-
-                                SizedBox( height: 12,),
-
-                                Text("이메일"),
-
-                                SizedBox( height: 12,),
-
-                                TextField(
-                                  decoration: InputDecoration(
-                                    filled: true,
-                                    fillColor: Color(0xfffbfbfb),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular( 12 ),
-                                      borderSide: BorderSide(
-                                        width: 1.5,
-                                        color: AppColors.textFieldColor,
-                                      ),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular( 12 ),
-                                        borderSide: BorderSide(
-                                          width: 3,
-                                          color: AppColors.focusColor,
-                                        )
-                                    ),
-                                  ),
-                                ),
-
-                                SizedBox( height: 15,),
-
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    OutlinedButton(
+                                  SizedBox(
+                                    width: 80,
+                                    child: OutlinedButton(
                                       onPressed: () => { setState(() => { isUpdate = false }) },
                                       child: Text("취소"),
                                       style: OutlinedButton.styleFrom(
-                                          side: BorderSide(
-                                            color: AppColors.textFieldColor,
-                                            width: 1,
-                                          ),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular( 5 ),
-                                          )
+                                        side: BorderSide(
+                                          color: AppColors.textFieldColor,
+                                          width: 1,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular( 5 ),
+                                        ),
                                       ),
                                     ),
+                                  ),
 
-                                    SizedBox( width: 10,),
+                                  SizedBox( width: 15,),
 
-                                    TextButton(
-                                        onPressed: () => { },
-                                        child: Text("저장"),
-                                        style: TextButton.styleFrom(
-                                            foregroundColor: AppColors.textFieldBGColor,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular( 5 ),
-                                            )
+                                  SizedBox(
+                                    width: 80,
+                                    child: TextButton(
+                                      onPressed: () => { },
+                                      child: Text("저장"),
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: Colors.blueAccent,
+                                        foregroundColor: Colors.white,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular( 5 ),
                                         )
+                                      )
                                     ),
-                                  ],
-                                )
-                              ],
-                            ),
-                          )
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
                         ),
                       )
                     ),
@@ -284,7 +340,7 @@ class _ProfileState extends State< Profile >{
                       ),
                     ),
 
-                    SizedBox( height: 90 ,),
+                    SizedBox(height: 50 + MediaQuery.of(context).padding.bottom),
 
                   ],
                 )

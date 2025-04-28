@@ -1,4 +1,3 @@
-import 'package:devconnect_app/style/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
@@ -28,7 +27,7 @@ class CustomBottomNavBar extends StatelessWidget {
               _navItem(Icons.article, "게시물1", 1),
               const SizedBox(width: 70), // 중앙 공간 확보
               _navItem(Icons.article_outlined, "게시물2", 3),
-              _navItem(Icons.article_outlined, "게시물3", 4),
+              _navItem(Icons.article_outlined, "개발자로그인", 4),
             ],
           ),
           Positioned(
@@ -39,11 +38,11 @@ class CustomBottomNavBar extends StatelessWidget {
               child: Column(
                 children: [
                   CircularPercentIndicator(
-                    radius: 30.0,
+                    radius: 35.0,
                     lineWidth: 5.0,
                     percent: 0.25,
                     center: CircleAvatar(
-                      radius: 25,
+                      radius: 30,
                       backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=3'),
                     ),
                     progressColor: Colors.blue,
