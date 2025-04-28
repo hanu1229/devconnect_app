@@ -1,10 +1,8 @@
-import 'package:devconnect_app/app/company/company_login.dart';
 import 'package:devconnect_app/app/component/custimbottombar.dart';
 import 'package:devconnect_app/app/developer/profile.dart';
 import 'package:devconnect_app/app/layout/home.dart';
 import 'package:devconnect_app/style/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:percent_indicator/percent_indicator.dart';
 
 class MainApp extends StatefulWidget {
   @override
@@ -25,7 +23,7 @@ class _MainAppState extends State<MainApp> {
   final List<String> pageTitle = [
     '프로젝트',
     '게시물1',
-    '프로필',
+    '계정 관리',
     '게시물2',
     '게시물3',
   ];
@@ -36,10 +34,14 @@ class _MainAppState extends State<MainApp> {
       appBar: AppBar(
         title: Text(
           pageTitle[selectedIndex],
-          style: TextStyle(color: AppColors.black),
+          style: TextStyle(
+            color: AppColors.textColor,
+            fontFamily: "NanumGothic",
+            fontWeight: FontWeight.bold,
+          ),
         ),
-        backgroundColor: AppColors.white,
-        shape : Border(bottom : BorderSide(color : Color(0x5F000000), width : 1)),
+        backgroundColor: AppColors.bgColor,
+        shape: Border( bottom: BorderSide( color: AppColors.appBarColor, width: 1 )),
       ),
       body: Stack(
         children: [
