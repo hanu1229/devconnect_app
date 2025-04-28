@@ -16,7 +16,7 @@ class DevConnect extends StatelessWidget {
         scaffoldBackgroundColor : Colors.white,
         fontFamily : "NanumGothic",
         appBarTheme : AppBarTheme(
-          backgroundColor : AppColors.white,
+          backgroundColor : AppColors.bgColor,
           shape : Border(bottom : BorderSide(color : Color(0x5F000000), width : 1)),
         ),
       ),

@@ -93,7 +93,7 @@ class _HomeState extends State<Home> {
                     child : Padding(
                       padding : EdgeInsets.only(left : 16, top : 16, right : 16),
                       child : Card(
-                        color : AppColors.white,
+                        color : AppColors.bgColor,
                         elevation : 5,
                         shape : RoundedRectangleBorder(
                           borderRadius : BorderRadius.circular(10),

@@ -4,23 +4,23 @@ import "package:flutter/material.dart";
 
 /// 0xFF이면 완전 불투명 | 0x00이면 완전 투명
 class AppColors {
-  // #f1f5f1
+  /// #f1f5f1
   static const Color appBarColor = Color(0xffccdbe3);
-  // #658a69
+  /// #658a69
   static const Color mainColor = Color(0xFF658A69);
-  // #253f39
+  /// #253f39
   static const Color subColor = Color(0xFF253F39);
-  // #000000
+  /// #000000 | 기존 black
   static const Color textColor = Color(0xFF000000);
-  // #FFFFFF
+  /// #FFFFFF | 기존 white
   static const Color bgColor = Color(0xFFFFFFFF);
-  // #a5adba
+  /// #a5adba
   static const Color focusColor = Color(0xff46B8FF);
-  // #d5dae1
+  /// #d5dae1
   static const Color textFieldColor = Color(0xffd5dae1);
-  // #fbfbfb
+  /// #fbfbfb
   static const Color textFieldBGColor = Color(0xfffbfbfb);
-  // #ccdbe3
+  /// #ccdbe3
   static const Color cardBorderColor = Color(0xffccdbe3);
   /// Button 배경 색상 | #2196F3
   static const Color buttonColor = Color(0xFF2196F3);
