@@ -146,9 +146,9 @@ class _SignupState extends State<Signup>{
                         border: Border.all(color: Colors.grey),
                         borderRadius: BorderRadius.circular(5),
                       ),
-                      child: _profileImage != null
+                      child: profileImage != null
                           ? Image.file(
-                        _profileImage!,
+                        profileImage!,
                         width: double.infinity,
                         height: double.infinity,
                         fit: BoxFit.cover,
