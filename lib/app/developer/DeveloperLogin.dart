@@ -1,10 +1,10 @@
 
 import 'package:devconnect_app/app/layout/main_app.dart';
+import 'package:devconnect_app/style/app_colors.dart';
+import 'package:devconnect_app/style/server_path.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-String baseUrl = "http://192.168.40.97:8080";
 
 class DeveloperLogIn extends StatefulWidget{
   @override
@@ -24,7 +24,7 @@ class _DeveloperLogInState extends State< DeveloperLogIn >{
         'did' : didController.text,
         'dpwd' : dpwdController.text,
       };
-      final response = await dio.post("${baseUrl}/api/developer/login" ,data: sendData );
+      final response = await dio.post("${serverPath}/api/developer/login" ,data: sendData );
       final data = response.data;
       if(data != ''){
         SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -39,14 +39,14 @@ class _DeveloperLogInState extends State< DeveloperLogIn >{
     }catch(e){print(e);}
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue,
+      backgroundColor: Color(0xFF0078FF),
       body: Container(
+        height: 420,
         padding: EdgeInsets.fromLTRB(30, 50, 30, 120),
-        margin: EdgeInsets.fromLTRB(30, 100, 30, 160),  // left, top , light, bottom
+        margin: EdgeInsets.fromLTRB(30, 100, 30, 0),  // left, top , light, bottom
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
@@ -59,68 +59,112 @@ class _DeveloperLogInState extends State< DeveloperLogIn >{
               child:
               TextField(
                 controller: didController,
+                style: TextStyle(
+                  fontFamily: "NanumGothic",
+                  fontSize: 13,
+                ),
                 decoration: InputDecoration(
                   labelText: "id",
-                  border: OutlineInputBorder(),
-
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular( 4 ),
+                    borderSide: BorderSide(
+                      width: 1,
+                      color: AppColors.textFieldColor,
+                    )
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular( 4 ),
+                    borderSide: BorderSide(
+                      width: 3,
+                      color: AppColors.focusColor,
+                    ),
+                  ),
                 ),
-              ),),
+              ),
+            ),
 
-            SizedBox(height: 20,),
+            SizedBox(height: 10,),
 
             SizedBox(
               width: double.infinity,
               child: TextField(
                 controller: dpwdController,
                 obscureText: true, // 입력값 감추기
+                style: TextStyle(
+                  fontFamily: "NanumGothic",
+                  fontSize: 13,
+                ),
                 decoration: InputDecoration(
                   labelText: "비밀번호",
-                  border: OutlineInputBorder(),
-                ),
-              ),),
-
-            SizedBox(height: 15,),
-
-            SizedBox(
-              width: double.infinity,
-              child:
-              ElevatedButton(onPressed: ()=>{ login() }, style: ButtonStyle(backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                (Set<WidgetState> states) {
-                  if(states.contains(WidgetState.pressed)){
-                    return Colors.blue.shade700;
-                  }
-                  return Colors.blue; // 기본 배경색은 파란
-                }
-              ),
-              shape: WidgetStateProperty.all<OutlinedBorder>(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),  // 둥글기 크기 조절
-                )
-              ) ,
-
-              ), child: Text("로그인", style: TextStyle(color: Colors.black),),),),
-
-            SizedBox(height: 15,),
-
-            SizedBox(
-              width: double.infinity,
-              child:
-              ElevatedButton(onPressed: ()=>{}, style: ButtonStyle(backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                      (Set<WidgetState> states) {
-                    if(states.contains(WidgetState.pressed)){
-                      return Colors.blue.shade700;
-                    }
-                    return Colors.blue; // 기본 배경색은 파란
-                  }
-              ),
-                shape: WidgetStateProperty.all<OutlinedBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),  // 둥글기 크기 조절
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular( 4 ),
+                    borderSide: BorderSide(
+                      width: 1,
+                      color: AppColors.textFieldColor,
                     )
-                ) ,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular( 4 ),
+                    borderSide: BorderSide(
+                      width: 3,
+                      color: AppColors.focusColor,
+                    ),
+                  ),
+                ),
+              ),
+            ),
 
-              ), child: Text("회원가입", style: TextStyle(color: Colors.black),),),),
+            SizedBox(height: 15,),
 
+            SizedBox(
+              width: double.infinity,
+              height: 45,
+              child: OutlinedButton(
+                onPressed: () => { login() },
+                child: Text("로그인", style: TextStyle( fontFamily: "NanumGothic" ),),
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.grey,
+                  foregroundColor: Colors.white,
+                  textStyle: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular( 4 ),
+                  ),
+                  side: BorderSide(
+                    width: 1,
+                    color: AppColors.textFieldColor,
+                  )
+                ),
+              ),
+            ),
+
+            SizedBox(height: 10,),
+
+            SizedBox(
+              width: double.infinity,
+              height: 45,
+              child: OutlinedButton(
+                onPressed: () => { },
+                child: Text("회원가입", style: TextStyle( fontFamily: "NanumGothic" ),),
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black,
+                  textStyle: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular( 4 ),
+                  ),
+                  side: BorderSide(
+                    width: 1,
+                    color: AppColors.textFieldColor,
+                  )
+                ),
+              ),
+            )
           ],
         ),
       ),
