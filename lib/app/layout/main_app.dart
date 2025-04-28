@@ -40,7 +40,7 @@ class _MainAppState extends State<MainApp> {
           ),
         ),
         backgroundColor: AppColors.bgColor,
-        shape: Border( bottom: BorderSide( color: Color(0xffccdbe3), width: 1 )),
+        shape: Border( bottom: BorderSide( color: AppColors.appBarColor, width: 1 )),
       ),
       body: Stack(
         children: [

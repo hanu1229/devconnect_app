@@ -5,7 +5,7 @@ import "package:flutter/material.dart";
 /// 0xFF이면 완전 불투명 | 0x00이면 완전 투명
 class AppColors {
   // #f1f5f1
-  static const Color appBarColor = Color(0xFFF1F5F1);
+  static const Color appBarColor = Color(0xffccdbe3);
   // #658a69
   static const Color mainColor = Color(0xFF658A69);
   // #253f39
