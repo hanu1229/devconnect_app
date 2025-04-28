@@ -3,6 +3,8 @@ import 'package:devconnect_app/app/component/custimbottombar.dart';
 import 'package:devconnect_app/app/developer/profile.dart';
 import 'package:devconnect_app/app/layout/home.dart';
 import 'package:devconnect_app/app/project/project_write.dart';
+import 'package:devconnect_app/app/developer/DeveloperLogin.dart';
+import 'package:devconnect_app/app/developer/profile.dart';
 import 'package:devconnect_app/style/app_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -19,15 +21,15 @@ class _MainAppState extends State<MainApp> {
     WriteProject(),
     Profile(), // 가운데 탭
     Companylogin(), // 임시 로그인 창
-    Text("게시물3 페이지"),
+    DeveloperLogIn(),
   ];
 
   final List<String> pageTitle = [
     '프로젝트',
     '프로젝트 등록',
-    '프로필',
+    '계정 관리',
     '게시물2',
-    '게시물3',
+    '개발자 로그인',
   ];
 
   @override
@@ -46,18 +48,17 @@ class _MainAppState extends State<MainApp> {
         ),
         // backgroundColor: AppColors.bgColor,
         // shape : Border(bottom : BorderSide(color : Color(0x5F000000), width : 1)),
+        backgroundColor: AppColors.bgColor,
+        shape: Border( bottom: BorderSide( color: AppColors.appBarColor, width: 1 )),
       ),
-      body: Stack(
-        children: [
-          pages[selectedIndex],
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: CustomBottomNavBar(
-              selectedIndex: selectedIndex,
-              onTap: (index) => setState(() => selectedIndex = index),
-            ),
-          ),
-        ],
+      body: pages[selectedIndex],
+      bottomNavigationBar: CustomBottomNavBar(
+        selectedIndex: selectedIndex,
+        onTap: (index) {
+          setState(() {
+            selectedIndex = index;
+          });
+        },
       ),
     );
   }
