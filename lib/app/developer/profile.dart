@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-String baseUrl = "http://localhost:8080";
+String baseUrl = "http://192.168.40.97:8080";
 
 class Profile extends StatefulWidget{
   @override
@@ -19,8 +19,6 @@ class _ProfileState extends State< Profile >{
   
   // 상태변수
   int mno = 0;
-  String did = "";
-  String dname = "";
   // 수정 상태 확인
   bool isUpdate = false;
 
@@ -45,6 +43,7 @@ class _ProfileState extends State< Profile >{
     }
   } // f end
 
+  // 회원정보 가져오기
   Map<String, dynamic> developer = {};
 
   void onInfo( token ) async {
@@ -60,11 +59,20 @@ class _ProfileState extends State< Profile >{
     }catch( e ){ print( e ); }
   } // f end
 
+  TextEditingController didController = TextEditingController();
+  TextEditingController dpwdController = TextEditingController();
+  TextEditingController dnameController = TextEditingController();
+  TextEditingController demailController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
 
+    if( developer.isEmpty ){ return Center( child: CircularProgressIndicator(), ); }
+
     final image = developer['dprofile'];
     String imgUrl = "${baseUrl}/upload/${image}";
+
+    // if( !isLogIn ){ Navigator.pushNamed( context, MainApp() ) }
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -127,12 +135,19 @@ class _ProfileState extends State< Profile >{
 
                               SizedBox( height: 12,),
 
-                              Text( developer['get'] ),
+                              Text( developer['did'] ),
 
                               SizedBox( height: 12,),
 
                               OutlinedButton(
-                                onPressed: () => { setState(() => { isUpdate = true }) },
+                                onPressed: () {
+                                  setState(() {
+                                    isUpdate = true;
+                                    didController.text = developer['did'];
+                                    dnameController.text = developer['dname'];
+                                    demailController.text = developer['demail'];
+                                  });
+                                },
                                 child: Text("수정"),
                               )
                             ]
@@ -162,7 +177,8 @@ class _ProfileState extends State< Profile >{
                               SizedBox( height: 12,),
 
                               TextField(
-                                onChanged: (value) => value = developer['did'],
+                                controller: didController,
+                                readOnly: true,
                                 decoration: InputDecoration(
                                   filled: true,
                                   fillColor: AppColors.textFieldBGColor,
@@ -176,8 +192,8 @@ class _ProfileState extends State< Profile >{
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular( 8 ),
                                     borderSide: BorderSide(
-                                      width: 3,
-                                      color: AppColors.focusColor,
+                                      width: 1.5,
+                                      color: AppColors.textFieldColor,
                                     ),
                                   ),
                                 ),
@@ -190,6 +206,7 @@ class _ProfileState extends State< Profile >{
                               SizedBox( height: 12,),
 
                               TextField(
+                                controller: dnameController,
                                 decoration: InputDecoration(
                                   filled: true,
                                   fillColor: AppColors.textFieldBGColor,
@@ -217,6 +234,7 @@ class _ProfileState extends State< Profile >{
                               SizedBox( height: 12,),
 
                               TextField(
+                                controller: demailController,
                                 decoration: InputDecoration(
                                   filled: true,
                                   fillColor: AppColors.textFieldBGColor,
