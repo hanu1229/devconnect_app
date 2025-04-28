@@ -1,5 +1,6 @@
 
 
+import 'package:devconnect_app/app/company/company_signup.dart';
 import 'package:devconnect_app/app/layout/main_app.dart';
 import 'package:devconnect_app/style/server_path.dart';
 import 'package:dio/dio.dart';
@@ -118,7 +119,7 @@ class _CompanyLogin extends State<Companylogin>{
             SizedBox(
               width: double.infinity,
               child:
-              ElevatedButton(onPressed: ()=>{}, style: ButtonStyle(backgroundColor: WidgetStateProperty.resolveWith<Color>( // 회원가입시 연결
+              ElevatedButton(onPressed: ()=>{Navigator.pushReplacement(context , MaterialPageRoute(builder: (context)=> Signup()) )}, style: ButtonStyle(backgroundColor: WidgetStateProperty.resolveWith<Color>( // 회원가입시 연결
                       (Set<WidgetState> states) {
                     if(states.contains(WidgetState.pressed)){
                       return Colors.blue.shade700;
