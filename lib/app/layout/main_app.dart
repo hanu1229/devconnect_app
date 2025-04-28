@@ -4,8 +4,11 @@ import 'package:devconnect_app/app/developer/profile.dart';
 import 'package:devconnect_app/app/layout/home.dart';
 import 'package:devconnect_app/app/project/project_write.dart';
 import 'package:devconnect_app/app/developer/DeveloperLogin.dart';
+import 'package:devconnect_app/app/rating/crating.dart';
 import 'package:devconnect_app/style/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 class MainApp extends StatefulWidget {
   @override
@@ -21,6 +24,7 @@ class _MainAppState extends State<MainApp> {
     Profile(), // 가운데 탭
     Companylogin(), // 임시 로그인 창
     DeveloperLogIn(),
+    Rating(), // 5 : 평가페이지
   ];
 
   final List<String> pageTitle = [
@@ -29,6 +33,7 @@ class _MainAppState extends State<MainApp> {
     '계정 관리',
     '기업 로그인',
     '개발자 로그인',
+    '평가페이지', // 5
   ];
 
   @override
@@ -56,6 +61,42 @@ class _MainAppState extends State<MainApp> {
             selectedIndex = index;
           });
         },
+      ),
+      floatingActionButtonLocation:  FloatingActionButtonLocation.endDocked,
+      floatingActionButton: Container(
+        margin: EdgeInsets.only( bottom: 105, right: 10),
+        child: SpeedDial(
+          icon: Icons.add, // 기본 아이콘
+          activeIcon: Icons.close, // 활성화된 상태 아이콘
+          // spacing: 0, // + 아이콘과 열리는 아이콘의 간격
+          spaceBetweenChildren: 20, // 열렸을 때 아이콘들의 간격
+          children: [
+            SpeedDialChild(
+              child: Icon(Icons.home),
+              label: '평가',
+              onTap: (){
+                setState(() {
+                  selectedIndex = 5;
+                });
+              },
+            ),
+            SpeedDialChild(
+              child: Icon(Icons.home),
+              label: '홈',
+            ),
+            SpeedDialChild(
+              child: Icon(Icons.home),
+              label: '홈',
+            ),SpeedDialChild(
+              child: Icon(Icons.home),
+              label: '홈',
+            ),
+            SpeedDialChild(
+              child: Icon(Icons.home),
+              label: '홈',
+            ),
+          ],
+        ),
       ),
     );
   }
