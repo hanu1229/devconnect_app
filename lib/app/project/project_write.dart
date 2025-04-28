@@ -276,21 +276,18 @@ class _WriteProjectState extends State<WriteProject> {
                       Text("봉급", style : TextStyle(fontSize : 18,),),
                       SizedBox(height : 10),
                       customTextField(labelText : "봉급", controller : ppayController),
-                      Row(
-                        mainAxisAlignment : MainAxisAlignment.end,
-                        children : [
-                          ElevatedButton(
-                            onPressed : () {
-                              writeProject();
-                            },
-                            style : ElevatedButton.styleFrom(
-                              backgroundColor : AppColors.buttonColor,
-                            ),
-                            child : Text("등록하기", style : TextStyle(color : AppColors.buttonTextColor,),),
+                      SizedBox(
+                        width : MediaQuery.of(context).size.width,
+                        child : ElevatedButton(
+                          onPressed : () {
+                            writeProject();
+                          },
+                          style : ElevatedButton.styleFrom(
+                            backgroundColor : AppColors.buttonColor,
                           ),
-                        ],
-                      ),
-
+                          child : Text("등록하기", style : TextStyle(color : AppColors.buttonTextColor,),),
+                        ),
+                      )
                     ],
                   ),
                 ),
