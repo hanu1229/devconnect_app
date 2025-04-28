@@ -38,11 +38,11 @@ class CustomBottomNavBar extends StatelessWidget {
               child: Column(
                 children: [
                   CircularPercentIndicator(
-                    radius: 30.0,
+                    radius: 35.0,
                     lineWidth: 5.0,
                     percent: 0.25,
                     center: CircleAvatar(
-                      radius: 25,
+                      radius: 30,
                       backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=3'),
                     ),
                     progressColor: Colors.blue,

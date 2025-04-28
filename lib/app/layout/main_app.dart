@@ -42,17 +42,14 @@ class _MainAppState extends State<MainApp> {
         backgroundColor: AppColors.bgColor,
         shape: Border( bottom: BorderSide( color: AppColors.appBarColor, width: 1 )),
       ),
-      body: Stack(
-        children: [
-          pages[selectedIndex],
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: CustomBottomNavBar(
-              selectedIndex: selectedIndex,
-              onTap: (index) => setState(() => selectedIndex = index),
-            ),
-          ),
-        ],
+      body: pages[selectedIndex],
+      bottomNavigationBar: CustomBottomNavBar(
+        selectedIndex: selectedIndex,
+        onTap: (index) {
+          setState(() {
+            selectedIndex = index;
+          });
+        },
       ),
     );
   }
