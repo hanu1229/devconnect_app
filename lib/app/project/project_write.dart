@@ -6,6 +6,7 @@ import "package:fluttertoast/fluttertoast.dart";
 import "package:dio/dio.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
+import "package:shared_preferences/shared_preferences.dart";
 
 class WriteProject extends StatefulWidget {
 
@@ -35,6 +36,8 @@ class _WriteProjectState extends State<WriteProject> {
 
   List<String> ptypeList = ["전체", "백엔드", "프론트엔드"];
   String? ptypeValue;
+
+  DateTime parseDate(String date) => DateTime.parse(date);
   
   // 컨트롤러 선언
   TextEditingController pnameController = TextEditingController();
@@ -88,42 +91,49 @@ class _WriteProjectState extends State<WriteProject> {
 
   Future<void> writeProject() async {
     try {
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      final token = pref.getString("token");
       int ptype = 0;
       if(ptypeValue == "전체") { ptype = 0; }
       else if(ptypeValue == "백엔드") { ptype = 1; }
       else if(ptypeValue == "프론트엔드") { ptype = 2; }
-      final sendData = {
+      final formData = FormData.fromMap({
         "pname" : pnameController.text,
         "pintro" : pintroController.text,
         "pcomment" : pcommentController.text,
         "ptype" : ptype,
         "pcount" : int.parse(pcountController.text),
-        "pstart" : pstartController.text,
-        "pend" : pendController.text,
-        "recruit_pstart" : rpstartController.text,
-        "recruit_pend" : rpendController.text,
+        "pstart" : parseDate(pstartController.text).toIso8601String(),
+        "pend" : parseDate(pendController.text).toIso8601String(),
+        "recruit_pstart" : parseDate(rpstartController.text).toIso8601String(),
+        "recruit_pend" : parseDate(rpendController.text).toIso8601String(),
         "ppay" : ppayController.text,
-      };
-      print(sendData);
-      final response = await dio.post("$serverPath/api/project", data : sendData);
+      });
+      print(formData);
+      final response = await dio.post(
+        "$serverPath/api/project",
+        data : formData,
+        options : Options(headers : {"Authorization" : token}),
+      );
       final data = response.data;
+      print(data);
       if(data) {
-        Fluttertoast.showToast(
-          msg: "프로젝트 등록 성공",
-          // 메시지 유지시간
-          toastLength : Toast.LENGTH_LONG,
-          // 메시지 표시 위치 : 앱 적용
-          gravity : ToastGravity.BOTTOM,
-          // 자세한 유지시간
-          timeInSecForIosWeb : 3,
-          // 배경색
-          backgroundColor : Colors.black,
-          // 글자색
-          textColor : Colors.white,
-          // 글자크기
-          fontSize : 16,
-          webShowClose: true,
-        );
+        // Fluttertoast.showToast(
+        //   msg: "프로젝트 등록 성공",
+        //   // 메시지 유지시간
+        //   toastLength : Toast.LENGTH_LONG,
+        //   // 메시지 표시 위치 : 앱 적용
+        //   gravity : ToastGravity.BOTTOM,
+        //   // 자세한 유지시간
+        //   timeInSecForIosWeb : 3,
+        //   // 배경색
+        //   backgroundColor : Colors.black,
+        //   // 글자색
+        //   textColor : Colors.white,
+        //   // 글자크기
+        //   fontSize : 16,
+        //   webShowClose: true,
+        // );
         Navigator.pop(context);
       } else {
         Fluttertoast.showToast(

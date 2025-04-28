@@ -24,28 +24,26 @@ class _DetailProjectState extends State<DetailProject> {
       body : Padding(
         padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
         child : SingleChildScrollView(
-          child : Expanded(
-            child : Container(
-              width : MediaQuery.of(context).size.width,
-              child : Column(
-                children : [
-                  Text("프로젝트명"),
-                  SizedBox(height : 10),
-                  Text("회사명"),
-                  SizedBox(height : 10),
-                  SizedBox(
-                    width : MediaQuery.of(context).size.width,
-                    child : ElevatedButton(
-                      onPressed: () {},
-                      style : ElevatedButton.styleFrom(
-                        backgroundColor : AppColors.buttonColor,
-                        shape : RoundedRectangleBorder(borderRadius : BorderRadius.circular(5),),
-                      ),
-                      child: Text("지원하기", style : TextStyle(color : AppColors.buttonTextColor,),),
+          child : Container(
+            width : MediaQuery.of(context).size.width,
+            child : Column(
+              children : [
+                Text("프로젝트명"),
+                SizedBox(height : 10),
+                Text("회사명"),
+                SizedBox(height : 10),
+                SizedBox(
+                  width : MediaQuery.of(context).size.width,
+                  child : ElevatedButton(
+                    onPressed: () {},
+                    style : ElevatedButton.styleFrom(
+                      backgroundColor : AppColors.buttonColor,
+                      shape : RoundedRectangleBorder(borderRadius : BorderRadius.circular(5),),
                     ),
+                    child: Text("지원하기", style : TextStyle(color : AppColors.buttonTextColor,),),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
