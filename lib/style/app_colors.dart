@@ -22,5 +22,11 @@ class AppColors {
   static const Color textFieldBGColor = Color(0xfffbfbfb);
   // #ccdbe3
   static const Color cardBorderColor = Color(0xffccdbe3);
+  /// Button 배경 색상 | #2196F3
+  static const Color buttonColor = Color(0xFF2196F3);
+  /// Button 글자 색상 | #FFFFFF
+  static const Color buttonTextColor = Color(0xFFFFFFFF);
+  /// TextField 테두리 색상
+  static const Color borderColor = Color(0xFF000000);
 
 }
