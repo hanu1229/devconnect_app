@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-String baseUrl = "http://192.168.40.97:8080";
+String baseUrl = "http://localhost:8080";
 
 class Profile extends StatefulWidget{
   @override
@@ -63,6 +63,8 @@ class _ProfileState extends State< Profile >{
   TextEditingController dpwdController = TextEditingController();
   TextEditingController dnameController = TextEditingController();
   TextEditingController demailController = TextEditingController();
+  TextEditingController daddressController = TextEditingController();
+  TextEditingController dlevelController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -143,9 +145,10 @@ class _ProfileState extends State< Profile >{
                                 onPressed: () {
                                   setState(() {
                                     isUpdate = true;
-                                    didController.text = developer['did'];
-                                    dnameController.text = developer['dname'];
-                                    demailController.text = developer['demail'];
+                                    didController = TextEditingController(text: developer['did']);
+                                    dnameController = TextEditingController(text: developer['dname']);
+                                    demailController = TextEditingController(text: developer['demail']);
+                                    daddressController = TextEditingController(text: developer['daddress']);
                                   });
                                 },
                                 child: Text("수정"),
@@ -255,6 +258,34 @@ class _ProfileState extends State< Profile >{
                                 ),
                               ),
 
+                              SizedBox( height: 12,),
+
+                              Text("주소"),
+
+                              SizedBox( height: 12,),
+
+                              TextField(
+                                controller: daddressController,
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: AppColors.textFieldBGColor,
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular( 8 ),
+                                    borderSide: BorderSide(
+                                      width: 1.5,
+                                      color: AppColors.textFieldColor,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular( 8 ),
+                                      borderSide: BorderSide(
+                                        width: 3,
+                                        color: AppColors.focusColor,
+                                      )
+                                  ),
+                                ),
+                              ),
+
                               SizedBox( height: 15,),
 
                               Row(
@@ -262,7 +293,7 @@ class _ProfileState extends State< Profile >{
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   SizedBox(
-                                    width: 80,
+                                    width: 80, height: 40,
                                     child: OutlinedButton(
                                       onPressed: () => { setState(() => { isUpdate = false }) },
                                       child: Text("취소"),
@@ -281,7 +312,7 @@ class _ProfileState extends State< Profile >{
                                   SizedBox( width: 15,),
 
                                   SizedBox(
-                                    width: 80,
+                                    width: 80, height: 40,
                                     child: TextButton(
                                       onPressed: () => { },
                                       child: Text("저장"),
@@ -313,7 +344,7 @@ class _ProfileState extends State< Profile >{
                           BorderRadius.circular(12),
                           side: BorderSide(
                             width: 1,
-                            color: Color(0xffccdbe3),
+                            color: AppColors.cardBorderColor,
                           ),
                         ),
                         elevation: 0,
@@ -332,7 +363,7 @@ class _ProfileState extends State< Profile >{
                           BorderRadius.circular(12),
                           side: BorderSide(
                             width: 1,
-                            color: Color(0xffccdbe3),
+                            color: AppColors.cardBorderColor,
                           ),
                         ),
                         elevation: 0,
