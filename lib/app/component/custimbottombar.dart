@@ -28,7 +28,7 @@ class CustomBottomNavBar extends StatelessWidget {
               _navItem(Icons.article, "게시물1", 1),
               const SizedBox(width: 70), // 중앙 공간 확보
               _navItem(Icons.article_outlined, "게시물2", 3),
-              _navItem(Icons.article_outlined, "게시물3", 4),
+              _navItem(Icons.article_outlined, "개발자로그인", 4),
             ],
           ),
           Positioned(

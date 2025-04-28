@@ -26,7 +26,7 @@ class _ProfileState extends State< Profile >{
 
   @override
   void initState() {
-    onInfo();
+    loginCheck();
   } // f end
   
   // 로그인 상태 확인
@@ -38,18 +38,17 @@ class _ProfileState extends State< Profile >{
     if( token != null && token.isNotEmpty ){
       setState(() {
         isLogIn = true; print("로그인 중");
-        onInfo( );
+        onInfo( token );
       });
     }else{
       // Navigator.pushReplacement( context, MaterialPageRoute(builder: ( context ) =>  ) )
     }
   } // f end
 
-  Map<String, Object> developer = {};
+  Map<String, dynamic> developer = {};
 
-  void onInfo(  ) async {
+  void onInfo( token ) async {
     try{
-      String token = "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiRGV2ZWxvcGVyIiwiaWQiOiJxd2UxMjMiLCJpYXQiOjE3NDU4MjUyMzgsImV4cCI6MTc0NTkxMTYzOH0.LELNw9GEKX2pH_H6Ok20AM5RZE0Qi2tcllHqsBhZUW8";
       dio.options.headers['Authorization'] = token;
       final response = await dio.get("${baseUrl}/api/developer/info");
       final data = response.data;
@@ -128,7 +127,7 @@ class _ProfileState extends State< Profile >{
 
                               SizedBox( height: 12,),
 
-                              Text( developer['get'].toString() ),
+                              Text( developer['get'] ),
 
                               SizedBox( height: 12,),
 
@@ -163,6 +162,7 @@ class _ProfileState extends State< Profile >{
                               SizedBox( height: 12,),
 
                               TextField(
+                                onChanged: (value) => value = developer['did'],
                                 decoration: InputDecoration(
                                   filled: true,
                                   fillColor: AppColors.textFieldBGColor,

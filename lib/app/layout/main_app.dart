@@ -1,9 +1,9 @@
 import 'package:devconnect_app/app/company/company_login.dart';
 import 'package:devconnect_app/app/component/custimbottombar.dart';
+import 'package:devconnect_app/app/developer/DeveloperLogin.dart';
 import 'package:devconnect_app/app/developer/profile.dart';
 import 'package:devconnect_app/style/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:percent_indicator/percent_indicator.dart';
 
 class MainApp extends StatefulWidget {
   @override
@@ -18,7 +18,7 @@ class _MainAppState extends State<MainApp> {
     Text("게시물1 페이지"),
     Profile(), // 가운데 탭
     Companylogin(), // 임시 로그인 창
-    Text("게시물3 페이지"),
+    DeveloperLogIn(),
   ];
 
   final List<String> pageTitle = [
@@ -26,7 +26,7 @@ class _MainAppState extends State<MainApp> {
     '게시물1',
     '계정 관리',
     '게시물2',
-    '게시물3',
+    '개발자 로그인',
   ];
 
   @override
