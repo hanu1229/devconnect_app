@@ -200,6 +200,7 @@ class _WriteProjectState extends State<WriteProject> {
                           Expanded(
                             child : DropdownButtonFormField(
                               value : ptypeValue,
+                              dropdownColor : Colors.white,
                               decoration : InputDecoration(
                                 labelText : "직무",
                                 enabledBorder : OutlineInputBorder(borderSide : BorderSide(color : AppColors.borderColor, width : 1),),

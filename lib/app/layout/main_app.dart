@@ -4,12 +4,15 @@ import 'package:devconnect_app/app/component/custombottombar.dart';
 import 'package:devconnect_app/app/developer/DeveloperLogin.dart';
 import 'package:devconnect_app/app/developer/profile.dart';
 import 'package:devconnect_app/app/layout/home.dart';
+import 'package:devconnect_app/app/project/project_view.dart';
 import 'package:devconnect_app/app/project/project_write.dart';
 import 'package:devconnect_app/app/rating/crating.dart';
 import 'package:devconnect_app/style/app_colors.dart';
 import 'package:devconnect_app/style/server_path.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MainApp extends StatefulWidget {
   @override
@@ -118,7 +121,18 @@ class _MainAppState extends State<MainApp> {
             ),
             SpeedDialChild(
               child: Icon(Icons.home),
-              label: '홈',
+              label: '임시',
+              onTap : () async {
+                // 임시
+                Dio dio = Dio();
+                final prefs = await SharedPreferences.getInstance();
+                final token = prefs.getString("token");
+                if(token == null) { print("토큰 없음"); return; }
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder : (context) => ViewProject()),
+                );
+              }
             ),
           ],
         ),
