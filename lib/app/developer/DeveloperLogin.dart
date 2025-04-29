@@ -43,6 +43,7 @@ class _DeveloperLogInState extends State< DeveloperLogIn >{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset : false,
       backgroundColor: Color(0xFF0078FF),
       body: Container(
         height: 420,
@@ -124,7 +125,7 @@ class _DeveloperLogInState extends State< DeveloperLogIn >{
                 onPressed: () => { login() },
                 child: Text("로그인", style: TextStyle( fontFamily: "NanumGothic" ),),
                 style: TextButton.styleFrom(
-                  backgroundColor: Colors.grey,
+                  backgroundColor: Colors.blueAccent,
                   foregroundColor: Colors.white,
                   textStyle: TextStyle(
                     fontWeight: FontWeight.bold,
