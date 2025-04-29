@@ -1,10 +1,9 @@
 
 import 'package:devconnect_app/style/app_colors.dart';
+import 'package:devconnect_app/style/server_path.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-String baseUrl = "http://localhost:8080";
 
 class Profile extends StatefulWidget{
   @override
@@ -49,7 +48,7 @@ class _ProfileState extends State< Profile >{
   void onInfo( token ) async {
     try{
       dio.options.headers['Authorization'] = token;
-      final response = await dio.get("${baseUrl}/api/developer/info");
+      final response = await dio.get("${serverPath}/api/developer/info");
       final data = response.data;
       if( data != '' ){
         setState(() {
@@ -62,7 +61,35 @@ class _ProfileState extends State< Profile >{
   TextEditingController didController = TextEditingController();
   TextEditingController dpwdController = TextEditingController();
   TextEditingController dnameController = TextEditingController();
+  TextEditingController dphoneController = TextEditingController();
   TextEditingController demailController = TextEditingController();
+  TextEditingController daddressController = TextEditingController();
+
+  void onUpdate( ) async {
+    final sendData = {
+      "dno" : developer['dno'],
+      "dpwd" : dpwdController.text,
+      "dname" : dnameController.text,
+      "dphone" : dphoneController.text,
+      "demail" : demailController.text,
+      "daddress" : daddressController.text,
+    };
+
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    try{
+      dio.options.headers['Authorization'] = token;
+      final response = await dio.put("${serverPath}/api/developer/update", data: sendData);
+      final data = response.data;
+      if( data ){
+        setState(() {
+          onInfo( token );
+          isUpdate = false;
+        });
+      }
+    }catch( e ){ print( e ); }
+  } // f end
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +97,7 @@ class _ProfileState extends State< Profile >{
     if( developer.isEmpty ){ return Center( child: CircularProgressIndicator(), ); }
 
     final image = developer['dprofile'];
-    String imgUrl = "${baseUrl}/upload/${image}";
+    String imgUrl = "${serverPath}/upload/${image}";
 
     // if( !isLogIn ){ Navigator.pushNamed( context, MainApp() ) }
 
@@ -135,7 +162,7 @@ class _ProfileState extends State< Profile >{
 
                               SizedBox( height: 12,),
 
-                              Text( developer['did'] ),
+                              Text( developer['did'], style: TextStyle( fontFamily: "NanumGothic" ) ),
 
                               SizedBox( height: 12,),
 
@@ -145,7 +172,9 @@ class _ProfileState extends State< Profile >{
                                     isUpdate = true;
                                     didController.text = developer['did'];
                                     dnameController.text = developer['dname'];
+                                    dphoneController.text = developer['dphone'];
                                     demailController.text = developer['demail'];
+                                    daddressController.text = developer['daddress'];
                                   });
                                 },
                                 child: Text("수정"),
@@ -172,7 +201,7 @@ class _ProfileState extends State< Profile >{
 
                               SizedBox( height: 12,),
 
-                              Text("아이디"),
+                              Text("아이디", style: TextStyle( fontFamily: "NanumGothic" )),
 
                               SizedBox( height: 12,),
 
@@ -201,12 +230,12 @@ class _ProfileState extends State< Profile >{
 
                               SizedBox( height: 12,),
 
-                              Text("이름"),
+                              Text("비밀번호", style: TextStyle( fontFamily: "NanumGothic" )),
 
                               SizedBox( height: 12,),
 
                               TextField(
-                                controller: dnameController,
+                                controller: dpwdController,
                                 decoration: InputDecoration(
                                   filled: true,
                                   fillColor: AppColors.textFieldBGColor,
@@ -229,7 +258,35 @@ class _ProfileState extends State< Profile >{
 
                               SizedBox( height: 12,),
 
-                              Text("이메일"),
+                              Text("휴대번호", style: TextStyle( fontFamily: "NanumGothic" ),),
+
+                              SizedBox( height: 12,),
+
+                              TextField(
+                                controller: dphoneController,
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: AppColors.textFieldBGColor,
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular( 8 ),
+                                    borderSide: BorderSide(
+                                      width: 1.5,
+                                      color: AppColors.textFieldColor,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular( 8 ),
+                                      borderSide: BorderSide(
+                                        width: 3,
+                                        color: AppColors.focusColor,
+                                      )
+                                  ),
+                                ),
+                              ),
+
+                              SizedBox( height: 12,),
+
+                              Text("이메일", style: TextStyle( fontFamily: "NanumGothic" ),),
 
                               SizedBox( height: 12,),
 
@@ -255,6 +312,34 @@ class _ProfileState extends State< Profile >{
                                 ),
                               ),
 
+                              SizedBox( height: 12,),
+
+                              Text("주소", style: TextStyle( fontFamily: "NanumGothic" )),
+
+                              SizedBox( height: 12,),
+
+                              TextField(
+                                controller: daddressController,
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: AppColors.textFieldBGColor,
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular( 8 ),
+                                    borderSide: BorderSide(
+                                      width: 1.5,
+                                      color: AppColors.textFieldColor,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular( 8 ),
+                                      borderSide: BorderSide(
+                                        width: 3,
+                                        color: AppColors.focusColor,
+                                      )
+                                  ),
+                                ),
+                              ),
+
                               SizedBox( height: 15,),
 
                               Row(
@@ -263,6 +348,7 @@ class _ProfileState extends State< Profile >{
                                 children: [
                                   SizedBox(
                                     width: 80,
+                                    height: 40,
                                     child: OutlinedButton(
                                       onPressed: () => { setState(() => { isUpdate = false }) },
                                       child: Text("취소"),
@@ -282,8 +368,9 @@ class _ProfileState extends State< Profile >{
 
                                   SizedBox(
                                     width: 80,
+                                    height: 40,
                                     child: TextButton(
-                                      onPressed: () => { },
+                                      onPressed: onUpdate,
                                       child: Text("저장"),
                                       style: TextButton.styleFrom(
                                         backgroundColor: Colors.blueAccent,
