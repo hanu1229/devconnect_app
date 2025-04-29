@@ -1,4 +1,5 @@
 import 'package:devconnect_app/app/company/company_login.dart';
+import 'package:devconnect_app/app/company/company_signup.dart';
 import 'package:devconnect_app/app/component/custombottombar.dart';
 import 'package:devconnect_app/app/developer/DeveloperLogin.dart';
 import 'package:devconnect_app/app/developer/profile.dart';
@@ -25,6 +26,7 @@ class _MainAppState extends State<MainApp> {
     Text("게시물"),
     Text("게시물"),
     Rating(), // 5 : 평가페이지
+    Signup(),
     DeveloperLogIn(), // 6 : 개발자 로그인 페이지
     Companylogin(), // 7 : 기업 로그인 페이지
   ];

@@ -1,8 +1,12 @@
 
 
 
+
+import 'dart:core';
 import 'dart:io';
 
+import 'package:devconnect_app/app/layout/home.dart';
+import 'package:devconnect_app/style/server_path.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,38 +21,72 @@ class Signup extends StatefulWidget{
 class _SignupState extends State<Signup>{
 
   // 입력 컨트롤러
-  TextEditingController cidController = TextEditingController();
-  TextEditingController cpwdController = TextEditingController();
-  TextEditingController cnameController = TextEditingController();
-  TextEditingController cphoneController= TextEditingController();
-  TextEditingController cadressController = TextEditingController();
-  TextEditingController cemailController = TextEditingController();
-  TextEditingController cbusinessController = TextEditingController();
+   final TextEditingController cidController = TextEditingController();
+   final TextEditingController cpwdController = TextEditingController();
+   final TextEditingController cnameController = TextEditingController();
+   final TextEditingController cphoneController= TextEditingController();
+   final TextEditingController cadressController = TextEditingController();
+   final TextEditingController cemailController = TextEditingController();
+   final TextEditingController cbusinessController = TextEditingController();
+   Dio dio = Dio();
+   XFile? selectedimage;
 
-  File? profileImage;   // 이미지 변수
-  final ImagePicker _picker = ImagePicker(); //이미지 피커
+   // 이미지 피커 사용자의 파일을 플러터로 가져오기
+   
+   void onSelectimage() async {
+     try{
+       ImagePicker picker =ImagePicker();
+       final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);//이미지 피커 객체 생성 , 이미지 여러개
+       if(pickedFile != null){
+         setState(() {
+           selectedimage = pickedFile;
+         });
+       }
 
-  Future<void> _pickImage() async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery); // 갤러리에서 이미지 선택
-    if (image != null) {
-      setState(() {
-        profileImage = File(image.path);
-      });
-    }
-  }
+     }catch(e){print(e);}
+   }
 
-  // //회원가입 함수
-  // Future<void> onSignup() async {
-  //     if
-  //   });
-  //
-  //   try{
-  //     Dio dio = Dio();
-  //
-  //   }catch(e){print(e);}
-  //
-  //
-  // }
+   // 등록함수
+   void onSignup() async {
+     try{
+       //폼데이터 구성
+       FormData formData = FormData();
+       formData.fields.add(MapEntry("cid", cidController.text));
+       formData.fields.add(MapEntry("cpwd", cpwdController.text));
+       formData.fields.add(MapEntry("cname", cnameController.text));
+       formData.fields.add(MapEntry("cphone", cphoneController.text));
+       formData.fields.add(MapEntry("cadress", cadressController.text));
+       formData.fields.add(MapEntry("cemail", cemailController.text));
+       formData.fields.add(MapEntry("cbusiness", cbusinessController.text));
+
+       //이미지 담기
+       if(selectedimage != null){
+         final file = await MultipartFile.fromFile(selectedimage!.path , filename: selectedimage!.name);
+         formData.files.add(MapEntry("cprofile", file));
+
+         //Dio 요청
+         final response = await dio.post("${companyPath}/api/company/signup" , data: formData);
+
+         if(response.statusCode == 201 && response.data == true){print("회원가입완료"); Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
+         } else{
+           print("회원가입 실패 또는 응답 오류: ${response.statusCode}");
+         }
+       }
+     }catch(e){print(e);}
+   }
+
+   //이미지 미리보기 함수
+   Widget ImagePreview(){
+     if(selectedimage == null){return SizedBox.shrink();}
+     return Container(
+       child: Image.file(
+           File(selectedimage!.path), // 선택된 이미지 파일의 경로를 사용하여 이미지 표시
+         fit: BoxFit.contain, // 컨테이너 안에서 이미지가 어떻게 보일지 설정 (꽉 채우거나 비율 유지 등)
+         width: 130,
+         height: 130,
+       ),
+     );
+   }
 
 
 
@@ -84,7 +122,7 @@ class _SignupState extends State<Signup>{
 
                   TextField(
                     controller: cpwdController, // 비밀번호 입력 컨트롤러
-                    obscureText: true,
+                    obscureText: true, // 번호 숨기기
                     decoration: InputDecoration(
                       labelText: "비밀번호",
                       border: OutlineInputBorder(),
@@ -95,7 +133,6 @@ class _SignupState extends State<Signup>{
 
                   TextField(
                     controller: cphoneController, // 회사번호 입력 컨트롤러
-                    obscureText: true,
                     decoration: InputDecoration(
                       labelText: "회사번호",
                       border: OutlineInputBorder(),
@@ -106,7 +143,6 @@ class _SignupState extends State<Signup>{
 
                   TextField(
                     controller: cadressController, // 회사주소 입력 컨트롤러 API 연결 확인 필요
-                    obscureText: true,
                     decoration: InputDecoration(
                       labelText: "회사주소",
                       border: OutlineInputBorder(),
@@ -116,7 +152,6 @@ class _SignupState extends State<Signup>{
 
                   TextField(
                     controller: cemailController,  // 이메일 입력 컨트롤러
-                    obscureText: true,
                     decoration: InputDecoration(
                       labelText: "회사이메일",
                       border: OutlineInputBorder(),
@@ -127,7 +162,6 @@ class _SignupState extends State<Signup>{
 
                   TextField(
                     controller: cbusinessController,  // 사업자 등록 입력 컨트롤러 API 사용 고려하기
-                    obscureText: true,
                     decoration: InputDecoration(
                       labelText: '사업자 등록번호',
                       border: OutlineInputBorder(),
@@ -137,31 +171,16 @@ class _SignupState extends State<Signup>{
                   SizedBox(height: 20),
 
                   // 이미지 선택 UI
-                  GestureDetector(
-                    onTap: _pickImage,   //이미지 입력
-                    child: Container(
-                      height: 100,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: profileImage != null
-                          ? Image.file(
-                        profileImage!,
-                        width: double.infinity,
-                        height: double.infinity,
-                        fit: BoxFit.cover,
-                      )
-                          : Center(
-                        child: Text("프로필 이미지 선택"),
-                      ),
-                    ),
-                  ),
+                  TextButton.icon(
+                      icon: Icon(Icons.add_a_photo),
+                      label: Text("이미지선택"),
+                      onPressed: onSelectimage),
+                      ImagePreview(),
 
                   SizedBox(height: 20),
 
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: onSignup, // 회원가입 연결 함수
                     style: ButtonStyle(
                       backgroundColor: WidgetStateProperty.resolveWith<Color>(
                             (Set<WidgetState> states) {
@@ -177,9 +196,7 @@ class _SignupState extends State<Signup>{
                         ),
                       ),
                     ),
-                    child: Text(
-                      "회원가입",
-                      style: TextStyle(color: Colors.black),
+                    child: Text("회원가입",style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ],
