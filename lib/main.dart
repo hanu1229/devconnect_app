@@ -20,7 +20,7 @@ class DevConnect extends StatelessWidget {
           shape : Border(bottom : BorderSide(color : AppColors.appBarColor, width : 1)),
         ),
       ),
-      // 앱 탭 이름
+      // 앱 탭 이름.
       title: "DevConnect",
       home : MainApp(),
     );
