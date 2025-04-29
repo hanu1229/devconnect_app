@@ -1,4 +1,5 @@
 import 'package:devconnect_app/app/company/company_login.dart';
+import 'package:devconnect_app/app/company/company_signup.dart';
 import 'package:devconnect_app/app/component/custombottombar.dart';
 import 'package:devconnect_app/app/developer/DeveloperLogin.dart';
 import 'package:devconnect_app/app/developer/profile.dart';
@@ -26,6 +27,7 @@ class _MainAppState extends State<MainApp> {
     Companylogin(), // 임시 로그인 창
     DeveloperLogIn(),
     Rating(), // 5 : 평가페이지
+    Signup(),
   ];
 
   final List<String> pageTitle = [
