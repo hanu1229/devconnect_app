@@ -28,5 +28,7 @@ class AppColors {
   static const Color buttonTextColor = Color(0xFFFFFFFF);
   /// TextField 테두리 색상
   static const Color borderColor = Color(0xFF000000);
+  /// 
+  static const Color borderColor2 = Color(0xFFD5D5D5);
 
 }
