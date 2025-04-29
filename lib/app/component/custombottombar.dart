@@ -81,7 +81,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     double levelExp = (dtotalexp != 0) ? (dcurrentexp / dtotalexp).toDouble() : 0.0;
 
     String profileUrl = developer['dprofile'] != null && developer['dprofile'].toString().isNotEmpty
-        ? "${serverPath}/upload/${developer['dprofile']}" : "${serverPath}/upload/login.png";
+        ? "${serverPath}/upload/${developer['dprofile']}" : "${serverPath}/upload/login_small.png";
 
     String? dname = isLogIn ? "${developer['dname']} ${developer['dlevel']} Lv" : "로그인";
 
