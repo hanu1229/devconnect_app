@@ -1,1 +1,1 @@
-String serverPath = "http://localhost:8080";
+String serverPath = "http://192.168.40.38:8080";

@@ -140,7 +140,7 @@ class _HomeState extends State<Home> {
               },
             ),
           ),
-          SizedBox(height : MediaQuery.of(context).size.height * 0.13),
+          SizedBox(height : MediaQuery.of(context).size.height * 0.05),
         ],
       ),
     );

@@ -66,111 +66,113 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
         ? "$serverPath/upload/${developer['dprofile']}"
         : "https://via.placeholder.com/150";
 
-    return Container(
-      height: 80,
-      color: Colors.black87,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _navItem(Icons.folder, "프로젝트", 0),
-              _navItem(Icons.article, "게시물1", 1),
-              const SizedBox(width: 70), // 중앙 공간 확보
-              _navItem(Icons.article_outlined, "게시물2", 3),
-              _navItem(Icons.article_outlined, "개발자로그인", 4),
-            ],
-          ),
-          Positioned(
-            top: -20,
-            left: MediaQuery.of(context).size.width / 2 - 35,
-            child: GestureDetector(
-              onTap: () {
-                showGeneralDialog(
-                  context: context,
-                  barrierDismissible: true,
-                  barrierLabel: '',
-                  barrierColor: Colors.black.withOpacity(0.001),
-                  transitionDuration: const Duration(milliseconds: 300),
-                  pageBuilder: (context, animation, secondaryAnimation) {
-                    return Align(
-                      alignment: Alignment(0, 0.7), // 위치 조정
-                      child: ScaleTransition(
-                        scale: CurvedAnimation(
-                          parent: animation,
-                          curve: Curves.easeOutBack,
-                        ),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: Container(
-                            width: 200,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black26,
-                                  blurRadius: 10,
-                                  offset: Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                ListTile(
-                                  leading: Icon(Icons.person),
-                                  title: Text('프로필 보기'),
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                    widget.onTap(2);
-                                  },
-                                ),
-                                ListTile(
-                                  leading: Icon(Icons.logout),
-                                  title: Text('로그아웃'),
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                    // 로그아웃 처리
-                                  },
-                                ),
-                              ],
+    return SafeArea(
+      child: Container(
+        height: 80,
+        color: Colors.black87,
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _navItem(Icons.folder, "프로젝트", 0),
+                _navItem(Icons.article, "게시물1", 1),
+                const SizedBox(width: 70), // 중앙 공간 확보
+                _navItem(Icons.article_outlined, "게시물2", 3),
+                _navItem(Icons.article_outlined, "개발자로그인", 4),
+              ],
+            ),
+            Positioned(
+              top: -20,
+              left: MediaQuery.of(context).size.width / 2 - 35,
+              child: GestureDetector(
+                onTap: () {
+                  showGeneralDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    barrierLabel: '',
+                    barrierColor: Colors.black.withOpacity(0.001),
+                    transitionDuration: const Duration(milliseconds: 300),
+                    pageBuilder: (context, animation, secondaryAnimation) {
+                      return Align(
+                        alignment: Alignment(0, 0.7), // 위치 조정
+                        child: ScaleTransition(
+                          scale: CurvedAnimation(
+                            parent: animation,
+                            curve: Curves.easeOutBack,
+                          ),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: Container(
+                              width: 200,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    blurRadius: 10,
+                                    offset: Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  ListTile(
+                                    leading: Icon(Icons.person),
+                                    title: Text('프로필 보기'),
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      widget.onTap(2);
+                                    },
+                                  ),
+                                  ListTile(
+                                    leading: Icon(Icons.logout),
+                                    title: Text('로그아웃'),
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      // 로그아웃 처리
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
+                      );
+                    },
+                  );
+                },
+                child: Column(
+                  children: [
+                    CircularPercentIndicator(
+                      radius: 35.0,
+                      lineWidth: 5.0,
+                      percent: levelExp.clamp(0.0, 1.0),
+                      center: CircleAvatar(
+                        radius: 30,
+                        backgroundImage: NetworkImage(profileUrl),
                       ),
-                    );
-                  },
-                );
-              },
-              child: Column(
-                children: [
-                  CircularPercentIndicator(
-                    radius: 35.0,
-                    lineWidth: 5.0,
-                    percent: levelExp.clamp(0.0, 1.0),
-                    center: CircleAvatar(
-                      radius: 30,
-                      backgroundImage: NetworkImage(profileUrl),
+                      progressColor: Colors.blue,
+                      backgroundColor: Colors.grey.shade300,
+                      circularStrokeCap: CircularStrokeCap.round,
                     ),
-                    progressColor: Colors.blue,
-                    backgroundColor: Colors.grey.shade300,
-                    circularStrokeCap: CircularStrokeCap.round,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    "프로필",
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.white,
+                    const SizedBox(height: 4),
+                    Text(
+                      "프로필",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
