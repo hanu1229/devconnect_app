@@ -1,4 +1,4 @@
-import 'package:devconnect_app/app/component/custimbottombar.dart';
+import 'package:devconnect_app/app/component/custombottombar.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
