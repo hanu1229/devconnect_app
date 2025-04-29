@@ -1,7 +1,11 @@
 
 
 
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class Signup extends StatefulWidget{
   @override
@@ -21,9 +25,31 @@ class _SignupState extends State<Signup>{
   TextEditingController cadressController = TextEditingController();
   TextEditingController cemailController = TextEditingController();
   TextEditingController cbusinessController = TextEditingController();
-  TextEditingController cprofileController = TextEditingController();
 
+  File? profileImage;   // 이미지 변수
+  final ImagePicker _picker = ImagePicker(); //이미지 피커
 
+  Future<void> _pickImage() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery); // 갤러리에서 이미지 선택
+    if (image != null) {
+      setState(() {
+        profileImage = File(image.path);
+      });
+    }
+  }
+
+  // //회원가입 함수
+  // Future<void> onSignup() async {
+  //     if
+  //   });
+  //
+  //   try{
+  //     Dio dio = Dio();
+  //
+  //   }catch(e){print(e);}
+  //
+  //
+  // }
 
 
 
@@ -48,33 +74,39 @@ class _SignupState extends State<Signup>{
                 crossAxisAlignment: CrossAxisAlignment.stretch, // 자식들을 가로축으로 늘림
                 children: [
                   TextField(
-                    controller: cidController,
+                    controller: cidController, // 아이디 입력 컨트롤러
                     decoration: InputDecoration(
                       labelText: "id",
                       border: OutlineInputBorder(),
                     ),
                   ),
+
                   SizedBox(height: 20),
+
                   TextField(
-                    controller: cpwdController,
+                    controller: cpwdController, // 비밀번호 입력 컨트롤러
                     obscureText: true,
                     decoration: InputDecoration(
                       labelText: "비밀번호",
                       border: OutlineInputBorder(),
                     ),
                   ),
+
                   SizedBox(height: 20),
+
                   TextField(
-                    controller: cphoneController,
+                    controller: cphoneController, // 회사번호 입력 컨트롤러
                     obscureText: true,
                     decoration: InputDecoration(
                       labelText: "회사번호",
                       border: OutlineInputBorder(),
                     ),
                   ),
+
                   SizedBox(height: 20),
+
                   TextField(
-                    controller: cadressController,
+                    controller: cadressController, // 회사주소 입력 컨트롤러 API 연결 확인 필요
                     obscureText: true,
                     decoration: InputDecoration(
                       labelText: "회사주소",
@@ -82,45 +114,65 @@ class _SignupState extends State<Signup>{
                     ),
                   ),
                   SizedBox(height: 20),
+
                   TextField(
-                    controller: cemailController,
+                    controller: cemailController,  // 이메일 입력 컨트롤러
                     obscureText: true,
                     decoration: InputDecoration(
                       labelText: "회사이메일",
                       border: OutlineInputBorder(),
                     ),
                   ),
+
                   SizedBox(height: 20),
+
                   TextField(
-                    controller: cbusinessController,
+                    controller: cbusinessController,  // 사업자 등록 입력 컨트롤러 API 사용 고려하기
                     obscureText: true,
                     decoration: InputDecoration(
                       labelText: '사업자 등록번호',
                       border: OutlineInputBorder(),
                     ),
                   ),
+
                   SizedBox(height: 20),
-                  TextField(
-                    controller: cprofileController,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      labelText: '프로필',
-                      border: OutlineInputBorder(),
+
+                  // 이미지 선택 UI
+                  GestureDetector(
+                    onTap: _pickImage,   //이미지 입력
+                    child: Container(
+                      height: 100,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: profileImage != null
+                          ? Image.file(
+                        profileImage!,
+                        width: double.infinity,
+                        height: double.infinity,
+                        fit: BoxFit.cover,
+                      )
+                          : Center(
+                        child: Text("프로필 이미지 선택"),
+                      ),
                     ),
                   ),
+
                   SizedBox(height: 20),
+
                   ElevatedButton(
                     onPressed: () {},
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.pressed)) {
+                      backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                            (Set<WidgetState> states) {
+                          if (states.contains(WidgetState.pressed)) {
                             return Colors.blue.shade700;
                           }
                           return Colors.blue;
                         },
                       ),
-                      shape: MaterialStateProperty.all<OutlinedBorder>(
+                      shape: WidgetStateProperty.all<OutlinedBorder>(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
                         ),

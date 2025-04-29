@@ -42,4 +42,8 @@
             <data android:mimeType="text/plain"/>
         </intent>
     </queries>
+
+    <!-- 안드로이드 배포 시 https 권한 설정 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
 </manifest>

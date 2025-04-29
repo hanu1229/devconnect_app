@@ -13,9 +13,9 @@ class Profile extends StatefulWidget{
 }
 
 class _ProfileState extends State< Profile >{
-  
+
   Dio dio = Dio();
-  
+
   // 상태변수
   int mno = 0;
   // 수정 상태 확인
@@ -25,7 +25,7 @@ class _ProfileState extends State< Profile >{
   void initState() {
     loginCheck();
   } // f end
-  
+
   // 로그인 상태 확인
   bool? isLogIn;
 
@@ -408,7 +408,7 @@ class _ProfileState extends State< Profile >{
                         color: Colors.white,
                       ),
                     ),
-                    
+
                     SizedBox( height: 20,),
 
                     SizedBox(
