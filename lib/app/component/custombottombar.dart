@@ -1,3 +1,4 @@
+import 'package:devconnect_app/app/layout/main_app.dart';
 import 'package:devconnect_app/style/server_path.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     loginCheck();
   }
 
+  // 로그인 확인
   void loginCheck() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
@@ -39,6 +41,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     }
   }
 
+  // 정보 가져오기
   void onInfo(String token) async {
     try {
       dio.options.headers['Authorization'] = token;
@@ -49,10 +52,24 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
           developer = data;
         });
       }
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) { print(e); }
   }
+
+  // 로그아웃
+  void logOut() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    if( token == null ){ return; }
+    dio.options.headers['Authorization'] = token;
+    final response = await dio.get("${serverPath}/api/developer/logout");
+    await prefs.remove('token');
+    final data = response.data;
+    isLogIn = null;
+    setState(() {
+      developer = {};
+    });
+    // Navigator.push( context, Project )
+  } // f end
 
   @override
   Widget build(BuildContext context) {
@@ -133,6 +150,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                                   onTap: () {
                                     Navigator.pop(context);
                                     // 로그아웃 처리
+                                    logOut();
                                   },
                                 ),
                               ],

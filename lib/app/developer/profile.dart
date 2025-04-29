@@ -1,5 +1,6 @@
 
 import 'package:devconnect_app/style/app_colors.dart';
+import 'package:devconnect_app/style/server_path.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -64,6 +65,7 @@ class _ProfileState extends State< Profile >{
   TextEditingController demailController = TextEditingController();
   TextEditingController daddressController = TextEditingController();
 
+  // 상세정보 수정
   void onUpdate( ) async {
     final sendData = {
       "dno" : developer['dno'],
