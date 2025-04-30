@@ -4,22 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class CustomBottomNavBar extends StatefulWidget {
+class CompanyBottomNavBar extends StatefulWidget {
   final int selectedIndex;
   final Function(int) onTap;
 
-  const CustomBottomNavBar({
+  const CompanyBottomNavBar({
     required this.selectedIndex,
     required this.onTap,
   });
 
   @override
-  _CustomBottomNavBarState createState() {
-    return _CustomBottomNavBarState();
+  _CompanyBottomNavBarState createState() {
+    return _CompanyBottomNavBarState();
   }
 }
 
-class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
+class _CompanyBottomNavBarState extends State<CompanyBottomNavBar> {
   Dio dio = Dio();
   bool isLogIn = false;
   Map<String, dynamic> developer = {};
@@ -63,7 +63,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     final token = prefs.getString('token');
     if( token == null ){ return; }
     dio.options.headers['Authorization'] = token;
-    final response = await dio.get("${serverPath}/api/developer/logout");
+    final response = await dio.get("${serverPath}/api/company/logout");
     await prefs.remove('token');
     final data = response.data;
     isLogIn = false;
@@ -85,7 +85,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     String profileUrl = developer['dprofile'] != null && developer['dprofile'].toString().isNotEmpty
         ? "${serverPath}/upload/${developer['dprofile']}" : "${serverPath}/upload/logo_small.png";
 
-    String? dname = isLogIn ? "${developer['did']} ${developer['dlevel']} Lv" : "로그인";
+    String? dname = isLogIn ? "${developer['did']} ${developer['dlevel']} Lv" : "로그인";   //기업로그인
 
     double? menuHeight = isLogIn ? 0.55 : 0.62;
 
@@ -99,11 +99,11 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _navItem(Icons.folder, "프로젝트", 0),
+                _navItem(Icons.folder, "test", 0),
                 _navItem(Icons.article, "등록", 1),
                 const SizedBox(width: 70), // 중앙 공간 확보
-                _navItem(Icons.article_outlined, "기업 목록", 3),
-                _navItem(Icons.article_outlined, "개발자 순위", 4),
+                _navItem(Icons.article_outlined, "테스트", 3),
+                _navItem(Icons.article_outlined, "test", 4),
               ],
             ),
             Positioned(
@@ -219,7 +219,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      "${dname}",
+                      "${dname}",    // 변경해야함
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.white,

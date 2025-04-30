@@ -1,44 +1,22 @@
 import 'package:devconnect_app/app/company/company_login.dart';
+import 'package:devconnect_app/app/company/companybottombar.dart';
 import 'package:devconnect_app/app/component/custombottombar.dart';
-import 'package:devconnect_app/app/developer/DeveloperLogin.dart';
+import 'package:devconnect_app/app/developer/developer_login.dart';
 import 'package:devconnect_app/app/developer/profile.dart';
 import 'package:devconnect_app/app/layout/home.dart';
 import 'package:devconnect_app/app/project/project_write.dart';
 import 'package:devconnect_app/app/rating/crating.dart';
 import 'package:devconnect_app/style/app_colors.dart';
-import 'package:devconnect_app/style/server_path.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
-class MainApp extends StatefulWidget {
+class CompanyMainApp extends StatefulWidget {
   @override
-  State<MainApp> createState() => _MainAppState();
+  _CompanyMainApp createState() => _CompanyMainApp();
 }
 
-class _MainAppState extends State<MainApp> {
+class _CompanyMainApp extends State<CompanyMainApp> {
   int selectedIndex = 0;
-
-  final List<Widget> pages = [
-    Home(),
-    WriteProject(),
-    Profile(), // 가운데 탭
-    Text("게시물"),
-    Text("게시물"),
-    Rating(), // 5 : 평가페이지
-    DeveloperLogIn(), // 6 : 개발자 로그인 페이지
-    Companylogin(), // 7 : 기업 로그인 페이지
-  ];
-
-  final List<String> pageTitle = [
-    '프로젝트',
-    '프로젝트 등록',
-    '계정 관리',
-    '게시물',
-    '게시물',
-    '평가페이지', // 5
-    '개발자 로그인', // 6
-    '기업 로그인', // 7
-  ];
 
   void changePage(int index) {
     setState(() {
@@ -48,6 +26,31 @@ class _MainAppState extends State<MainApp> {
 
   @override
   Widget build(BuildContext context) {
+    // 이동할 페이지
+    final List<Widget> pages = [
+      Home(),
+      WriteProject(),
+      Profile(), // 가운데 탭
+      Text("게시물"),
+      Text("게시물"),
+      Rating(), // 5 : 평가페이지
+      // DeveloperLogIn( changePage: (index) { setState(() { selectedIndex = index; }); },), // 6 : 개발자 로그인 페이지
+      DeveloperLogIn(), // 6 : 개발자 로그인 페이지
+      Companylogin(), // 7 : 기업 로그인 페이지
+    ];
+
+    // 앱바 제목
+    final List<String> pageTitle = [
+      '프로젝트',
+      '프로젝트 등록',
+      '계정 관리',
+      '게시물',
+      '게시물',
+      '평가페이지', // 5
+      '개발자 로그인', // 6
+      '기업 로그인', // 7
+    ];
+
     return Scaffold(
       // 가상 키보드가 열릴 픽셀이 오버되는 현상 없앰 | false
       resizeToAvoidBottomInset : false,
@@ -73,13 +76,12 @@ class _MainAppState extends State<MainApp> {
         // shape : Border(bottom : BorderSide(color : Color(0x5F000000), width : 1)),
       ),
       body: pages[selectedIndex],
-      bottomNavigationBar: CustomBottomNavBar(
+      bottomNavigationBar: CompanyBottomNavBar( // 이부분 변경
         selectedIndex: selectedIndex,
         onTap: (index) {
           setState(() {
             selectedIndex = index;
           });
-          changePage;
         },
       ),
       floatingActionButtonLocation:  FloatingActionButtonLocation.endDocked,
