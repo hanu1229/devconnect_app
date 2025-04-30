@@ -86,7 +86,7 @@ class _CompanyMainApp extends State<CompanyMainApp> {
           });
         },
       ),
-      floatingActionButtonLocation:  FloatingActionButtonLocation.endDocked,
+      floatingActionButtonLocation : FloatingActionButtonLocation.endDocked,
       floatingActionButton: Container(
         margin: EdgeInsets.only( bottom: 105, right: 10),
         child: SpeedDial(
