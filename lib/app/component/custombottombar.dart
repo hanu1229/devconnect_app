@@ -45,6 +45,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   // 정보 가져오기
   void onInfo(String token) async {
     try {
+      print( token );
       dio.options.headers['Authorization'] = token;
       final response = await dio.get("$serverPath/api/developer/info");
       final data = response.data;
@@ -70,7 +71,6 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
       developer = {};
       widget.onTap(0);
     });
-
   } // f end
 
   @override

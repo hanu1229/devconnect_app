@@ -1,4 +1,9 @@
 
+import 'package:devconnect_app/app/component/custom_card.dart';
+import 'package:devconnect_app/app/component/custom_outlinebutton.dart';
+import 'package:devconnect_app/app/component/custom_scrollview.dart';
+import 'package:devconnect_app/app/component/custom_textbutton.dart';
+import 'package:devconnect_app/app/component/custom_textfield.dart';
 import 'package:devconnect_app/style/app_colors.dart';
 import 'package:devconnect_app/style/server_path.dart';
 import 'package:dio/dio.dart';
@@ -13,7 +18,6 @@ class Profile extends StatefulWidget{
 }
 
 class _ProfileState extends State< Profile >{
-
   Dio dio = Dio();
 
   // 상태변수
@@ -102,392 +106,162 @@ class _ProfileState extends State< Profile >{
 
     // if( !isLogIn ){ Navigator.pushNamed( context, MainApp() ) }
 
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            minHeight: MediaQuery.of( context ).size.height * 0.7,
+    return CustomSingleChildScrollview(
+      children: [
+        Text("기본 정보",
+          style: TextStyle(
+            fontFamily: "NanumGothic",
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
           ),
+        ),
+        SizedBox( height: 10 ,),
+
+        // 첫번째 Card
+        CustomCard(
           child: Column(
-            children: [
-              Container(
-                padding: EdgeInsets.all( 20 ),
-                color: Color(0xfffbfbfb),
-                width: double.infinity,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: !isUpdate ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+            children: !isUpdate
+                ? // 수정버튼 클릭 전
+              [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(999),
+                  child: Container(
+                    width: 100, height: 100,
+                    child: Image.network( imgUrl, fit: BoxFit.cover, ),
+                  ),
+                ),
+                SizedBox( height: 20,),
+
+                Text( developer['dname'],
+                    style: TextStyle( fontSize: 20, fontWeight: FontWeight.bold, ) ),
+                SizedBox( height: 12,),
+
+                Text( developer['demail'],
+                    style: TextStyle( fontSize: 15, ) ),
+                SizedBox( height: 12,),
+
+                // 버튼
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text("기본 정보",
-                      style: TextStyle(
-                        fontFamily: "NanumGothic",
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    CustomTextButton(
+                      onPressed: () => {
+                        setState(() {
+                          isUpdate = true;
+                          didController.text = developer['did'];
+                          dnameController.text = developer['dname'];
+                          dphoneController.text = developer['dphone'];
+                          demailController.text = developer['demail'];
+                          daddressController.text = developer['daddress'];
+                        }),
+                      },
+                      title: "수정",
                     ),
-
-                    SizedBox( height: 10 ,),
-
-                    // 첫번째 Card
-                    SizedBox(
-                      width: double.infinity,
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                          BorderRadius.circular(12),
-                          side: BorderSide(
-                            width: 1,
-                            color: AppColors.cardBorderColor,
-                          ),
-                        ),
-                        elevation: 0,
-                        color: Colors.white,
-                        child: Padding(
-                          padding: EdgeInsets.all( 20 ),
-                          child:
-                          !isUpdate
-                            ? // 수정버튼 클릭 전
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(999),
-                                child: Container(
-                                  width: 100, height: 100,
-                                  child: Image.network(
-                                    imgUrl,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-
-                              SizedBox( height: 20,),
-
-                              Text(
-                                developer['dname'],
-                                style: TextStyle(
-                                  fontFamily: "NanumGothic",
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                )
-                              ),
-
-                              SizedBox( height: 12,),
-
-                              Text(
-                                developer['demail'],
-                                style: TextStyle(
-                                  fontFamily: "NanumGothic",
-                                  fontSize: 15,
-                                )
-                              ),
-
-                              SizedBox( height: 12,),
-
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  SizedBox(
-                                    width: 80, height: 40,
-                                    child: TextButton(
-                                      onPressed: () => {
-                                        setState(() {
-                                          isUpdate = true;
-                                          didController.text = developer['did'];
-                                          dnameController.text = developer['dname'];
-                                          dphoneController.text = developer['dphone'];
-                                          demailController.text = developer['demail'];
-                                          daddressController.text = developer['daddress'];
-                                        })
-                                      },
-                                      style: TextButton.styleFrom(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular( 5 ),
-                                        ),
-                                      ),
-                                      child: Text(
-                                        "수정",
-                                        style: TextStyle(
-                                          fontFamily: "NanumGothic",
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              )
-                            ]
-                          )
-                            : // 수정버튼 클릭 후
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Center(
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(999),
-                                  child: Container(
-                                    width: 100, height: 100,
-                                    child: Image.network(
-                                      imgUrl,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                              ),
-
-                              SizedBox( height: 12,),
-
-                              Text("아이디", style: TextStyle( fontFamily: "NanumGothic" )),
-
-                              SizedBox( height: 12,),
-
-                              TextField(
-                                controller: didController,
-                                readOnly: true,
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: AppColors.textFieldBGColor,
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular( 8 ),
-                                    borderSide: BorderSide(
-                                      width: 1.5,
-                                      color: AppColors.textFieldColor,
-                                    ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular( 8 ),
-                                    borderSide: BorderSide(
-                                      width: 1.5,
-                                      color: AppColors.textFieldColor,
-                                    ),
-                                  ),
-                                ),
-                              ),
-
-                              SizedBox( height: 12,),
-
-                              Text("비밀번호", style: TextStyle( fontFamily: "NanumGothic" )),
-
-                              SizedBox( height: 12,),
-
-                              TextField(
-                                controller: dpwdController,
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: AppColors.textFieldBGColor,
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular( 8 ),
-                                    borderSide: BorderSide(
-                                      width: 1.5,
-                                      color: AppColors.textFieldColor,
-                                    ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular( 8 ),
-                                    borderSide: BorderSide(
-                                      width: 3,
-                                      color: AppColors.focusColor,
-                                    )
-                                  ),
-                                ),
-                              ),
-
-                              SizedBox( height: 12,),
-
-                              Text("휴대번호", style: TextStyle( fontFamily: "NanumGothic" ),),
-
-                              SizedBox( height: 12,),
-
-                              TextField(
-                                controller: dphoneController,
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: AppColors.textFieldBGColor,
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular( 8 ),
-                                    borderSide: BorderSide(
-                                      width: 1.5,
-                                      color: AppColors.textFieldColor,
-                                    ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular( 8 ),
-                                    borderSide: BorderSide(
-                                      width: 3,
-                                      color: AppColors.focusColor,
-                                    )
-                                  ),
-                                ),
-                              ),
-
-                              SizedBox( height: 12,),
-
-                              Text("이메일", style: TextStyle( fontFamily: "NanumGothic" ),),
-
-                              SizedBox( height: 12,),
-
-                              TextField(
-                                controller: demailController,
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: AppColors.textFieldBGColor,
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular( 8 ),
-                                    borderSide: BorderSide(
-                                      width: 1.5,
-                                      color: AppColors.textFieldColor,
-                                    ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular( 8 ),
-                                    borderSide: BorderSide(
-                                      width: 3,
-                                      color: AppColors.focusColor,
-                                    )
-                                  ),
-                                ),
-                              ),
-
-                              SizedBox( height: 12,),
-
-                              Text("주소", style: TextStyle( fontFamily: "NanumGothic" )),
-
-                              SizedBox( height: 12,),
-
-                              TextField(
-                                controller: daddressController,
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: AppColors.textFieldBGColor,
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular( 8 ),
-                                    borderSide: BorderSide(
-                                      width: 1.5,
-                                      color: AppColors.textFieldColor,
-                                    ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular( 8 ),
-                                    borderSide: BorderSide(
-                                      width: 3,
-                                      color: AppColors.focusColor,
-                                    )
-                                  ),
-                                ),
-                              ),
-
-                              SizedBox( height: 15,),
-
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  SizedBox(
-                                    width: 80,
-                                    height: 40,
-                                    child: OutlinedButton(
-                                      onPressed: () => { setState(() => { isUpdate = false }) },
-                                      style: OutlinedButton.styleFrom(
-                                        side: BorderSide(
-                                          color: AppColors.textFieldColor,
-                                          width: 1,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular( 5 ),
-                                        ),
-                                      ),
-                                      child: Text(
-                                        "취소",
-                                        style: TextStyle(
-                                          fontFamily: "NanumGothic",
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-
-                                  SizedBox( width: 15,),
-
-                                  SizedBox(
-                                    width: 80,
-                                    height: 40,
-                                    child: TextButton(
-                                      onPressed: onUpdate,
-                                      style: TextButton.styleFrom(
-                                        backgroundColor: Colors.blueAccent,
-                                        foregroundColor: Colors.white,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular( 5 ),
-                                        )
-                                      ),
-                                      child: Text(
-                                        "저장",
-                                        style: TextStyle(
-                                          fontFamily: "NanumGothic",
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
-                                        ),
-                                      )
-                                    ),
-                                  )
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      )
-                    ),
-
-                    SizedBox( height: 20,),
-
-                    SizedBox(
-                      height: 200,
-                      width: double.infinity,
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                          BorderRadius.circular(12),
-                          side: BorderSide(
-                            width: 1,
-                            color: Color(0xffccdbe3),
-                          ),
-                        ),
-                        elevation: 0,
-                        color: Colors.white,
-                      ),
-                    ),
-
-                    SizedBox( height: 20,),
-
-                    SizedBox(
-                      height: 200,
-                      width: double.infinity,
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                          BorderRadius.circular(12),
-                          side: BorderSide(
-                            width: 1,
-                            color: Color(0xffccdbe3),
-                          ),
-                        ),
-                        elevation: 0,
-                        color: Colors.white,
-                      ),
-                    ),
-
-                    SizedBox(height: 50 + MediaQuery.of(context).padding.bottom),
-
                   ],
-                )
+                ),
+              ]
+                : // 수정버튼 클릭 후
+              [
+              Center(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(999),
+                  child: Container(
+                    width: 100, height: 100,
+                    child: Image.network( imgUrl, fit: BoxFit.cover, ),
+                  ),
+                ),
               ),
+              SizedBox( height: 20,),
+
+              Text("아이디"),
+              SizedBox( height: 12,),
+              CustomTextField( controller: didController, readOnly: true, ),
+              SizedBox( height: 12,),
+
+              Text("비밀번호"),
+              SizedBox( height: 12,),
+              CustomTextField( controller: dpwdController, ),
+              SizedBox( height: 12,),
+
+              Text("휴대번호"),
+              SizedBox( height: 12,),
+              CustomTextField( controller: dphoneController, ),
+              SizedBox( height: 12,),
+
+              Text("이메일"),
+              SizedBox( height: 12,),
+              CustomTextField( controller: demailController, ),
+              SizedBox( height: 12,),
+
+              Text("주소"),
+              SizedBox( height: 12,),
+              CustomTextField( controller: daddressController, ),
+              SizedBox( height: 15,),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+
+                  CustomOutlineButton(
+                    onPressed: () => { setState(() => { isUpdate = false }) },
+                    title: "취소",
+                  ),
+                  SizedBox( width: 15,),
+
+                  CustomTextButton( onPressed: onUpdate, title: "저장" ),
+
+                ],
+              )
+            ]
+
+          ),
+        ),
+        SizedBox( height: 30,),
+
+        Text("비밀번호", style: TextStyle( fontSize: 18, fontWeight: FontWeight.bold, ), ),
+        SizedBox( height: 15 ,),
+
+        // 두번째 Card
+        CustomCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("최근 업데이트 : ${developer['updateAt']}",
+                style: TextStyle( fontSize: 15, ),
+              ),
+              SizedBox( height: 5 ,),
+
+              Text("비밀번호", style: TextStyle( fontSize: 18, ), ),
+              SizedBox( height: 10 ,),
+
+              // 버튼
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  CustomOutlineButton(
+                    onPressed: () => { setState(() => { isUpdate = false }) },
+                    title: "비밀번호 변경",
+                    width: 140,
+                  ),
+                ]
+              ),
+
             ],
           ),
         ),
-      )
+        SizedBox( height: 30,),
+
+        CustomCard(
+          child : Text(""),
+        ),
+
+        SizedBox(height: 50 + MediaQuery.of(context).padding.bottom),
+
+      ],
     );
   }
 }
