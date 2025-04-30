@@ -19,6 +19,8 @@ class _RatingState extends State<Rating>{
   List<dynamic> projectList = []; // 프로젝트 리스트
   List<dynamic> companyList = []; // 기업 리스트
   final dio = Dio();
+  int loginDno = 1;
+  String baseUrl = "http://localhost:8080";
 
   final ScrollController scrollController = ScrollController();
 
@@ -47,7 +49,7 @@ class _RatingState extends State<Rating>{
       // 기업 조회
       final response3 = await dio.get("${serverPath}/api/company/findall");
       // print( response3.data );
-      
+
       // 페이지 변화
       setState(() {
         page = cPage;

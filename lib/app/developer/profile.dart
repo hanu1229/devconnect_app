@@ -161,24 +161,61 @@ class _ProfileState extends State< Profile >{
                                 ),
                               ),
 
+                              SizedBox( height: 20,),
+
+                              Text(
+                                developer['dname'],
+                                style: TextStyle(
+                                  fontFamily: "NanumGothic",
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                )
+                              ),
+
                               SizedBox( height: 12,),
 
-                              Text( developer['did'], style: TextStyle( fontFamily: "NanumGothic" ) ),
+                              Text(
+                                developer['demail'],
+                                style: TextStyle(
+                                  fontFamily: "NanumGothic",
+                                  fontSize: 15,
+                                )
+                              ),
 
                               SizedBox( height: 12,),
 
-                              OutlinedButton(
-                                onPressed: () {
-                                  setState(() {
-                                    isUpdate = true;
-                                    didController.text = developer['did'];
-                                    dnameController.text = developer['dname'];
-                                    dphoneController.text = developer['dphone'];
-                                    demailController.text = developer['demail'];
-                                    daddressController.text = developer['daddress'];
-                                  });
-                                },
-                                child: Text("수정"),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  SizedBox(
+                                    width: 80, height: 40,
+                                    child: TextButton(
+                                      onPressed: () => {
+                                        setState(() {
+                                          isUpdate = true;
+                                          didController.text = developer['did'];
+                                          dnameController.text = developer['dname'];
+                                          dphoneController.text = developer['dphone'];
+                                          demailController.text = developer['demail'];
+                                          daddressController.text = developer['daddress'];
+                                        })
+                                      },
+                                      style: TextButton.styleFrom(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular( 5 ),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        "수정",
+                                        style: TextStyle(
+                                          fontFamily: "NanumGothic",
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               )
                             ]
                           )
@@ -276,11 +313,11 @@ class _ProfileState extends State< Profile >{
                                     ),
                                   ),
                                   focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular( 8 ),
-                                      borderSide: BorderSide(
-                                        width: 3,
-                                        color: AppColors.focusColor,
-                                      )
+                                    borderRadius: BorderRadius.circular( 8 ),
+                                    borderSide: BorderSide(
+                                      width: 3,
+                                      color: AppColors.focusColor,
+                                    )
                                   ),
                                 ),
                               ),
@@ -332,11 +369,11 @@ class _ProfileState extends State< Profile >{
                                     ),
                                   ),
                                   focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular( 8 ),
-                                      borderSide: BorderSide(
-                                        width: 3,
-                                        color: AppColors.focusColor,
-                                      )
+                                    borderRadius: BorderRadius.circular( 8 ),
+                                    borderSide: BorderSide(
+                                      width: 3,
+                                      color: AppColors.focusColor,
+                                    )
                                   ),
                                 ),
                               ),
@@ -352,7 +389,6 @@ class _ProfileState extends State< Profile >{
                                     height: 40,
                                     child: OutlinedButton(
                                       onPressed: () => { setState(() => { isUpdate = false }) },
-                                      child: Text("취소"),
                                       style: OutlinedButton.styleFrom(
                                         side: BorderSide(
                                           color: AppColors.textFieldColor,
@@ -360,6 +396,14 @@ class _ProfileState extends State< Profile >{
                                         ),
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular( 5 ),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        "취소",
+                                        style: TextStyle(
+                                          fontFamily: "NanumGothic",
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black
                                         ),
                                       ),
                                     ),
@@ -372,13 +416,20 @@ class _ProfileState extends State< Profile >{
                                     height: 40,
                                     child: TextButton(
                                       onPressed: onUpdate,
-                                      child: Text("저장"),
                                       style: TextButton.styleFrom(
                                         backgroundColor: Colors.blueAccent,
                                         foregroundColor: Colors.white,
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular( 5 ),
                                         )
+                                      ),
+                                      child: Text(
+                                        "저장",
+                                        style: TextStyle(
+                                          fontFamily: "NanumGothic",
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
                                       )
                                     ),
                                   )

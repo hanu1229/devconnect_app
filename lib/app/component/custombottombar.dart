@@ -14,7 +14,9 @@ class CustomBottomNavBar extends StatefulWidget {
   });
 
   @override
-  _CustomBottomNavBarState createState() => _CustomBottomNavBarState();
+  _CustomBottomNavBarState createState() {
+    return _CustomBottomNavBarState();
+  }
 }
 
 class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
@@ -83,7 +85,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     String profileUrl = developer['dprofile'] != null && developer['dprofile'].toString().isNotEmpty
         ? "${serverPath}/upload/${developer['dprofile']}" : "${serverPath}/upload/logo_small.png";
 
-    String? dname = isLogIn ? "${developer['dname']} ${developer['dlevel']} Lv" : "로그인";
+    String? dname = isLogIn ? "${developer['did']} ${developer['dlevel']} Lv" : "로그인";
 
     double? menuHeight = isLogIn ? 0.55 : 0.62;
 
