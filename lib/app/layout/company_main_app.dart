@@ -9,12 +9,14 @@ import 'package:devconnect_app/style/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
-class MainApp extends StatefulWidget {
+class CompanyMainApp extends StatefulWidget {
   @override
-  State<MainApp> createState() => _MainAppState();
+  _CompanyMainApp createState() {
+    return _CompanyMainApp();
+  }
 }
 
-class _MainAppState extends State<MainApp> {
+class _CompanyMainApp extends State< CompanyMainApp > {
   int selectedIndex = 0;
 
   void changePage(int index) {
@@ -40,7 +42,7 @@ class _MainAppState extends State<MainApp> {
 
     // 앱바 제목
     final List<String> pageTitle = [
-      '프로젝트',
+      '테스트',
       '프로젝트 등록',
       '계정 관리',
       '게시물',
