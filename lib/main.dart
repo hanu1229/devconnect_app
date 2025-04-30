@@ -17,6 +17,7 @@ class DevConnect extends StatelessWidget {
         fontFamily : "NanumGothic",
         appBarTheme : AppBarTheme(
           backgroundColor : AppColors.bgColor,
+          scrolledUnderElevation : 0,
           shape : Border(bottom : BorderSide(color : AppColors.appBarColor, width : 1)),
         ),
       ),
