@@ -1,6 +1,7 @@
 
 
 import 'package:devconnect_app/app/company/company_signup.dart';
+import 'package:devconnect_app/app/layout/company_main_app.dart';
 import 'package:devconnect_app/app/layout/home.dart';
 import 'package:devconnect_app/app/layout/main_app.dart';
 import 'package:devconnect_app/style/server_path.dart';
@@ -41,7 +42,7 @@ class _CompanyLogin extends State<Companylogin>{
 
         await prefs.setString('token', data);
 
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainApp())); // 추후 루트 수정하기
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CompanyMainApp())); // 추후 루트 수정하기
       }else{
         print("회원가입실패");
       }
@@ -60,9 +61,7 @@ class _CompanyLogin extends State<Companylogin>{
     return Scaffold(
       backgroundColor: Color(0xFF0078FF),
       resizeToAvoidBottomInset : false,
-      backgroundColor: Colors.blue,
       body: Container(
-        height: 420,
         padding: EdgeInsets.fromLTRB(30, 50, 30, 120),
         margin: EdgeInsets.fromLTRB(30, 100, 30, 0),  // left, top , light, bottom
         decoration: BoxDecoration(

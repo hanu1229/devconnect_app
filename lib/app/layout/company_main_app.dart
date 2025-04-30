@@ -1,4 +1,5 @@
 import 'package:devconnect_app/app/company/company_login.dart';
+import 'package:devconnect_app/app/company/companybottombar.dart';
 import 'package:devconnect_app/app/component/custombottombar.dart';
 import 'package:devconnect_app/app/developer/developer_login.dart';
 import 'package:devconnect_app/app/developer/profile.dart';
@@ -9,12 +10,12 @@ import 'package:devconnect_app/style/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
-class MainApp extends StatefulWidget {
+class CompanyMainApp extends StatefulWidget {
   @override
-  State<MainApp> createState() => _MainAppState();
+  _CompanyMainApp createState() => _CompanyMainApp();
 }
 
-class _MainAppState extends State<MainApp> {
+class _CompanyMainApp extends State<CompanyMainApp> {
   int selectedIndex = 0;
 
   void changePage(int index) {
@@ -75,7 +76,7 @@ class _MainAppState extends State<MainApp> {
         // shape : Border(bottom : BorderSide(color : Color(0x5F000000), width : 1)),
       ),
       body: pages[selectedIndex],
-      bottomNavigationBar: CustomBottomNavBar(
+      bottomNavigationBar: CompanyBottomNavBar( // 이부분 변경
         selectedIndex: selectedIndex,
         onTap: (index) {
           setState(() {
