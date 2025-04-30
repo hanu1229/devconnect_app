@@ -14,7 +14,6 @@ class Signup extends StatefulWidget{
   }
 }
 
-
 class _SignupState extends State<Signup>{
 
   // 입력 컨트롤러

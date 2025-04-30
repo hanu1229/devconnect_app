@@ -39,7 +39,6 @@ class _DeveloperLogInState extends State< DeveloperLogIn >{
     }catch(e){print(e);}
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

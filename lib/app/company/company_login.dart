@@ -55,6 +55,7 @@ class _CompanyLogin extends State<Companylogin>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset : false,
       backgroundColor: Colors.blue,
       body: Container(
         padding: EdgeInsets.fromLTRB(30, 50, 30, 120),
