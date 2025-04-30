@@ -132,15 +132,15 @@ class _ProfileState extends State< Profile >{
                     child: Image.network( imgUrl, fit: BoxFit.cover, ),
                   ),
                 ),
-                SizedBox( height: 20,),
+                SizedBox( height: 20, ),
 
                 Text( developer['dname'],
                     style: TextStyle( fontSize: 20, fontWeight: FontWeight.bold, ) ),
-                SizedBox( height: 12,),
+                SizedBox( height: 12, ),
 
                 Text( developer['demail'],
                     style: TextStyle( fontSize: 15, ) ),
-                SizedBox( height: 12,),
+                SizedBox( height: 12, ),
 
                 // 버튼
                 Row(
@@ -164,58 +164,58 @@ class _ProfileState extends State< Profile >{
               ]
                 : // 수정버튼 클릭 후
               [
-              Center(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(999),
-                  child: Container(
-                    width: 100, height: 100,
-                    child: Image.network( imgUrl, fit: BoxFit.cover, ),
+                Center(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(999),
+                    child: Container(
+                      width: 100, height: 100,
+                      child: Image.network( imgUrl, fit: BoxFit.cover, ),
+                    ),
                   ),
                 ),
-              ),
-              SizedBox( height: 20,),
+                SizedBox( height: 20, ),
 
-              Text("아이디"),
-              SizedBox( height: 12,),
-              CustomTextField( controller: didController, readOnly: true, ),
-              SizedBox( height: 12,),
+                Text("아이디"),
+                SizedBox( height: 12, ),
+                CustomTextField( controller: didController, readOnly: true, ),
+                SizedBox( height: 12, ),
 
-              Text("비밀번호"),
-              SizedBox( height: 12,),
-              CustomTextField( controller: dpwdController, ),
-              SizedBox( height: 12,),
+                Text("비밀번호"),
+                SizedBox( height: 12, ),
+                CustomTextField( controller: dpwdController, ),
+                SizedBox( height: 12, ),
 
-              Text("휴대번호"),
-              SizedBox( height: 12,),
-              CustomTextField( controller: dphoneController, ),
-              SizedBox( height: 12,),
+                Text("휴대번호"),
+                SizedBox( height: 12, ),
+                CustomTextField( controller: dphoneController, ),
+                SizedBox( height: 12, ),
 
-              Text("이메일"),
-              SizedBox( height: 12,),
-              CustomTextField( controller: demailController, ),
-              SizedBox( height: 12,),
+                Text("이메일"),
+                SizedBox( height: 12, ),
+                CustomTextField( controller: demailController, ),
+                SizedBox( height: 12, ),
 
-              Text("주소"),
-              SizedBox( height: 12,),
-              CustomTextField( controller: daddressController, ),
-              SizedBox( height: 15,),
+                Text("주소"),
+                SizedBox( height: 12, ),
+                CustomTextField( controller: daddressController, ),
+                SizedBox( height: 15, ),
 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
 
-                  CustomOutlineButton(
-                    onPressed: () => { setState(() => { isUpdate = false }) },
-                    title: "취소",
-                  ),
-                  SizedBox( width: 15,),
+                    CustomOutlineButton(
+                      onPressed: () => { setState(() => { isUpdate = false }) },
+                      title: "취소",
+                    ),
+                    SizedBox( width: 15,),
 
-                  CustomTextButton( onPressed: onUpdate, title: "저장" ),
+                    CustomTextButton( onPressed: onUpdate, title: "저장" ),
 
-                ],
-              )
-            ]
+                  ],
+                )
+              ]
 
           ),
         ),
@@ -229,7 +229,7 @@ class _ProfileState extends State< Profile >{
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("최근 업데이트 : ${developer['updateAt']}",
+              Text("최근 업데이트 : ${developer['updateAt'].split('T')[0]}",
                 style: TextStyle( fontSize: 15, ),
               ),
               SizedBox( height: 5 ,),
@@ -255,6 +255,7 @@ class _ProfileState extends State< Profile >{
         ),
         SizedBox( height: 30,),
 
+        // 세번째 Card
         CustomCard(
           child : Text(""),
         ),

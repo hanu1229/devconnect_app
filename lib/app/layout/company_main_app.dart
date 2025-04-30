@@ -12,7 +12,9 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class CompanyMainApp extends StatefulWidget {
   @override
-  _CompanyMainApp createState() => _CompanyMainApp();
+  _CompanyMainApp createState() {
+    return _CompanyMainApp();
+  }
 }
 
 class _CompanyMainApp extends State<CompanyMainApp> {
@@ -41,7 +43,7 @@ class _CompanyMainApp extends State<CompanyMainApp> {
 
     // 앱바 제목
     final List<String> pageTitle = [
-      '프로젝트',
+      '테스트',
       '프로젝트 등록',
       '계정 관리',
       '게시물',

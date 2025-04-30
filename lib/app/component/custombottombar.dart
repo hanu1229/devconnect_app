@@ -140,6 +140,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                                   ),
                                 ],
                               ),
+                              // 프로필 메뉴
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [

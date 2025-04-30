@@ -2,7 +2,6 @@ import 'package:devconnect_app/app/company/company_login.dart';
 import 'package:devconnect_app/app/company/company_signup.dart';
 import 'package:devconnect_app/app/component/custombottombar.dart';
 import 'package:devconnect_app/app/developer/developer_login.dart';
-import 'package:devconnect_app/app/developer/developer_signup.dart';
 import 'package:devconnect_app/app/developer/profile.dart';
 import 'package:devconnect_app/app/layout/home.dart';
 import 'package:devconnect_app/app/project/project_view.dart';
