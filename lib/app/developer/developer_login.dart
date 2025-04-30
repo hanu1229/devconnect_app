@@ -1,4 +1,5 @@
 
+import 'package:devconnect_app/app/developer/developer_signup.dart';
 import 'package:devconnect_app/app/layout/main_app.dart';
 import 'package:devconnect_app/style/app_colors.dart';
 import 'package:devconnect_app/style/server_path.dart';
@@ -7,6 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DeveloperLogIn extends StatefulWidget{
+  // final Function(int) changePage;
+  //
+  // const DeveloperLogIn({
+  //   required this.changePage,
+  // });
+
   @override
   _DeveloperLogInState createState() {
     return _DeveloperLogInState();
@@ -39,10 +46,10 @@ class _DeveloperLogInState extends State< DeveloperLogIn >{
     }catch(e){print(e);}
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset : false,
       backgroundColor: Color(0xFF0078FF),
       body: Container(
         height: 420,
@@ -124,7 +131,7 @@ class _DeveloperLogInState extends State< DeveloperLogIn >{
                 onPressed: () => { login() },
                 child: Text("로그인", style: TextStyle( fontFamily: "NanumGothic" ),),
                 style: TextButton.styleFrom(
-                  backgroundColor: Colors.grey,
+                  backgroundColor: Colors.blueAccent,
                   foregroundColor: Colors.white,
                   textStyle: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -147,7 +154,11 @@ class _DeveloperLogInState extends State< DeveloperLogIn >{
               width: double.infinity,
               height: 45,
               child: OutlinedButton(
-                onPressed: () => { },
+                onPressed: () => {
+                  Navigator.push( context,
+                    MaterialPageRoute( builder : (context) => DeveloperSignUp() )
+                  ),
+                },
                 child: Text("회원가입", style: TextStyle( fontFamily: "NanumGothic" ),),
                 style: TextButton.styleFrom(
                   backgroundColor: Colors.white,

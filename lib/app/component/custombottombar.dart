@@ -14,12 +14,14 @@ class CustomBottomNavBar extends StatefulWidget {
   });
 
   @override
-  _CustomBottomNavBarState createState() => _CustomBottomNavBarState();
+  _CustomBottomNavBarState createState() {
+    return _CustomBottomNavBarState();
+  }
 }
 
 class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
   Dio dio = Dio();
-  bool? isLogIn;
+  bool isLogIn = false;
   Map<String, dynamic> developer = {};
 
   @override
@@ -28,6 +30,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     loginCheck();
   }
 
+  // 로그인 확인
   void loginCheck() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
@@ -39,8 +42,10 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
     }
   }
 
+  // 정보 가져오기
   void onInfo(String token) async {
     try {
+      print( token );
       dio.options.headers['Authorization'] = token;
       final response = await dio.get("$serverPath/api/developer/info");
       final data = response.data;
@@ -49,128 +54,183 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
           developer = data;
         });
       }
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) { print(e); }
   }
+
+  // 로그아웃
+  void logOut() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    if( token == null ){ return; }
+    dio.options.headers['Authorization'] = token;
+    final response = await dio.get("${serverPath}/api/developer/logout");
+    await prefs.remove('token');
+    final data = response.data;
+    isLogIn = false;
+    setState(() {
+      developer = {};
+      widget.onTap(0);
+    });
+  } // f end
 
   @override
   Widget build(BuildContext context) {
     final isProfileSelected = widget.selectedIndex == 2;
 
-    double dcurrentexp = (developer['dcurrentExp'] ?? 0).toDouble();
-    double dtotalexp = (developer['dtotalExp'] ?? 1).toDouble();
-    double levelExp = (dtotalexp != 0) ? (dcurrentexp / dtotalexp) : 0.0;
+    // 상태변수
+    int dcurrentexp = developer['dcurrentExp'] ?? 0;
+    int dtotalexp = developer['dtotalExp'] ?? 1;
+    double levelExp = (dtotalexp != 0) ? (dcurrentexp / dtotalexp).toDouble() : 0.0;
 
     String profileUrl = developer['dprofile'] != null && developer['dprofile'].toString().isNotEmpty
-        ? "$serverPath/upload/${developer['dprofile']}"
-        : "https://via.placeholder.com/150";
+        ? "${serverPath}/upload/${developer['dprofile']}" : "${serverPath}/upload/logo_small.png";
 
-    return Container(
-      height: 80,
-      color: Colors.black87,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _navItem(Icons.folder, "프로젝트", 0),
-              _navItem(Icons.article, "게시물1", 1),
-              const SizedBox(width: 70), // 중앙 공간 확보
-              _navItem(Icons.article_outlined, "게시물2", 3),
-              _navItem(Icons.article_outlined, "개발자로그인", 4),
-            ],
-          ),
-          Positioned(
-            top: -20,
-            left: MediaQuery.of(context).size.width / 2 - 35,
-            child: GestureDetector(
-              onTap: () {
-                showGeneralDialog(
-                  context: context,
-                  barrierDismissible: true,
-                  barrierLabel: '',
-                  barrierColor: Colors.black.withOpacity(0.001),
-                  transitionDuration: const Duration(milliseconds: 300),
-                  pageBuilder: (context, animation, secondaryAnimation) {
-                    return Align(
-                      alignment: Alignment(0, 0.7), // 위치 조정
-                      child: ScaleTransition(
-                        scale: CurvedAnimation(
-                          parent: animation,
-                          curve: Curves.easeOutBack,
-                        ),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: Container(
-                            width: 200,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black26,
-                                  blurRadius: 10,
-                                  offset: Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                ListTile(
-                                  leading: Icon(Icons.person),
-                                  title: Text('프로필 보기'),
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                    widget.onTap(2);
-                                  },
-                                ),
-                                ListTile(
-                                  leading: Icon(Icons.logout),
-                                  title: Text('로그아웃'),
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                    // 로그아웃 처리
-                                  },
-                                ),
-                              ],
+    String? dname = isLogIn ? "${developer['did']} ${developer['dlevel']} Lv" : "로그인";
+
+    double? menuHeight = isLogIn ? 0.55 : 0.62;
+
+    return SafeArea(
+      child : Container(
+        height: 80,
+        color: Colors.black87,
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _navItem(Icons.folder, "프로젝트", 0),
+                _navItem(Icons.article, "등록", 1),
+                const SizedBox(width: 70), // 중앙 공간 확보
+                _navItem(Icons.article_outlined, "기업 목록", 3),
+                _navItem(Icons.article_outlined, "개발자 순위", 4),
+              ],
+            ),
+            Positioned(
+              top: -20,
+              left: MediaQuery.of(context).size.width / 2 - 35,
+              child: GestureDetector(
+                onTap: () {
+                  showGeneralDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    barrierLabel: '',
+                    barrierColor: Colors.black.withOpacity(0.001),
+                    transitionDuration: const Duration(milliseconds: 300),
+                    pageBuilder: (context, animation, secondaryAnimation) {
+                      return Align(
+                        alignment: Alignment(0, menuHeight), // 위치 조정
+                        child: ScaleTransition(
+                          scale: CurvedAnimation(
+                            parent: animation,
+                            curve: Curves.easeOutBack,
+                          ),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: Container(
+                              width: 200,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    blurRadius: 10,
+                                    offset: Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  if (isLogIn == true) ...[
+                                    ListTile(
+                                      leading: Icon(Icons.auto_graph),
+                                      title: Text("Level : ${developer['dlevel']}"),
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                        // widget.onTap(2);
+                                      },
+                                    ),
+                                    ListTile(
+                                      leading: Icon(Icons.auto_graph),
+                                      title: Text("Exp : ${dcurrentexp} / ${dtotalexp}"),
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                        // widget.onTap(2);
+                                      },
+                                    ),
+                                    ListTile(
+                                      leading: Icon(Icons.person),
+                                      title: Text('프로필 보기'),
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                        widget.onTap(2);
+                                      },
+                                    ),
+                                    ListTile(
+                                      leading: Icon(Icons.logout),
+                                      title: Text('로그아웃'),
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                        logOut();
+                                      },
+                                    ),
+                                  ] else ...[
+                                    ListTile(
+                                      leading: Icon(Icons.login),
+                                      title: Text('기업 로그인'),
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                        widget.onTap(7); // 개발자 로그인 페이지로 이동
+                                      },
+                                    ),
+                                    ListTile(
+                                      leading: Icon(Icons.login),
+                                      title: Text('개발자 로그인'),
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                        widget.onTap(6); // 개발자 로그인 페이지로 이동
+                                      },
+                                    ),
+                                  ]
+                                ],
+                              ),
                             ),
                           ),
                         ),
+                      );
+                    },
+                  );
+                },
+                child: Column(
+                  children: [
+                    CircularPercentIndicator(
+                      radius: 35.0,
+                      lineWidth: 5.0,
+                      percent: levelExp.clamp(0.0, 1.0),
+                      center: CircleAvatar(
+                        radius: 30,
+                        backgroundImage: NetworkImage(profileUrl),
                       ),
-                    );
-                  },
-                );
-              },
-              child: Column(
-                children: [
-                  CircularPercentIndicator(
-                    radius: 35.0,
-                    lineWidth: 5.0,
-                    percent: levelExp.clamp(0.0, 1.0),
-                    center: CircleAvatar(
-                      radius: 30,
-                      backgroundImage: NetworkImage(profileUrl),
+                      progressColor: Colors.blue,
+                      backgroundColor: Colors.grey.shade300,
+                      circularStrokeCap: CircularStrokeCap.round,
                     ),
-                    progressColor: Colors.blue,
-                    backgroundColor: Colors.grey.shade300,
-                    circularStrokeCap: CircularStrokeCap.round,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    "프로필",
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.white,
+                    const SizedBox(height: 4),
+                    Text(
+                      "${dname}",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

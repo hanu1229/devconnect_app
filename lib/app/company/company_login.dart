@@ -59,6 +59,8 @@ class _CompanyLogin extends State<Companylogin>{
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFF0078FF),
+      resizeToAvoidBottomInset : false,
+      backgroundColor: Colors.blue,
       body: Container(
         height: 420,
         padding: EdgeInsets.fromLTRB(30, 50, 30, 120),
