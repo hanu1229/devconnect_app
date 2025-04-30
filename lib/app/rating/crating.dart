@@ -66,7 +66,7 @@ class _RatingState extends State<Rating>{
         } // if end
         // print( cRatingList );
         // print( projectList );
-        // print( companyList );
+        print( companyList );
       });
 
     }catch(e) { print( e ); }
@@ -102,10 +102,10 @@ class _RatingState extends State<Rating>{
             orElse: () => null ,
           ) : null;
 
-          final images = company['cprofile'];
+          final images = company?['cprofile'];
           // 만약에 이미지가 존재하면 대표이미지 , 없으면 기본이미지 (default)
           String? imageUrl;
-          if( images.isEmpty ){
+          if( images == null || images.isEmpty ){
             imageUrl = "${serverPath}/upload/default.jpg";
           }else{
             imageUrl = "${serverPath}/upload/${ images[0] }";
@@ -114,7 +114,12 @@ class _RatingState extends State<Rating>{
           return InkWell(
             onTap: () => {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => Crating_view( crno: rating['crno'], pno : project['pno'] , cno : company['cno'] ,) )
+                  MaterialPageRoute(builder: (context) => Crating_view(
+                    crno: rating['crno'],
+                    pno : project['pno'],
+                    cname : company['cname'],
+                    cprofile : company['cprofile']
+                  ))
               )
             },
             child: Card(
@@ -146,8 +151,8 @@ class _RatingState extends State<Rating>{
                       Expanded(child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text( rating['ctitle'] , style: TextStyle( fontSize: 25, fontWeight: FontWeight.w900), ),
-                          Text( "점수 : ${rating['crscore'] }" , style: TextStyle( fontSize: 18 , fontWeight: FontWeight.w600 ), ),
+                          Text( rating['ctitle'] , style: TextStyle( fontSize: 16, fontWeight: FontWeight.w900), ),
+                          Text( "점수 : ${rating['crscore'] }" , style: TextStyle( fontSize: 12 , fontWeight: FontWeight.w600 ), ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
@@ -157,7 +162,7 @@ class _RatingState extends State<Rating>{
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              Text( "참가한 프로젝트 명 : ${project['pname'] }" , style: TextStyle( fontSize: 12), ),
+                              Text( "프로젝트 명 : ${project['pname'] }" , style: TextStyle( fontSize: 10), ),
                             ],
                           ),
                         ],
