@@ -23,23 +23,23 @@ class _MainAppState extends State<MainApp> {
   int selectedIndex = 0;
 
   final List<Widget> pages = [
-    Home(),
-    WriteProject(),
-    Profile(), // 가운데 탭
-    Text("게시물"),
-    Text("게시물"),
-    Rating(), // 5 : 평가페이지
-    Signup(),
+    Home(), // 0 : 기본 페이지
+    WriteProject(), // 1 : 프로젝트 작성 페이지
+    Profile(), // 2: 가운데 탭
+    Text("기업 목록"), // 3 : 기업 목록
+    Text("개발자 순위"), // 4 : 개발자 순위
+    Rating(), // 5 : 평가 페이지
     DeveloperLogIn(), // 6 : 개발자 로그인 페이지
     Companylogin(), // 7 : 기업 로그인 페이지
+    // DeveloperSignUp(),
   ];
 
   final List<String> pageTitle = [
     '프로젝트',
     '프로젝트 등록',
-    '계정 관리',
-    '게시물',
-    '게시물',
+    '가운데 탭',
+    '기업 목록',
+    '게발자 순위',
     '평가페이지', // 5
     '개발자 로그인', // 6
     '기업 로그인', // 7

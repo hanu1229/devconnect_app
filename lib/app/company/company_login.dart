@@ -141,7 +141,7 @@ class _CompanyLogin extends State<Companylogin>{
                 onPressed: () => { login() },
                 child: Text("로그인", style: TextStyle( fontFamily: "NanumGothic" ),),
                 style: TextButton.styleFrom(
-                    backgroundColor: Colors.grey,
+                    backgroundColor: AppColors.buttonColor,
                     foregroundColor: Colors.white,
                     textStyle: TextStyle(
                       fontWeight: FontWeight.bold,
