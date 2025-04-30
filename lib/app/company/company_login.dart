@@ -21,8 +21,8 @@ class _CompanyLogin extends State<Companylogin>{
 // 입력상자 컨트롤러
   TextEditingController idController = TextEditingController();
   TextEditingController pwdController = TextEditingController();
-  
-  
+
+
   //2. 자바 통신
   void login() async{
     try{
@@ -42,7 +42,7 @@ class _CompanyLogin extends State<Companylogin>{
       }else{
         print("회원가입실패");
       }
-      
+
     }catch(e){print(e);}
   }
 

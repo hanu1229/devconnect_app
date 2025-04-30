@@ -39,9 +39,11 @@ class _DeveloperLogInState extends State< DeveloperLogIn >{
     }catch(e){print(e);}
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset : false,
       backgroundColor: Color(0xFF0078FF),
       body: Container(
         height: 420,
@@ -66,11 +68,11 @@ class _DeveloperLogInState extends State< DeveloperLogIn >{
                 decoration: InputDecoration(
                   labelText: "id",
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular( 4 ),
-                    borderSide: BorderSide(
-                      width: 1,
-                      color: AppColors.textFieldColor,
-                    )
+                      borderRadius: BorderRadius.circular( 4 ),
+                      borderSide: BorderSide(
+                        width: 1,
+                        color: AppColors.textFieldColor,
+                      )
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular( 4 ),
@@ -97,11 +99,11 @@ class _DeveloperLogInState extends State< DeveloperLogIn >{
                 decoration: InputDecoration(
                   labelText: "비밀번호",
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular( 4 ),
-                    borderSide: BorderSide(
-                      width: 1,
-                      color: AppColors.textFieldColor,
-                    )
+                      borderRadius: BorderRadius.circular( 4 ),
+                      borderSide: BorderSide(
+                        width: 1,
+                        color: AppColors.textFieldColor,
+                      )
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular( 4 ),
@@ -123,19 +125,19 @@ class _DeveloperLogInState extends State< DeveloperLogIn >{
                 onPressed: () => { login() },
                 child: Text("로그인", style: TextStyle( fontFamily: "NanumGothic" ),),
                 style: TextButton.styleFrom(
-                  backgroundColor: Colors.grey,
-                  foregroundColor: Colors.white,
-                  textStyle: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular( 4 ),
-                  ),
-                  side: BorderSide(
-                    width: 1,
-                    color: AppColors.textFieldColor,
-                  )
+                    backgroundColor: Colors.blueAccent,
+                    foregroundColor: Colors.white,
+                    textStyle: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular( 4 ),
+                    ),
+                    side: BorderSide(
+                      width: 1,
+                      color: AppColors.textFieldColor,
+                    )
                 ),
               ),
             ),
@@ -149,19 +151,19 @@ class _DeveloperLogInState extends State< DeveloperLogIn >{
                 onPressed: () => { },
                 child: Text("회원가입", style: TextStyle( fontFamily: "NanumGothic" ),),
                 style: TextButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black,
-                  textStyle: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular( 4 ),
-                  ),
-                  side: BorderSide(
-                    width: 1,
-                    color: AppColors.textFieldColor,
-                  )
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black,
+                    textStyle: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular( 4 ),
+                    ),
+                    side: BorderSide(
+                      width: 1,
+                      color: AppColors.textFieldColor,
+                    )
                 ),
               ),
             )
