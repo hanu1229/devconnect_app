@@ -104,8 +104,8 @@ class _CompanyBottomNavBarState extends State<CompanyBottomNavBar> {
                 _navItem(Icons.folder, "전체", 0),
                 _navItem(Icons.article, "등록", 1),
                 const SizedBox(width: 70), // 중앙 공간 확보
-                _navItem(Icons.article_outlined, "마이페이지", 3),
-                _navItem(Icons.article_outlined, "로그아웃", 4),
+                _navItem(Icons.article_outlined, "내 프로젝트", 3),
+                _navItem(Icons.article_outlined, "게시물", 4),
               ],
             ),
             Positioned(

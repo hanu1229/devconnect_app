@@ -137,7 +137,6 @@ class _ViewProjectState extends State<ViewProject> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar : AppBar(title : Text("내 프로젝트")),
       body : SafeArea(
         child: Container(
           padding : EdgeInsets.all(16),
