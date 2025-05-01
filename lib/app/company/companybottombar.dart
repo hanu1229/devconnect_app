@@ -22,7 +22,7 @@ class CompanyBottomNavBar extends StatefulWidget {
 class _CompanyBottomNavBarState extends State<CompanyBottomNavBar> {
   Dio dio = Dio();
   bool isLogIn = false;
-  Map<String, dynamic> developer = {};
+  Map<String, dynamic> company = {};
 
   @override
   void initState() {
@@ -47,11 +47,13 @@ class _CompanyBottomNavBarState extends State<CompanyBottomNavBar> {
     try {
       print( token );
       dio.options.headers['Authorization'] = token;
-      final response = await dio.get("$serverPath/api/developer/info");
+      final response = await dio.get("$serverPath/api/company/info");
+      print("response = $response");
       final data = response.data;
+      print("data = $data");
       if (data != '') {
         setState(() {
-          developer = data;
+          company = data;
         });
       }
     } catch (e) { print(e); }
@@ -68,7 +70,7 @@ class _CompanyBottomNavBarState extends State<CompanyBottomNavBar> {
     final data = response.data;
     isLogIn = false;
     setState(() {
-      developer = {};
+      company = {};
       widget.onTap(0);
     });
   } // f end
@@ -78,16 +80,16 @@ class _CompanyBottomNavBarState extends State<CompanyBottomNavBar> {
     final isProfileSelected = widget.selectedIndex == 2;
 
     // 상태변수
-    int dcurrentexp = developer['dcurrentExp'] ?? 0;
-    int dtotalexp = developer['dtotalExp'] ?? 1;
-    double levelExp = (dtotalexp != 0) ? (dcurrentexp / dtotalexp).toDouble() : 0.0;
 
-    String profileUrl = developer['dprofile'] != null && developer['dprofile'].toString().isNotEmpty
-        ? "${serverPath}/upload/${developer['dprofile']}" : "${serverPath}/upload/logo_small.png";
 
-    String? dname = isLogIn ? "${developer['did']} ${developer['dlevel']} Lv" : "로그인";   //기업로그인
 
-    double? menuHeight = isLogIn ? 0.55 : 0.62;
+    String profileUrl = company['cprofile'] != null && company['cprofile'].toString().isNotEmpty
+        ? "${serverPath}/upload/${company['cprofile']}" : "${serverPath}/upload/logo_small.png";
+
+    print(company['cid']);
+    String? cname = isLogIn ? "${company['cid']} " : "로그인";   //기업로그인
+
+   double? menuHeight = isLogIn ? 0.55 : 0.62;
 
     return SafeArea(
       child : Container(
@@ -99,11 +101,11 @@ class _CompanyBottomNavBarState extends State<CompanyBottomNavBar> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _navItem(Icons.folder, "test", 0),
+                _navItem(Icons.folder, "전체", 0),
                 _navItem(Icons.article, "등록", 1),
                 const SizedBox(width: 70), // 중앙 공간 확보
-                _navItem(Icons.article_outlined, "테스트", 3),
-                _navItem(Icons.article_outlined, "test", 4),
+                _navItem(Icons.article_outlined, "내 프로젝트", 3),
+                _navItem(Icons.article_outlined, "게시물", 4),
               ],
             ),
             Positioned(
@@ -143,29 +145,14 @@ class _CompanyBottomNavBarState extends State<CompanyBottomNavBar> {
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  if (isLogIn == true) ...[
-                                    ListTile(
-                                      leading: Icon(Icons.auto_graph),
-                                      title: Text("Level : ${developer['dlevel']}"),
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                        // widget.onTap(2);
-                                      },
-                                    ),
-                                    ListTile(
-                                      leading: Icon(Icons.auto_graph),
-                                      title: Text("Exp : ${dcurrentexp} / ${dtotalexp}"),
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                        // widget.onTap(2);
-                                      },
-                                    ),
+                                   if (isLogIn == true) ...[
+
                                     ListTile(
                                       leading: Icon(Icons.person),
                                       title: Text('프로필 보기'),
                                       onTap: () {
                                         Navigator.pop(context);
-                                        widget.onTap(2);
+                                        widget.onTap(8);
                                       },
                                     ),
                                     ListTile(
@@ -176,24 +163,26 @@ class _CompanyBottomNavBarState extends State<CompanyBottomNavBar> {
                                         logOut();
                                       },
                                     ),
-                                  ] else ...[
-                                    ListTile(
-                                      leading: Icon(Icons.login),
-                                      title: Text('기업 로그인'),
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                        widget.onTap(7); // 개발자 로그인 페이지로 이동
-                                      },
-                                    ),
-                                    ListTile(
-                                      leading: Icon(Icons.login),
-                                      title: Text('개발자 로그인'),
-                                      onTap: () {
-                                        Navigator.pop(context);
+
+
+                                   ] else ...[
+                                     ListTile(
+                                       leading: Icon(Icons.login),
+                                       title: Text('기업 로그인'),
+                                       onTap: () {
+                                         Navigator.pop(context);
+                                         widget.onTap(7); // 기업 로그인 페이지로 이동
+                                       },
+                                     ),
+                                     ListTile(
+                                       leading: Icon(Icons.login),
+                                       title: Text('개발자 로그인'),
+                                       onTap: () {
+                                         Navigator.pop(context);
                                         widget.onTap(6); // 개발자 로그인 페이지로 이동
-                                      },
+                                       },
                                     ),
-                                  ]
+                                   ]
                                 ],
                               ),
                             ),
@@ -208,7 +197,6 @@ class _CompanyBottomNavBarState extends State<CompanyBottomNavBar> {
                     CircularPercentIndicator(
                       radius: 35.0,
                       lineWidth: 5.0,
-                      percent: levelExp.clamp(0.0, 1.0),
                       center: CircleAvatar(
                         radius: 30,
                         backgroundImage: NetworkImage(profileUrl),
@@ -219,7 +207,7 @@ class _CompanyBottomNavBarState extends State<CompanyBottomNavBar> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      "${dname}",    // 변경해야함
+                      "${cname}",
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.white,

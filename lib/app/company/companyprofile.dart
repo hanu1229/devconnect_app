@@ -1,6 +1,5 @@
 
 import 'package:devconnect_app/app/component/custom_card.dart';
-import 'package:devconnect_app/app/component/custom_imgpicker.dart';
 import 'package:devconnect_app/app/component/custom_outlinebutton.dart';
 import 'package:devconnect_app/app/component/custom_scrollview.dart';
 import 'package:devconnect_app/app/component/custom_textbutton.dart';
@@ -9,23 +8,20 @@ import 'package:devconnect_app/style/app_colors.dart';
 import 'package:devconnect_app/style/server_path.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Profile extends StatefulWidget{
+class Companyprofile extends StatefulWidget{
   @override
-  _ProfileState createState() {
-    return _ProfileState();
+  _CompanyProfileState createState() {
+    return _CompanyProfileState();
   }
 }
 
-class _ProfileState extends State< Profile >{
+class _CompanyProfileState extends State< Companyprofile >{
   Dio dio = Dio();
 
   // 상태변수
   int mno = 0;
-  XFile? profileImage;
-  String? profileImageUrl;
   // 수정 상태 확인
   bool isUpdate = false;
 
@@ -56,53 +52,49 @@ class _ProfileState extends State< Profile >{
   void onInfo( token ) async {
     try{
       dio.options.headers['Authorization'] = token;
-      final response = await dio.get("${serverPath}/api/developer/info");
+      final response = await dio.get("${serverPath}/api/company/info");
+      print("response : $response");
       final data = response.data;
+      print("data : $data");
       if( data != '' ){
         setState(() {
           developer = data;
-          profileImageUrl = data['dprofile'];
         });
       }
     }catch( e ){ print( e ); }
   } // f end
 
-  TextEditingController didController = TextEditingController();
-  TextEditingController dpwdController = TextEditingController();
-  TextEditingController dnameController = TextEditingController();
-  TextEditingController dphoneController = TextEditingController();
-  TextEditingController demailController = TextEditingController();
-  TextEditingController daddressController = TextEditingController();
+  final TextEditingController cidController = TextEditingController();
+  final TextEditingController cpwdController = TextEditingController();
+  final TextEditingController cnameController = TextEditingController();
+  final TextEditingController cphoneController= TextEditingController();
+  final TextEditingController cadressController = TextEditingController();
+  final TextEditingController cemailController = TextEditingController();
+  final TextEditingController cbusinessController = TextEditingController();
 
   // 상세정보 수정
   void onUpdate( ) async {
-    FormData formData = FormData();
-
-    formData.fields.add( MapEntry("dpwd", dpwdController.text) );
-    formData.fields.add( MapEntry("dname", dnameController.text) );
-    formData.fields.add( MapEntry("dphone", dphoneController.text) );
-    formData.fields.add( MapEntry("demail", demailController.text) );
-    formData.fields.add( MapEntry("daddress", daddressController.text) );
-
-    final file = await MultipartFile.fromFile( profileImage!.path, filename: profileImage!.name );
-    formData.files.add( MapEntry( "dfile", file ));
+    final sendData = {
+      "cno" : developer['cno'],
+      "cpwd" : cpwdController.text,
+      "cname" : cnameController.text,
+      "cphone" : cphoneController.text,
+      "demail" :  cemailController.text,
+      "cadress" : cadressController.text,
+      "cbusiness" : cbusinessController.text
+    };
 
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
 
     try{
       dio.options.headers['Authorization'] = token;
-      final response = await dio.put("${serverPath}/api/developer/update", data: formData);
+      final response = await dio.put("${serverPath}/api/company/update", data: sendData);
       final data = response.data;
       if( data ){
         setState(() {
           onInfo( token );
           isUpdate = false;
-          if (data != null && data['dprofile'] != null) {
-            profileImage = null; // XFile 제거
-            profileImageUrl = data['dprofile']; // 서버 URL 사용
-          }
-
         });
       }
     }catch( e ){ print( e ); }
@@ -113,7 +105,7 @@ class _ProfileState extends State< Profile >{
 
     if( developer.isEmpty ){ return Center( child: CircularProgressIndicator(), ); }
 
-    final image = developer['dprofile'];
+    final image = developer['cprofile']; // 이미지 문제 있었음
     String imgUrl = "${serverPath}/upload/${image}";
 
     // if( !isLogIn ){ Navigator.pushNamed( context, MainApp() ) }
@@ -146,11 +138,11 @@ class _ProfileState extends State< Profile >{
                 ),
                 SizedBox( height: 20, ),
 
-                Text( developer['dname'],
+                Text( developer['cname'],   // 이부분 수정함
                     style: TextStyle( fontSize: 20, fontWeight: FontWeight.bold, ) ),
                 SizedBox( height: 12, ),
 
-                Text( developer['demail'],
+                Text( developer['cemail'], // 이부분 수정함
                     style: TextStyle( fontSize: 15, ) ),
                 SizedBox( height: 12, ),
 
@@ -162,11 +154,12 @@ class _ProfileState extends State< Profile >{
                       onPressed: () => {
                         setState(() {
                           isUpdate = true;
-                          didController.text = developer['did'];
-                          dnameController.text = developer['dname'];
-                          dphoneController.text = developer['dphone'];
-                          demailController.text = developer['demail'];
-                          daddressController.text = developer['daddress'];
+                          cidController.text = developer['cid'];
+                          cnameController.text = developer['cname'];
+                          cphoneController.text = developer['cphone'];
+                          cemailController.text = developer['cemail'];
+                          cadressController.text = developer['cadress'];
+                          cbusinessController.text = developer['cbusiness'];
                         }),
                       },
                       title: "수정",
@@ -177,40 +170,44 @@ class _ProfileState extends State< Profile >{
                 : // 수정버튼 클릭 후
               [
                 Center(
-                  child: CustomImagePicker(
-                    dprofile: profileImageUrl,
-                    onImageSelected: ( XFile image ) {
-                      setState(() {
-                        profileImage = image;
-                      });
-                    },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(999),
+                    child: Container(
+                      width: 100, height: 100,
+                      child: Image.network( imgUrl, fit: BoxFit.cover, ),
+                    ),
                   ),
                 ),
                 SizedBox( height: 20, ),
 
                 Text("아이디"),
                 SizedBox( height: 12, ),
-                CustomTextField( controller: didController, readOnly: true, ),
+                CustomTextField( controller: cidController, readOnly: true, ),
                 SizedBox( height: 12, ),
 
                 Text("비밀번호"),
                 SizedBox( height: 12, ),
-                CustomTextField( controller: dpwdController, ),
+                CustomTextField( controller: cpwdController, ),
                 SizedBox( height: 12, ),
 
-                Text("전화번호"),
+                Text("휴대번호"),
                 SizedBox( height: 12, ),
-                CustomTextField( controller: dphoneController, ),
+                CustomTextField( controller: cphoneController, ),
                 SizedBox( height: 12, ),
 
                 Text("이메일"),
                 SizedBox( height: 12, ),
-                CustomTextField( controller: demailController, ),
+                CustomTextField( controller: cemailController, ),
                 SizedBox( height: 12, ),
 
                 Text("주소"),
                 SizedBox( height: 12, ),
-                CustomTextField( controller: daddressController, ),
+                CustomTextField( controller: cadressController, ),
+                SizedBox( height: 15, ),
+
+                Text("사업자 등록번호"),
+                SizedBox( height: 12, ),
+                CustomTextField( controller: cbusinessController, ),
                 SizedBox( height: 15, ),
 
                 Row(
@@ -242,7 +239,7 @@ class _ProfileState extends State< Profile >{
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("최근 업데이트 : ${developer['updateAt'].split('T')[0]}",
+              Text("최근 업데이트 : ${developer['updateAt'].split('T')[0]}", // 스플라이스 개념 헷갈리는듯 다시하기
                 style: TextStyle( fontSize: 15, ),
               ),
               SizedBox( height: 5 ,),
@@ -258,7 +255,7 @@ class _ProfileState extends State< Profile >{
                   CustomOutlineButton(
                     onPressed: () => { setState(() => { isUpdate = false }) },
                     title: "비밀번호 변경",
-                    width: 150,
+                    width: 140,
                   ),
                 ]
               ),

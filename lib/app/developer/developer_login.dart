@@ -1,4 +1,6 @@
 
+import 'package:devconnect_app/app/component/custom_outlinebutton.dart';
+import 'package:devconnect_app/app/component/custom_textbutton.dart';
 import 'package:devconnect_app/app/developer/developer_signup.dart';
 import 'package:devconnect_app/app/layout/main_app.dart';
 import 'package:devconnect_app/style/app_colors.dart';
@@ -8,11 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DeveloperLogIn extends StatefulWidget{
-  // final Function(int) changePage;
-  //
-  // const DeveloperLogIn({
-  //   required this.changePage,
-  // });
 
   @override
   _DeveloperLogInState createState() {
@@ -124,59 +121,26 @@ class _DeveloperLogInState extends State< DeveloperLogIn >{
 
             SizedBox(height: 15,),
 
-            SizedBox(
+            CustomTextButton(
+              onPressed: login,
+              title: "로그인",
               width: double.infinity,
-              height: 45,
-              child: OutlinedButton(
-                onPressed: () => { login() },
-                child: Text("로그인", style: TextStyle( fontFamily: "NanumGothic" ),),
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.blueAccent,
-                  foregroundColor: Colors.white,
-                  textStyle: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular( 4 ),
-                  ),
-                  side: BorderSide(
-                    width: 1,
-                    color: AppColors.textFieldColor,
-                  )
-                ),
-              ),
             ),
 
             SizedBox(height: 10,),
 
-            SizedBox(
-              width: double.infinity,
-              height: 45,
-              child: OutlinedButton(
-                onPressed: () => {
-                  Navigator.push( context,
-                    MaterialPageRoute( builder : (context) => DeveloperSignUp() )
-                  ),
-                },
-                child: Text("회원가입", style: TextStyle( fontFamily: "NanumGothic" ),),
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black,
-                  textStyle: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular( 4 ),
-                  ),
-                  side: BorderSide(
-                    width: 1,
-                    color: AppColors.textFieldColor,
-                  )
+            CustomOutlineButton(
+              onPressed: () => {
+                Navigator.push( context,
+                    MaterialPageRoute( builder : (context) =>
+                        DeveloperSignUp( changePage: (index) => index, ) )
                 ),
-              ),
-            )
+              },
+              title: "회원가입",
+              width: double.infinity,
+            ),
+            
+            
           ],
         ),
       ),
