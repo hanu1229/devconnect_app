@@ -1,5 +1,7 @@
 // project_write.dart : 프로젝트 등록 페이지
 
+import "package:devconnect_app/app/component/custom_card.dart";
+import "package:devconnect_app/app/layout/main_app.dart";
 import "package:devconnect_app/style/app_colors.dart";
 import "package:devconnect_app/style/server_path.dart";
 import "package:fluttertoast/fluttertoast.dart";
@@ -9,6 +11,10 @@ import "package:flutter/services.dart";
 import "package:shared_preferences/shared_preferences.dart";
 
 class WriteProject extends StatefulWidget {
+
+  Function changePage;
+
+  WriteProject({required this.changePage});
 
   @override
   State<WriteProject> createState() => _WriteProjectState();
@@ -33,6 +39,11 @@ class _WriteProjectState extends State<WriteProject> {
   DateTime firstDate = DateTime(2000, 1, 1);
   DateTime lastDate = DateTime(2100, 12, 31);
   DateTime? newDate = DateTime(2025);
+
+  String? pstart = DateTime.now().toString().split(" ")[0];
+  String? pend = DateTime.now().toString().split(" ")[0];
+  String? rpstart = DateTime.now().toString().split(" ")[0];
+  String? rpend = DateTime.now().toString().split(" ")[0];
 
   List<String> ptypeList = ["전체", "백엔드", "프론트엔드"];
   String? ptypeValue;
@@ -89,7 +100,20 @@ class _WriteProjectState extends State<WriteProject> {
     );
   }
 
-  Future<void> writeProject() async {
+  Widget customTextFieldUpdate({required String labelText, required TextEditingController? controller, bool numberKey = false}) {
+    return TextField(
+      controller : controller,
+      keyboardType : numberKey ? TextInputType.number : TextInputType.text,
+      decoration : InputDecoration(
+        hintText : labelText,
+        border : OutlineInputBorder(borderSide : BorderSide(color : AppColors.borderColor, width : 1,),),
+        enabledBorder : OutlineInputBorder(borderSide : BorderSide(color : AppColors.borderColor, width : 1,),),
+        focusedBorder : OutlineInputBorder(borderSide : BorderSide(color : AppColors.focusColor, width : 1),),
+      ),
+    );
+  }
+
+  Future<void> writeProject(BuildContext context) async {
     try {
       SharedPreferences pref = await SharedPreferences.getInstance();
       final token = pref.getString("token");
@@ -103,10 +127,10 @@ class _WriteProjectState extends State<WriteProject> {
         "pcomment" : pcommentController.text,
         "ptype" : ptype,
         "pcount" : int.parse(pcountController.text),
-        "pstart" : parseDate(pstartController.text).toIso8601String(),
-        "pend" : parseDate(pendController.text).toIso8601String(),
-        "recruit_pstart" : parseDate(rpstartController.text).toIso8601String(),
-        "recruit_pend" : parseDate(rpendController.text).toIso8601String(),
+        "pstart" : parseDate(pstart!).toIso8601String(),
+        "pend" : parseDate(pend!).toIso8601String(),
+        "recruit_pstart" : parseDate(rpstart!).toIso8601String(),
+        "recruit_pend" : parseDate(rpend!).toIso8601String(),
         "ppay" : ppayController.text,
       });
       print(formData);
@@ -118,23 +142,10 @@ class _WriteProjectState extends State<WriteProject> {
       final data = response.data;
       print(data);
       if(data) {
-        // Fluttertoast.showToast(
-        //   msg: "프로젝트 등록 성공",
-        //   // 메시지 유지시간
-        //   toastLength : Toast.LENGTH_LONG,
-        //   // 메시지 표시 위치 : 앱 적용
-        //   gravity : ToastGravity.BOTTOM,
-        //   // 자세한 유지시간
-        //   timeInSecForIosWeb : 3,
-        //   // 배경색
-        //   backgroundColor : Colors.black,
-        //   // 글자색
-        //   textColor : Colors.white,
-        //   // 글자크기
-        //   fontSize : 16,
-        //   webShowClose: true,
-        // );
-        Navigator.pop(context);
+        Navigator.pushReplacement(
+          context,
+          widget.changePage(0),
+        );
       } else {
         Fluttertoast.showToast(
           msg: "프로젝트 등록 실패",
@@ -161,140 +172,216 @@ class _WriteProjectState extends State<WriteProject> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // 가상 키보드가 열릴 픽셀이 오버되는 현상 없앰 | false
-      resizeToAvoidBottomInset : false,
-      body : SizedBox(
-        height : MediaQuery.of(context).size.height * 0.83,
-        child : SingleChildScrollView(
-          child : Column(
-            children: [
-              Container(
-                // color : Colors.amberAccent,
-                width : MediaQuery.of(context).size.width,
-                child : Padding(
-                  padding : EdgeInsets.symmetric(horizontal : 20),
+      resizeToAvoidBottomInset : true,
+      body : SafeArea(
+        child: SingleChildScrollView(
+          child : Container(
+            padding : EdgeInsets.all(16),
+            width : MediaQuery.of(context).size.width,
+            child : Column(
+              children : [
+                // 제목 | 직무 | 모집 인원
+                CustomCard(
+                  elevation : 0,
                   child : Column(
                     crossAxisAlignment : CrossAxisAlignment.start,
                     children : [
-
+                      Text("제목", style : TextStyle(fontFamily : "NanumGothic", fontSize : 28,),),
                       SizedBox(height : 10),
-                      Text("제목", style : TextStyle(fontSize : 18,),),
-                      SizedBox(height : 10),
-                      customTextField(labelText: "제목", controller : pnameController),
-
-                      Divider(color : AppColors.borderColor, height : 2),
-
-                      SizedBox(height : 10),
-                      Row(
-                        mainAxisAlignment : MainAxisAlignment.spaceAround,
-                        children : [
-                          Text("직무", style : TextStyle(fontSize : 18,),),
-                          Text("모집 인원수", style : TextStyle(fontSize : 18,),),
-                        ],
+                      customTextFieldUpdate(labelText: "제목", controller: pnameController),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical : 10),
+                        child: Text("직무", style : TextStyle(fontFamily : "NanumGothic", fontSize : 28,),),
                       ),
-                      SizedBox(height : 10),
-                      Row(
-                        mainAxisAlignment : MainAxisAlignment.spaceAround,
-                        crossAxisAlignment : CrossAxisAlignment.start,
-                        children : [
-                          Expanded(
-                            child : DropdownButtonFormField(
-                              value : ptypeValue,
-                              dropdownColor : Colors.white,
-                              decoration : InputDecoration(
-                                labelText : "직무",
-                                enabledBorder : OutlineInputBorder(borderSide : BorderSide(color : AppColors.borderColor, width : 1),),
-                                border : OutlineInputBorder(borderSide : BorderSide(color : AppColors.borderColor, width : 1),),
-                              ),
-                              items: ptypeList.map((item) {
-                                return DropdownMenuItem<String>(
-                                  value : item,
-                                  child : Text(item),
-                                );
-                              }).toList(),
-                              onChanged: (String? value) {
-                                setState(() { ptypeValue = value; });
-                              },
-                              validator: (value) => value == null ? '값을 선택해주세요' : null,
-                            ),
-                          ),
-                          SizedBox(width : MediaQuery.of(context).size.width * 0.02),
-                          Expanded(child : customTextField(labelText : "인원수", totalCheck : true, controller : pcountController),)
-                        ],
-                      ),
-
-                      Divider(color : AppColors.borderColor, height : 2),
-
-                      SizedBox(height : 10),
-                      Text("간단 소개", style : TextStyle(fontSize : 18,),),
-                      SizedBox(height : 10),
-                      customTextField(labelText : "간단 소개", controller : pintroController),
-                      Text("상세 소개", style : TextStyle(fontSize : 18,),),
-                      SizedBox(height : 10),
-                      customTextField(labelText : "상세 소개", controller : pcommentController, maxLines : 5),
-
-                      Divider(color : AppColors.borderColor, height : 2),
-
-                      SizedBox(height : 10),
-                      Row(
-                        mainAxisAlignment : MainAxisAlignment.spaceAround,
-                        children : [
-                          Text("프로젝트 시작일", style : TextStyle(fontSize : 18,),),
-                          Text("프로젝트 마감일", style : TextStyle(fontSize : 18,),),
-                        ],
-                      ),
-                      SizedBox(height : 10),
-                      Row(
-                        mainAxisAlignment : MainAxisAlignment.spaceBetween,
-                        children : [
-                          customTextField(labelText : "프로젝트 시작일", totalCheck : true, dateCheck : true, controller : pstartController),
-                          customTextField(labelText : "프로젝트 마감일", totalCheck : true, dateCheck : true, controller : pendController),
-                        ],
-                      ),
-
-                      Divider(color : AppColors.borderColor, height : 2),
-
-                      SizedBox(height : 10),
-                      Row(
-                        mainAxisAlignment : MainAxisAlignment.spaceAround,
-                        children : [
-                          Text("모집 시작일", style : TextStyle(fontSize : 18,),),
-                          Text("모집 마감일", style : TextStyle(fontSize : 18,),),
-                        ],
-                      ),
-                      SizedBox(height : 10),
-                      Row(
-                        mainAxisAlignment : MainAxisAlignment.spaceBetween,
-                        children : [
-                          customTextField(labelText : "모집 시작일", totalCheck : true, dateCheck : true, controller : rpstartController),
-                          customTextField(labelText : "모집 마감일", totalCheck : true, dateCheck : true, controller :rpendController),
-                        ],
-                      ),
-
-                      Divider(color : AppColors.borderColor, height : 2),
-
-                      SizedBox(height : 10),
-                      Text("봉급", style : TextStyle(fontSize : 18,),),
-                      SizedBox(height : 10),
-                      customTextField(labelText : "봉급", controller : ppayController),
-                      SizedBox(
-                        width : MediaQuery.of(context).size.width,
-                        child : ElevatedButton(
-                          onPressed : () {
-                            writeProject();
-                          },
-                          style : ElevatedButton.styleFrom(
-                            backgroundColor : AppColors.buttonColor,
-                          ),
-                          child : Text("등록하기", style : TextStyle(color : AppColors.buttonTextColor,),),
+                      DropdownButtonFormField(
+                        value : ptypeValue,
+                        dropdownColor : Colors.white,
+                        decoration : InputDecoration(
+                          hintText : "직무",
+                          enabledBorder : OutlineInputBorder(borderSide : BorderSide(color : AppColors.borderColor, width : 1),),
+                          border : OutlineInputBorder(borderSide : BorderSide(color : AppColors.borderColor, width : 1),),
+                          focusedBorder : OutlineInputBorder(borderSide : BorderSide(color : AppColors.focusColor, width : 1),),
                         ),
-                      )
+                        items: ptypeList.map((item) {
+                          return DropdownMenuItem<String>(
+                            value : item,
+                            child : Text(item),
+                          );
+                        }).toList(),
+                        onChanged: (String? value) {
+                          setState(() { ptypeValue = value; });
+                        },
+                        validator: (value) => value == null ? '값을 선택해주세요' : null,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical : 10),
+                        child: Text("모집 인원", style : TextStyle(fontFamily : "NanumGothic", fontSize : 28,),),
+                      ),
+                      customTextFieldUpdate(labelText: "모집 인원", controller: pcountController, numberKey : true),
                     ],
                   ),
                 ),
-              ),
-              // SizedBox(height : MediaQuery.of(context).size.height * 0.2,),
-            ],
+                SizedBox(height : 20),
+                // 프로젝트 기간
+                CustomCard(
+                  elevation : 0,
+                  child : Column(
+                    crossAxisAlignment : CrossAxisAlignment.start,
+                    children : [
+                      Text("프로젝트 기간", style : TextStyle(fontFamily : "NanumGothic", fontSize : 28, fontWeight : FontWeight.bold),),
+                      Row(
+                        children: [
+                          Text("시작일", style : TextStyle(fontFamily : "NanumGothic", fontSize : 28,),),
+                          TextButton(
+                            onPressed: () async {
+                              DateTime? dateTime = await showDatePicker(
+                                barrierDismissible : false,
+                                initialDate : DateTime.now(),
+                                context: context,
+                                firstDate: firstDate,
+                                lastDate: lastDate,
+                              );
+                              setState(() {
+                                final dateSplit = dateTime.toString().split(" ");
+                                pstart = dateTime == null ? "" : dateSplit[0];
+                                print(">> pstart : $pstart");
+                              });
+                            },
+                            child: Text("${pstart == "" ? "시작일" : pstart}", style : TextStyle(fontFamily : "NanumGothic", fontSize : 28,),),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children : [
+                          Text("마감일", style : TextStyle(fontFamily : "NanumGothic", fontSize : 28,),),
+                          TextButton(
+                            onPressed: () async {
+                              DateTime? dateTime = await showDatePicker(
+                                barrierDismissible : false,
+                                initialDate : DateTime.now(),
+                                context: context,
+                                firstDate: firstDate,
+                                lastDate: lastDate,
+                              );
+                              setState(() {
+                                final dateSplit = dateTime.toString().split(" ");
+                                pend = dateTime == null ? "" : dateSplit[0];
+                              });
+                            },
+                            child: Text("${pend == "" ? "마감일" : pend}", style : TextStyle(fontFamily : "NanumGothic", fontSize : 28,),),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height : 20),
+                // 모집 기간
+                CustomCard(
+                  elevation : 0,
+                  child : Column(
+                    crossAxisAlignment : CrossAxisAlignment.start,
+                    children : [
+                      Text("모집 기간", style : TextStyle(fontFamily : "NanumGothic", fontSize : 28, fontWeight : FontWeight.bold),),
+                      Row(
+                        children : [
+                          Text("시작일", style : TextStyle(fontFamily : "NanumGothic", fontSize : 28,),),
+                          TextButton(
+                            onPressed: () async {
+                              DateTime? dateTime = await showDatePicker(
+                                barrierDismissible : false,
+                                initialDate : DateTime.now(),
+                                context: context,
+                                firstDate: firstDate,
+                                lastDate: lastDate,
+                              );
+                              setState(() {
+                                final dateSplit = dateTime.toString().split(" ");
+                                rpstart = dateTime == null ? "" : dateSplit[0];
+                              });
+                            },
+                            child: Text("${rpstart == "" ? "시작일" : rpstart}", style : TextStyle(fontFamily : "NanumGothic", fontSize : 28,),),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children : [
+                          Text("마감일", style : TextStyle(fontFamily : "NanumGothic", fontSize : 28,),),
+                          TextButton(
+                            onPressed: () async {
+                              DateTime? dateTime = await showDatePicker(
+                                barrierDismissible : false,
+                                initialDate : DateTime.now(),
+                                context: context,
+                                firstDate: firstDate,
+                                lastDate: lastDate,
+                              );
+                              setState(() {
+                                final dateSplit = dateTime.toString().split(" ");
+                                rpend = dateTime == null ? "" : dateSplit[0];
+                              });
+                            },
+                            child: Text("${rpend == "" ? "마감일" : rpend}", style : TextStyle(fontFamily : "NanumGothic", fontSize : 28,),),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height : 20),
+                // 간단한 소개 | 내용 | 연봉
+                CustomCard(
+                  elevation : 0,
+                  child : Column(
+                    crossAxisAlignment : CrossAxisAlignment.start,
+                    children : [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical : 10),
+                        child: Text("간단한 소개", style : TextStyle(fontFamily : "NanumGothic", fontSize : 28,),),
+                      ),
+                      customTextFieldUpdate(labelText : "간단한 소개", controller : pintroController),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical : 10),
+                        child: Text("내용", style : TextStyle(fontFamily : "NanumGothic", fontSize : 28,),),
+                      ),
+                      // customTextFieldUpdate(labelText : "내용", controller : null),
+                      TextField(
+                        controller : pcommentController,
+                        maxLines : 10,
+                        decoration : InputDecoration(
+                          hintText : "내용",
+                          border : OutlineInputBorder(borderSide : BorderSide(color : AppColors.borderColor, width : 1,),),
+                          enabledBorder : OutlineInputBorder(borderSide : BorderSide(color : AppColors.borderColor, width : 1,),),
+                          focusedBorder : OutlineInputBorder(borderSide : BorderSide(color : AppColors.focusColor, width : 1),),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical : 10),
+                        child: Text("연봉", style : TextStyle(fontFamily : "NanumGothic", fontSize : 28,),),
+                      ),
+                      customTextFieldUpdate(labelText : "연봉", controller : ppayController, numberKey : true),
+                    ],
+                  ),
+                ),
+                SizedBox(height : 20),
+                // 수정 버튼
+                SizedBox(
+                  width : MediaQuery.of(context).size.width,
+                  child : ElevatedButton(
+                    onPressed: () {
+                      writeProject(context);
+                    },
+                    style : ElevatedButton.styleFrom(
+                      backgroundColor : AppColors.buttonColor,
+                      shape : RoundedRectangleBorder(
+                        borderRadius : BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text("수정하기", style : TextStyle(fontSize : 20, color : AppColors.buttonTextColor)),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

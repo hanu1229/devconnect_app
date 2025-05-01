@@ -22,15 +22,15 @@ class MainApp extends StatefulWidget {
 class _MainAppState extends State<MainApp> {
   int selectedIndex = 0;
 
-  final List<Widget> pages = [
-    Home(),
-    WriteProject(),
-    Profile(), // 가운데 탭
-    Companylogin(), // 임시 로그인 창
-    DeveloperLogIn(),
-    Rating(), // 5 : 평가페이지
-    Signup(),
-  ];
+  // final List<Widget> pages = [
+  //   Home(),
+  //   WriteProject(changePage : changePage),
+  //   Profile(), // 가운데 탭
+  //   Companylogin(), // 임시 로그인 창
+  //   DeveloperLogIn(),
+  //   Rating(), // 5 : 평가페이지
+  //   Signup(),
+  // ];
   void changePage(int index) {
     setState(() {
       selectedIndex = index;
@@ -43,7 +43,7 @@ class _MainAppState extends State<MainApp> {
     final List<Widget> pages = [
       // 하단 바
       Home(), // 0 : 기본 페이지
-      WriteProject(), // 1 : 프로젝트 작성 페이지
+      WriteProject(changePage : changePage), // 1 : 프로젝트 작성 페이지
       Profile(), // 2: 가운데 탭
       Text("기업 목록"), // 3 : 기업 목록
       Text("개발자 순위"), // 4 : 개발자 순위
