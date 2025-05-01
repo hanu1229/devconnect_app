@@ -5,11 +5,14 @@ import 'package:devconnect_app/app/component/custombottombar.dart';
 import 'package:devconnect_app/app/developer/developer_login.dart';
 import 'package:devconnect_app/app/developer/profile.dart';
 import 'package:devconnect_app/app/layout/home.dart';
+import 'package:devconnect_app/app/project/project_view.dart';
 import 'package:devconnect_app/app/project/project_write.dart';
 import 'package:devconnect_app/app/rating/crating.dart';
 import 'package:devconnect_app/style/app_colors.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CompanyMainApp extends StatefulWidget {
   @override
@@ -32,9 +35,9 @@ class _CompanyMainApp extends State<CompanyMainApp> {
     // 이동할 페이지
     final List<Widget> pages = [
       Home(),
-      WriteProject(),
+      WriteProject(changePage : changePage),
       Profile(), // 가운데 탭
-      Text("게시물"),
+      ViewProject(),
       Text("게시물"),
       Rating(), // 5 : 평가페이지
       // DeveloperLogIn( changePage: (index) { setState(() { selectedIndex = index; }); },), // 6 : 개발자 로그인 페이지
@@ -45,10 +48,10 @@ class _CompanyMainApp extends State<CompanyMainApp> {
 
     // 앱바 제목
     final List<String> pageTitle = [
-      'project',
+      '프로젝트',
       '프로젝트 등록',
       '계정 관리',
-      '게시물',
+      '내 프로젝트',
       '게시물',
       '평가페이지', // 5
       '개발자 로그인', // 6
@@ -122,8 +125,19 @@ class _CompanyMainApp extends State<CompanyMainApp> {
               label: '홈',
             ),
             SpeedDialChild(
-              child: Icon(Icons.home),
-              label: '홈',
+                child: Icon(Icons.home),
+                label: '임시',
+                onTap : () async {
+                  // 임시
+                  Dio dio = Dio();
+                  final prefs = await SharedPreferences.getInstance();
+                  final token = prefs.getString("token");
+                  if(token == null) { print("토큰 없음"); return; }
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder : (context) => ViewProject()),
+                  );
+                }
             ),
           ],
         ),
