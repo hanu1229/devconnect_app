@@ -239,7 +239,7 @@ class _CompanyProfileState extends State< Companyprofile >{
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("최근 업데이트 : ${developer['update_at'].split('T')[0]}",
+              Text("최근 업데이트 : ${developer['updateAt'].split('T')[0]}",
                 style: TextStyle( fontSize: 15, ),
               ),
               SizedBox( height: 5 ,),
