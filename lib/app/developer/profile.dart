@@ -1,5 +1,6 @@
 
 import 'package:devconnect_app/app/component/custom_card.dart';
+import 'package:devconnect_app/app/component/custom_imgpicker.dart';
 import 'package:devconnect_app/app/component/custom_outlinebutton.dart';
 import 'package:devconnect_app/app/component/custom_scrollview.dart';
 import 'package:devconnect_app/app/component/custom_textbutton.dart';
@@ -8,6 +9,7 @@ import 'package:devconnect_app/style/app_colors.dart';
 import 'package:devconnect_app/style/server_path.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Profile extends StatefulWidget{
@@ -22,6 +24,8 @@ class _ProfileState extends State< Profile >{
 
   // 상태변수
   int mno = 0;
+  XFile? profileImage;
+  String? profileImageUrl;
   // 수정 상태 확인
   bool isUpdate = false;
 
@@ -57,6 +61,7 @@ class _ProfileState extends State< Profile >{
       if( data != '' ){
         setState(() {
           developer = data;
+          profileImageUrl = data['dprofile'];
         });
       }
     }catch( e ){ print( e ); }
@@ -71,26 +76,33 @@ class _ProfileState extends State< Profile >{
 
   // 상세정보 수정
   void onUpdate( ) async {
-    final sendData = {
-      "dno" : developer['dno'],
-      "dpwd" : dpwdController.text,
-      "dname" : dnameController.text,
-      "dphone" : dphoneController.text,
-      "demail" : demailController.text,
-      "daddress" : daddressController.text,
-    };
+    FormData formData = FormData();
+
+    formData.fields.add( MapEntry("dpwd", dpwdController.text) );
+    formData.fields.add( MapEntry("dname", dnameController.text) );
+    formData.fields.add( MapEntry("dphone", dphoneController.text) );
+    formData.fields.add( MapEntry("demail", demailController.text) );
+    formData.fields.add( MapEntry("daddress", daddressController.text) );
+
+    final file = await MultipartFile.fromFile( profileImage!.path, filename: profileImage!.name );
+    formData.files.add( MapEntry( "dfile", file ));
 
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
 
     try{
       dio.options.headers['Authorization'] = token;
-      final response = await dio.put("${serverPath}/api/developer/update", data: sendData);
+      final response = await dio.put("${serverPath}/api/developer/update", data: formData);
       final data = response.data;
       if( data ){
         setState(() {
           onInfo( token );
           isUpdate = false;
+          if (data != null && data['dprofile'] != null) {
+            profileImage = null; // XFile 제거
+            profileImageUrl = data['dprofile']; // 서버 URL 사용
+          }
+
         });
       }
     }catch( e ){ print( e ); }
@@ -165,12 +177,13 @@ class _ProfileState extends State< Profile >{
                 : // 수정버튼 클릭 후
               [
                 Center(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(999),
-                    child: Container(
-                      width: 100, height: 100,
-                      child: Image.network( imgUrl, fit: BoxFit.cover, ),
-                    ),
+                  child: CustomImagePicker(
+                    dprofile: profileImageUrl,
+                    onImageSelected: ( XFile image ) {
+                      setState(() {
+                        profileImage = image;
+                      });
+                    },
                   ),
                 ),
                 SizedBox( height: 20, ),
@@ -185,7 +198,7 @@ class _ProfileState extends State< Profile >{
                 CustomTextField( controller: dpwdController, ),
                 SizedBox( height: 12, ),
 
-                Text("휴대번호"),
+                Text("전화번호"),
                 SizedBox( height: 12, ),
                 CustomTextField( controller: dphoneController, ),
                 SizedBox( height: 12, ),
@@ -245,7 +258,7 @@ class _ProfileState extends State< Profile >{
                   CustomOutlineButton(
                     onPressed: () => { setState(() => { isUpdate = false }) },
                     title: "비밀번호 변경",
-                    width: 140,
+                    width: 150,
                   ),
                 ]
               ),
