@@ -62,7 +62,7 @@ class _SignupState extends State<Signup>{
        //이미지 담기
        if(selectedimage != null){
          final file = await MultipartFile.fromFile(selectedimage!.path , filename: selectedimage!.name);
-         formData.files.add(MapEntry("cprofile", file));
+         formData.files.add(MapEntry("file", file));
 
          //Dio 요청
          final response = await dio.post("${serverPath}/api/company/signup" , data: formData);
@@ -128,6 +128,17 @@ class _SignupState extends State<Signup>{
                       border: OutlineInputBorder(),
                     ),
                   ),
+
+                  SizedBox(height: 20),
+
+                  TextField(
+                    controller: cnameController, // 회사번호 입력 컨트롤러
+                    decoration: InputDecoration(
+                      labelText: "회사이름",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+
 
                   SizedBox(height: 20),
 
