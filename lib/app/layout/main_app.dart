@@ -7,6 +7,7 @@ import 'package:devconnect_app/app/layout/home.dart';
 import 'package:devconnect_app/app/project/project_view.dart';
 import 'package:devconnect_app/app/project/project_write.dart';
 import 'package:devconnect_app/app/rating/crating.dart';
+import 'package:devconnect_app/app/rating/crating_view.dart';
 import 'package:devconnect_app/style/app_colors.dart';
 import 'package:devconnect_app/style/server_path.dart';
 import 'package:dio/dio.dart';
@@ -28,7 +29,7 @@ class _MainAppState extends State<MainApp> {
     Profile(), // 가운데 탭
     Companylogin(), // 임시 로그인 창
     DeveloperLogIn(),
-    Rating(), // 5 : 평가페이지
+    Crating(), // 5 : 평가페이지
     Signup(),
   ];
   void changePage(int index) {
@@ -48,10 +49,11 @@ class _MainAppState extends State<MainApp> {
       Text("기업 목록"), // 3 : 기업 목록
       Text("개발자 순위"), // 4 : 개발자 순위
       // 이동 페이지
-      Rating(), // 5 : 평가 페이지
+      Crating(), // 5 : 평가 페이지(전체)
       // DeveloperLogIn( changePage: (index) { setState(() { selectedIndex = index; }); },), // 6 : 개발자 로그인 페이지
       DeveloperLogIn(), // 6 : 개발자 로그인 페이지
       Companylogin(), // 7 : 기업 로그인 페이지
+      CratingView(), // 8 : 평가 페이지(로그인한 회원)
     ];
 
     // 앱바 제목
@@ -61,9 +63,10 @@ class _MainAppState extends State<MainApp> {
       '계정 관리', // 2
       '기업 목록', // 3
       '개발자 순위', // 4
-      '평가페이지', // 5
+      '기업 평가 목록(전체)', // 5
       '개발자 로그인', // 6
       '기업 로그인', // 7
+      '기업 평가 목록(개별)' // 8
     ];
 
     return Scaffold(
@@ -109,7 +112,7 @@ class _MainAppState extends State<MainApp> {
           spaceBetweenChildren: 20, // 열렸을 때 아이콘들의 간격
           children: [
             SpeedDialChild(
-              label: '평가',
+              label: '전체평가',
               onTap: (){
                 setState(() {
                   selectedIndex = 5;
@@ -125,9 +128,14 @@ class _MainAppState extends State<MainApp> {
               },
             ),
             SpeedDialChild(
-              child: Icon(Icons.home),
-              label: '홈',
-            ),SpeedDialChild(
+              label: '개별평가',
+              onTap: (){
+                setState(() {
+                  selectedIndex = 8;
+                });
+              }
+            ),
+            SpeedDialChild(
               child: Icon(Icons.home),
               label: '홈',
             ),
