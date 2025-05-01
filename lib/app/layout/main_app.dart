@@ -22,15 +22,6 @@ class MainApp extends StatefulWidget {
 class _MainAppState extends State<MainApp> {
   int selectedIndex = 0;
 
-  final List<Widget> pages = [
-    Home(),
-    WriteProject(),
-    Profile(), // 가운데 탭
-    Companylogin(), // 임시 로그인 창
-    DeveloperLogIn(),
-    Rating(), // 5 : 평가페이지
-    Signup(),
-  ];
   void changePage(int index) {
     setState(() {
       selectedIndex = index;
@@ -51,7 +42,7 @@ class _MainAppState extends State<MainApp> {
       Rating(), // 5 : 평가 페이지
       // DeveloperLogIn( changePage: (index) { setState(() { selectedIndex = index; }); },), // 6 : 개발자 로그인 페이지
       DeveloperLogIn(), // 6 : 개발자 로그인 페이지
-      Companylogin(), // 7 : 기업 로그인 페이지
+      Companylogin(  ), // 7 : 기업 로그인 페이지
     ];
 
     // 앱바 제목

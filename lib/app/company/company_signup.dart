@@ -65,7 +65,7 @@ class _SignupState extends State<Signup>{
          formData.files.add(MapEntry("cprofile", file));
 
          //Dio 요청
-         final response = await dio.post("${companyPath}/api/company/signup" , data: formData);
+         final response = await dio.post("${serverPath}/api/company/signup" , data: formData);
 
          if(response.statusCode == 201 && response.data == true){print("회원가입완료"); Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
          } else{

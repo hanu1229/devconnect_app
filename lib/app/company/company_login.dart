@@ -36,7 +36,7 @@ class _CompanyLogin extends State<Companylogin>{
         'cid' : idController.text,
         'cpwd' : pwdController.text,
       };
-      final response = await dio.post("${companyPath}/api/company/login" ,data: sendData );
+      final response = await dio.post("${serverPath}/api/company/login" ,data: sendData );
       final data = response.data;
       if(data != ''){
         SharedPreferences prefs = await SharedPreferences.getInstance();
