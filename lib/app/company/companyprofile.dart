@@ -105,7 +105,7 @@ class _CompanyProfileState extends State< Companyprofile >{
 
     if( developer.isEmpty ){ return Center( child: CircularProgressIndicator(), ); }
 
-    final image = developer['cprofile'];
+    final image = developer['cprofile']; // 이미지 문제 있었음
     String imgUrl = "${serverPath}/upload/${image}";
 
     // if( !isLogIn ){ Navigator.pushNamed( context, MainApp() ) }
@@ -239,7 +239,7 @@ class _CompanyProfileState extends State< Companyprofile >{
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("최근 업데이트 : ${developer['updateAt'].split('T')[0]}",
+              Text("최근 업데이트 : ${developer['updateAt'].split('T')[0]}", // 스플라이스 개념 헷갈리는듯 다시하기
                 style: TextStyle( fontSize: 15, ),
               ),
               SizedBox( height: 5 ,),
