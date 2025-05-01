@@ -113,6 +113,22 @@ class _WriteProjectState extends State<WriteProject> {
     );
   }
 
+  Widget customTheme(BuildContext context, Widget? child) {
+    return Theme(
+      data : Theme.of(context).copyWith(
+        dialogTheme : DialogTheme(backgroundColor : AppColors.bgColor,),
+        colorScheme : ColorScheme.light(
+          primary : AppColors.buttonColor,
+          surface : AppColors.bgColor,
+        ),
+        textButtonTheme : TextButtonThemeData(
+          style : TextButton.styleFrom(foregroundColor : AppColors.buttonColor),
+        ),
+      ),
+      child: child!,
+    );
+  }
+
   Future<void> writeProject(BuildContext context) async {
     try {
       SharedPreferences pref = await SharedPreferences.getInstance();
@@ -240,6 +256,9 @@ class _WriteProjectState extends State<WriteProject> {
                                 context: context,
                                 firstDate: firstDate,
                                 lastDate: lastDate,
+                                builder : (BuildContext context, Widget? child) {
+                                  return customTheme(context, child);
+                                },
                               );
                               setState(() {
                                 final dateSplit = dateTime.toString().split(" ");
@@ -262,6 +281,9 @@ class _WriteProjectState extends State<WriteProject> {
                                 context: context,
                                 firstDate: firstDate,
                                 lastDate: lastDate,
+                                builder : (BuildContext context, Widget? child) {
+                                  return customTheme(context, child);
+                                },
                               );
                               setState(() {
                                 final dateSplit = dateTime.toString().split(" ");
@@ -294,6 +316,9 @@ class _WriteProjectState extends State<WriteProject> {
                                 context: context,
                                 firstDate: firstDate,
                                 lastDate: lastDate,
+                                builder : (BuildContext context, Widget? child) {
+                                  return customTheme(context, child);
+                                },
                               );
                               setState(() {
                                 final dateSplit = dateTime.toString().split(" ");
@@ -315,6 +340,9 @@ class _WriteProjectState extends State<WriteProject> {
                                 context: context,
                                 firstDate: firstDate,
                                 lastDate: lastDate,
+                                builder : (BuildContext context, Widget? child) {
+                                  return customTheme(context, child);
+                                },
                               );
                               setState(() {
                                 final dateSplit = dateTime.toString().split(" ");
@@ -364,7 +392,7 @@ class _WriteProjectState extends State<WriteProject> {
                   ),
                 ),
                 SizedBox(height : 20),
-                // 수정 버튼
+                // 등록 버튼
                 SizedBox(
                   width : MediaQuery.of(context).size.width,
                   child : ElevatedButton(
@@ -377,7 +405,7 @@ class _WriteProjectState extends State<WriteProject> {
                         borderRadius : BorderRadius.circular(12),
                       ),
                     ),
-                    child: Text("수정하기", style : TextStyle(fontSize : 20, color : AppColors.buttonTextColor)),
+                    child: Text("등록하기", style : TextStyle(fontSize : 20, color : AppColors.buttonTextColor)),
                   ),
                 )
               ],

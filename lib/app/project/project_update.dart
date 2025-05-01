@@ -166,6 +166,22 @@ class _UpdateProjectState extends State<UpdateProject> {
     );
   }
 
+  Widget customTheme(BuildContext context, Widget? child) {
+    return Theme(
+      data : Theme.of(context).copyWith(
+        dialogTheme : DialogTheme(backgroundColor : AppColors.bgColor,),
+        colorScheme : ColorScheme.light(
+          primary : AppColors.buttonColor,
+          surface : AppColors.bgColor,
+        ),
+        textButtonTheme : TextButtonThemeData(
+          style : TextButton.styleFrom(foregroundColor : AppColors.buttonColor),
+        ),
+      ),
+      child: child!,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -240,6 +256,9 @@ class _UpdateProjectState extends State<UpdateProject> {
                                 context: context,
                                 firstDate: firstDate,
                                 lastDate: lastDate,
+                                builder : (BuildContext context, Widget? child) {
+                                  return customTheme(context, child);
+                                },
                               );
                               setState(() {
                                 final dateSplit = dateTime.toString().split(" ");
@@ -262,6 +281,9 @@ class _UpdateProjectState extends State<UpdateProject> {
                                 context: context,
                                 firstDate: firstDate,
                                 lastDate: lastDate,
+                                builder : (BuildContext context, Widget? child) {
+                                  return customTheme(context, child);
+                                },
                               );
                               setState(() {
                                 final dateSplit = dateTime.toString().split(" ");
@@ -294,6 +316,9 @@ class _UpdateProjectState extends State<UpdateProject> {
                                 context: context,
                                 firstDate: firstDate,
                                 lastDate: lastDate,
+                                builder : (BuildContext context, Widget? child) {
+                                  return customTheme(context, child);
+                                },
                               );
                               setState(() {
                                 final dateSplit = dateTime.toString().split(" ");
@@ -315,6 +340,9 @@ class _UpdateProjectState extends State<UpdateProject> {
                                 context: context,
                                 firstDate: firstDate,
                                 lastDate: lastDate,
+                                builder : (BuildContext context, Widget? child) {
+                                  return customTheme(context, child);
+                                },
                               );
                               setState(() {
                                 final dateSplit = dateTime.toString().split(" ");

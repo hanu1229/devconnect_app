@@ -1,4 +1,4 @@
-// project_view.dart : 자신의 프로젝트 목록을 출력하는 페이지
+// project_view.dart : 자신의 프로젝트 목록을 출력 하는 페이지
 
 import "package:devconnect_app/app/project/project_detail.dart";
 import "package:devconnect_app/app/project/project_update.dart";
@@ -30,6 +30,68 @@ class _ViewProjectState extends State<ViewProject> {
       if(data == null) { return; }
       print(data);
       setState(() { projectList = data; });
+    } catch(e) {
+      print(e);
+    }
+  }
+
+  /// 내 프로젝트 목록 삭제하기 | 추후 모집 기한이 지난 프로젝트는 삭제 못하도록 막기
+  Future<void> deleteProject(BuildContext context, int pno) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString("token");
+      final response = await dio.delete("$serverPath/api/project?pno=$pno", options : Options(headers : {"Authorization" : token}));
+      final data = response.data;
+      final statusCode = response.statusCode;
+      if(statusCode == 200 && data == true) {
+        Navigator.pop(context);
+        showModalBottomSheet(
+          context: context,
+          builder: (context) {
+            return SafeArea(
+              child: Container(
+                margin : EdgeInsets.all(16),
+                height : 100,
+                width : MediaQuery.of(context).size.width,
+                decoration : BoxDecoration(
+                  color : AppColors.bgColor,
+                  borderRadius : BorderRadius.all(Radius.circular(12)),
+                ),
+                child : Center(
+                  child : Padding(
+                    padding: EdgeInsets.symmetric(vertical : 16),
+                    child : Column(
+                      mainAxisAlignment : MainAxisAlignment.spaceAround,
+                      children : [
+                        Container(
+                          padding : EdgeInsets.only(left : 16, top : 0, right : 16, bottom : 0),
+                          width : MediaQuery.of(context).size.width,
+                          child : ElevatedButton(
+                            onPressed : () {
+                              // 모달창 삭제
+                              Navigator.pop(context);
+                              setState(() { findAllMyProject(); });
+                              return;
+                            },
+                            style : ElevatedButton.styleFrom(
+                              backgroundColor : AppColors.buttonColor,
+                              shape : RoundedRectangleBorder(
+                                borderRadius : BorderRadius.circular(12),
+                              ),
+                            ),
+                            child : Text("확인", style : TextStyle(color : AppColors.buttonTextColor)),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+          backgroundColor : Colors.transparent,
+        );
+      }
     } catch(e) {
       print(e);
     }
@@ -133,7 +195,9 @@ class _ViewProjectState extends State<ViewProject> {
                                         padding : EdgeInsets.only(left : 16, top : 0, right : 16, bottom : 0),
                                         width : MediaQuery.of(context).size.width,
                                         child : ElevatedButton(
-                                          onPressed : () {},
+                                          onPressed : () {
+                                            deleteProject(context, projectList[index]["pno"]);
+                                          },
                                           style : ElevatedButton.styleFrom(
                                             backgroundColor : Colors.red,
                                           ),
