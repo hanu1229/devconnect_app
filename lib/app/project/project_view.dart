@@ -103,6 +103,13 @@ class _ViewProjectState extends State<ViewProject> {
     findAllMyProject();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    print(">>>> 실행");
+    findAllMyProject();
+  }
+
   Widget CustomCard({required Map<String, dynamic> project}) {
 
     String pstart = project["pstart"].split("T")[0];
@@ -176,12 +183,13 @@ class _ViewProjectState extends State<ViewProject> {
                                         padding : EdgeInsets.only(left : 16, top : 0, right : 16, bottom : 0),
                                         width : MediaQuery.of(context).size.width,
                                         child : ElevatedButton(
-                                          onPressed : () {
+                                          onPressed : () async {
                                             Navigator.pop(context);
-                                            Navigator.push(
+                                            bool? result = await Navigator.push(
                                               context,
                                               MaterialPageRoute(builder : (context) => UpdateProject(project : projectList[index])),
                                             );
+                                            if(result == true) { setState(() { findAllMyProject(); }); }
                                             return;
                                           },
                                           style : ElevatedButton.styleFrom(
