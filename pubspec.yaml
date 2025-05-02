@@ -50,6 +50,8 @@ dependencies:
   percent_indicator: ^4.2.5
   # 이미지 피커(+ 업로드)
   image_picker: ^1.1.2
+  # 평가 점수 별로 보이게
+  flutter_rating_bar: ^4.0.1
 
 dev_dependencies:
   flutter_test:

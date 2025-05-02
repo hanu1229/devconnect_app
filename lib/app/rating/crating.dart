@@ -1,26 +1,25 @@
-import 'package:devconnect_app/app/rating/crating_view.dart';
+import 'package:devconnect_app/app/rating/crating_detail.dart';
 import 'package:devconnect_app/style/app_colors.dart';
 import 'package:devconnect_app/style/server_path.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Rating extends StatefulWidget{
+class Crating extends StatefulWidget{
   @override
   State<StatefulWidget> createState() {
-    return _RatingState();
+    return _CratingState();
   }
 } // c end
 
-class _RatingState extends State<Rating>{
+class _CratingState extends State<Crating>{
   int page = 1;
   List<dynamic> cRatingList = []; // 기업평가 리스트
   List<dynamic> projectList = []; // 프로젝트 리스트
   List<dynamic> companyList = []; // 기업 리스트
   final dio = Dio();
-  int loginDno = 1;
-  String baseUrl = "http://localhost:8080";
 
   final ScrollController scrollController = ScrollController();
 
@@ -64,8 +63,8 @@ class _RatingState extends State<Rating>{
           projectList = response2.data;
           companyList = response3.data;
         } // if end
-        // print( cRatingList );
-        // print( projectList );
+        print( cRatingList );
+        print( projectList );
         print( companyList );
       });
 
@@ -79,6 +78,7 @@ class _RatingState extends State<Rating>{
     } // if end
   } // cOnScroll end
 
+  // 요청 ==========================================================================================================================
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -114,7 +114,7 @@ class _RatingState extends State<Rating>{
           return InkWell(
             onTap: () => {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => Crating_view(
+                  MaterialPageRoute(builder: (context) => CratingDetail(
                     crno: rating['crno'],
                     pno : project['pno'],
                     cname : company['cname'],
@@ -137,34 +137,62 @@ class _RatingState extends State<Rating>{
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Padding(
-                  padding: EdgeInsets.all( 15 ),
+                  padding: EdgeInsets.only( left: 15 , right: 15 , top: 20, bottom: 20 ),
                   child: Row( // 가로배치
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [ // 가로배치위젯
                       Container(
-                        width: 100, height: 100, // 사이즈
+                        width: 65, height: 65, // 사이즈
                         child: Image.network( // 웹 이미지 출력
                           imageUrl ,
                           fit: BoxFit.cover, // 이미지 비율 유지
                         ),
                       ),
-                      SizedBox( width: 25 ,) , // 여백
+                      SizedBox( width: 15 ,) , // 여백
                       Expanded(child: Column(
+                        // mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text( rating['ctitle'] , style: TextStyle( fontSize: 16, fontWeight: FontWeight.w900), ),
-                          Text( "점수 : ${rating['crscore'] }" , style: TextStyle( fontSize: 12 , fontWeight: FontWeight.w600 ), ),
+                          Text( rating['ctitle'] , style: TextStyle( fontSize: 20, fontWeight: FontWeight.bold), ),
+                          // 별로 점수 나타내는 위젯
+                          RatingBarIndicator(
+                            rating: (rating['crscore'] ?? 0).toDouble(),
+                            direction: Axis.horizontal,
+                            itemCount: 5,
+                            itemSize: 20, // 별 크기
+                            // itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                            itemBuilder: (context, _) => Icon(
+                              Icons.star,
+                              color: AppColors.buttonTextColor,
+                            ),
+                          ), // RatingBar.builder end
+                          SizedBox( height: 12,),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Text( "기업명 : ${company['cname'] } " , style: TextStyle(fontSize: 12,), ),
+                              Flexible(
+                                child: Text(
+                                  "기업명 : ${company['cname'] } " ,
+                                  style: TextStyle(fontSize: 14,),
+                                  softWrap: true,
+                                  overflow: TextOverflow.visible,
+                                ), // Text end
+                              ), // Flexible end
                             ],
-                          ),
+                          ), // Row end
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Text( "프로젝트 명 : ${project['pname'] }" , style: TextStyle( fontSize: 10), ),
+                              Flexible(
+                                child: Text(
+                                  "프로젝트명 : ${project['pname'] } " ,
+                                  style: TextStyle(fontSize: 14,),
+                                  softWrap: true,
+                                  overflow: TextOverflow.visible,
+                                ), // Text end
+                              ), // Flexible end
                             ],
-                          ),
+                          ), // Row end// Row end
                         ],
                       )) , // card 내부 추가할거면 여기
                     ],

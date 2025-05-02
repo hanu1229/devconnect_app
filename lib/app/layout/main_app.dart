@@ -44,6 +44,7 @@ class _MainAppState extends State<MainApp> {
       // DeveloperLogIn( changePage: (index) { setState(() { selectedIndex = index; }); },), // 6 : 개발자 로그인 페이지
       DeveloperLogIn(), // 6 : 개발자 로그인 페이지
       Companylogin(  ), // 7 : 기업 로그인 페이지
+      CratingView(), // 8 : 평가 페이지(로그인한 회원)
     ];
 
     // 앱바 제목
@@ -53,9 +54,10 @@ class _MainAppState extends State<MainApp> {
       '계정 관리', // 2
       '기업 목록', // 3
       '개발자 순위', // 4
-      '평가페이지', // 5
+      '기업 평가 목록(전체)', // 5
       '개발자 로그인', // 6
       '기업 로그인', // 7
+      '기업 평가 목록(개별)' // 8
     ];
 
     return Scaffold(
@@ -101,7 +103,7 @@ class _MainAppState extends State<MainApp> {
           spaceBetweenChildren: 20, // 열렸을 때 아이콘들의 간격
           children: [
             SpeedDialChild(
-              label: '평가',
+              label: '전체평가',
               onTap: (){
                 setState(() {
                   selectedIndex = 5;
@@ -117,9 +119,14 @@ class _MainAppState extends State<MainApp> {
               },
             ),
             SpeedDialChild(
-              child: Icon(Icons.home),
-              label: '홈',
-            ),SpeedDialChild(
+              label: '개별평가',
+              onTap: (){
+                setState(() {
+                  selectedIndex = 8;
+                });
+              }
+            ),
+            SpeedDialChild(
               child: Icon(Icons.home),
               label: '홈',
             ),
