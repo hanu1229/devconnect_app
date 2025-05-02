@@ -1,3 +1,4 @@
+import 'package:devconnect_app/app/layout/main_app.dart';
 import 'package:devconnect_app/style/server_path.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -71,7 +72,7 @@ class _CompanyBottomNavBarState extends State<CompanyBottomNavBar> {
     isLogIn = false;
     setState(() {
       company = {};
-      widget.onTap(0);
+      Navigator.pushReplacement( context, MaterialPageRoute(builder: (context) => MainApp() ) );
     });
   } // f end
 
