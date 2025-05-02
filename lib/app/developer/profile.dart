@@ -207,13 +207,12 @@ class _ProfileState extends State< Profile >{
                 : // 수정버튼 클릭 후
               [
                 Center(
-                  child: CustomImagePicker(
-                    dprofile: profileImageUrl,
-                    onImageSelected: ( XFile image ) {
-                      setState(() {
-                        profileImage = image;
-                      });
-                    },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(999),
+                    child: Container(
+                      width: 100, height: 100,
+                      child: Image.network( imgUrl, fit: BoxFit.cover, ),
+                    ),
                   ),
                 ),
                 SizedBox( height: 20, ),
@@ -268,6 +267,8 @@ class _ProfileState extends State< Profile >{
         // 두번째 Card
         Text("비밀번호", style: TextStyle( fontSize: 18, fontWeight: FontWeight.bold, ), ),
         SizedBox( height: 15 ,),
+
+        // 두번째 Card
         CustomCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
