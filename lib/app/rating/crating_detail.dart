@@ -14,7 +14,8 @@ class CratingDetail extends StatefulWidget{
   int? pno;
   List<dynamic>? cprofile;
   String? cname;
-  CratingDetail( { this.crno , this.pno , this.cprofile , this.cname } );
+  String? dname;
+  CratingDetail( { this.crno , this.pno , this.cprofile , this.cname , this.dname } );
 
   @override
   State<StatefulWidget> createState() {
