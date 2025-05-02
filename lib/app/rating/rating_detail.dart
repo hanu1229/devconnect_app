@@ -7,7 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class CratingDetail extends StatefulWidget{
+class RatingDetail extends StatefulWidget{
 
   // 평가리스트에서 클릭한 Card의 crno , pno , cno 가져오기
   int? crno;
@@ -15,7 +15,7 @@ class CratingDetail extends StatefulWidget{
   List<dynamic>? cprofile;
   String? cname;
   String? dname;
-  CratingDetail( { this.crno , this.pno , this.cprofile , this.cname , this.dname } );
+  RatingDetail( { this.crno , this.pno , this.cprofile , this.cname , this.dname } );
 
   @override
   State<StatefulWidget> createState() {
@@ -23,11 +23,11 @@ class CratingDetail extends StatefulWidget{
     print( pno );
     print( cprofile );
     print(cname);
-    return _CratingDtailState();
+    return _RatingDtailState();
   } // createState end
 } // c end
 
-class _CratingDtailState extends State<CratingDetail>{
+class _RatingDtailState extends State<RatingDetail>{
 
   // 요청 값을 저장하는 상태 변수
   Map< String , dynamic > crating = {};

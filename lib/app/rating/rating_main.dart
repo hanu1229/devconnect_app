@@ -1,4 +1,4 @@
-import 'package:devconnect_app/app/rating/crating_detail.dart';
+import 'package:devconnect_app/app/rating/rating_detail.dart';
 import 'package:devconnect_app/style/app_colors.dart';
 import 'package:devconnect_app/style/server_path.dart';
 import 'package:dio/dio.dart';
@@ -8,14 +8,14 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
-class Crating extends StatefulWidget{
+class RatingMain extends StatefulWidget{
   @override
   State<StatefulWidget> createState() {
-    return _CratingState();
+    return _RatingMainState();
   }
 } // c end
 
-class _CratingState extends State<Crating>{
+class _RatingMainState extends State<RatingMain>{
   int page = 1;
   String? token; // 토큰 상태필드
   String? tokenrole; // role 이름
@@ -211,7 +211,7 @@ class _CratingState extends State<Crating>{
               {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) =>
-                        CratingDetail(
+                        RatingDetail(
                             crno: rating['crno'],
                             pno: project['pno'],
                             cname: company['cname'],
@@ -310,7 +310,7 @@ class _CratingState extends State<Crating>{
               {
                 Navigator.push(context,
                   MaterialPageRoute(builder: (context) =>
-                    CratingDetail(
+                    RatingDetail(
                       crno: rating['crno'],
                       pno: project['pno'],
                       cname: company['cname'],
