@@ -1,6 +1,7 @@
 // project_detail.dart : 프로젝트 상세보기 페이지
 
 import "package:devconnect_app/app/component/custom_card.dart";
+import "package:devconnect_app/app/developer/developer_login.dart";
 import "package:devconnect_app/style/app_colors.dart";
 import "package:devconnect_app/style/server_path.dart";
 import "package:dio/dio.dart";
@@ -10,7 +11,7 @@ import "package:shared_preferences/shared_preferences.dart";
 class DetailProject extends StatefulWidget {
   int pno = 0;
 
-  DetailProject({required int pno}) { this.pno = pno; }
+  DetailProject({required int pno, bool company = false}) { this.pno = pno; }
 
   @override
   State<DetailProject> createState() => _DetailProjectState();
@@ -69,6 +70,77 @@ class _DetailProjectState extends State<DetailProject> {
     }
   }
 
+  /// 프로젝트에 개발자 지원서류를 등록
+  Future<void> writeProjectJoin(BuildContext context) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString("token");
+      if(token == null) { return; }
+      final response = await dio.post("$serverPath/api/project_join?pno=${project["pno"]}", options : Options(headers : {"Authorization" : token}));
+      final data = response.data;
+      final statusCode = response.statusCode;
+      if(statusCode == 201 && data == true) {
+        showModalBottomSheet(
+          context: context,
+          builder: (context) {
+            return SafeArea(
+              child: Container(
+                margin : EdgeInsets.all(16),
+                height : 100,
+                width : MediaQuery.of(context).size.width,
+                decoration : BoxDecoration(
+                  color : AppColors.bgColor,
+                  borderRadius : BorderRadius.all(Radius.circular(12)),
+                ),
+                child : Center(
+                  child : Padding(
+                    padding: EdgeInsets.symmetric(vertical : 16),
+                    child : Column(
+                      mainAxisAlignment : MainAxisAlignment.spaceAround,
+                      children : [
+                        Container(
+                          padding : EdgeInsets.only(left : 16, top : 0, right : 16, bottom : 0),
+                          width : MediaQuery.of(context).size.width,
+                          child : ElevatedButton(
+                            onPressed : () {
+                              // 모달창 삭제
+                              Navigator.pop(context);
+                              // 현재 페이지 삭제
+                              Navigator.pop(context, true);
+                              return;
+                            },
+                            style : ElevatedButton.styleFrom(
+                              backgroundColor : AppColors.buttonColor,
+                              shape : RoundedRectangleBorder(
+                                borderRadius : BorderRadius.circular(12),
+                              ),
+                            ),
+                            child : Text("지원완료", style : TextStyle(color : AppColors.buttonTextColor)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+          backgroundColor : Colors.transparent,
+        );
+      }
+    } catch(e) {
+      print(e);
+    }
+  }
+
+  /// 토큰에 따른 지원하기 버튼의 행동
+  Future<bool> isLogin() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString("token");
+    if(token == null) { return false; }
+    else { return true; }
+  }
+
   /// 직무 number --> String
   String? ptypeToString(int? ptype) {
     switch(ptype) {
@@ -91,6 +163,9 @@ class _DetailProjectState extends State<DetailProject> {
 
   @override
   Widget build(BuildContext context) {
+
+    String pay = project["ppay"].toString().replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},');
+
     return Scaffold(
       appBar : AppBar(title : Text("프로젝트 상세보기"),),
       body : SafeArea(
@@ -111,6 +186,8 @@ class _DetailProjectState extends State<DetailProject> {
                         Text("${project["pname"]}", style : TextStyle(fontSize : 20, fontWeight : FontWeight.bold),),
                         SizedBox(height : 10),
                         Text("${project["cname"]}", style : TextStyle(fontSize : 16, fontWeight : FontWeight.bold),),
+                        SizedBox(height : 10),
+                        Text("급여 : $pay 만원", style : TextStyle(fontSize : 16),),
                       ],
                     ),
                   ),
@@ -153,7 +230,14 @@ class _DetailProjectState extends State<DetailProject> {
                   SizedBox(
                     width : MediaQuery.of(context).size.width,
                     child : ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        bool result = await isLogin();
+                        if(result == true) {
+                          writeProjectJoin(context);
+                        } else {
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder : (context) => DeveloperLogIn()));
+                        }
+                      },
                       style : ElevatedButton.styleFrom(
                         backgroundColor : AppColors.buttonColor,
                         shape : RoundedRectangleBorder(borderRadius : BorderRadius.circular(5),),
