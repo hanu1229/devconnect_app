@@ -144,7 +144,6 @@ class _CratingViewState extends State<CratingView>{
                   children: [ // 가로배치할 위젯
                     Container(
                       width: 65, height: 65, // 사이즈,
-                      padding: EdgeInsets.only(top: 20),
                       child: Image.network( // 웹 이미지 출력
                         imageUrl,
                         fit: BoxFit.cover, // 이미지 비율 유지

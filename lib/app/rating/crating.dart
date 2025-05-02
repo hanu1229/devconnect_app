@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class Crating extends StatefulWidget{
   @override
@@ -16,7 +17,8 @@ class Crating extends StatefulWidget{
 
 class _CratingState extends State<Crating>{
   int page = 1;
-  List<dynamic> cRatingList = []; // 기업평가 리스트
+  String? token; // 토큰 상태필드
+  List<dynamic> ratingList = []; // 기업평가 리스트
   List<dynamic> projectList = []; // 프로젝트 리스트
   List<dynamic> companyList = []; // 기업 리스트
   final dio = Dio();
@@ -25,19 +27,60 @@ class _CratingState extends State<Crating>{
 
   @override
   void initState() {
-    onCratingAll( page  );
+
+    whyToken();
     scrollController.addListener( cOnScroll );
   } // iniState end
+  
+  // 토큰 읽기 담당
+  Map<String,dynamic> parseJwt( String token ){
+    // JWT 토큰은 .으로 구분 되므로 이걸로 구별해서 담기 // <Header>.<Payload>.<Signature>
+    final parts = token.split('.');
+    // jWT 토큰은 XXx.XXX.XXX 이렇게 나오므로 3이 아니면 안됨
+    if( parts.length != 3 ){
+      throw Exception('Invalid token');
+    } // if end
+    // JWT 토큰의 가운데인 payload 가져오기
+    final payload = parts[1];
+    // Base64 디코딩
+    String normalized = base64.normalize(payload);
+    final payloadBytes = base64.decode(normalized);
+    final payloadString = utf8.decode(payloadBytes);
+    final payloadMap = json.decode(payloadString);
+
+    if( payloadMap is! Map<String,dynamic> ) {
+      throw Exception('Invalid payload');
+    } // if end
+    return payloadMap;
+  } // parseJwt end
+
+  // 토큰읽어서 구분 후 해당하는 자료 요쳥
+  void whyToken() async {
+    // 토큰 있는지 확인
+    final prefs = await SharedPreferences.getInstance();
+    final whyToken = prefs.getString("token");
+    // 토큰 유무 검사
+    if( whyToken == null ){ print("권한이 없습니다."); return; }
+    // 토큰이 있으면 상태필드에 저장 실행
+    token = whyToken;
+    final decoded = parseJwt(whyToken);
+    final role = decoded['role']; // Company , Developer ,Admin
+    final id = decoded['id'];
+    // 토큰 검사
+    print("role :  + ${role} , id :  + ${id} " );
+    // 토큰에 따른 데이터 요청
+    if( role == "Company" ){
+      onDratingAll(page);
+    }else if( role == "Developer" ){
+      onCratingAll(page);
+    } // if end
+  } // whyToken end
 
   // 자료요청
   void onCratingAll( int cPage  ) async {
     try{
-      // 토큰 확인
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString("token");
-      if( token == null ){ print("권한이없습니다."); return; }
       dio.options.headers['Authorization'] = token;
-      // 평가 조회
+      // 기업 평가 조회
       final response1 = await dio.get("${serverPath}/api/crating?page=${cPage}" );
       // print(response1.data);
 
@@ -53,17 +96,17 @@ class _CratingState extends State<Crating>{
       setState(() {
         page = cPage;
         if( page == 1 ){
-          cRatingList = response1.data['content'];
+          ratingList = response1.data['content'];
           projectList = response2.data;
           companyList = response3.data;
         }else if( page > response1.data['totalPages'] ){
           page = response1.data['totalPages'];
         }else{
-          cRatingList.addAll( response1.data['content'] );
+          ratingList.addAll( response1.data['content'] );
           projectList = response2.data;
           companyList = response3.data;
         } // if end
-        print( cRatingList );
+        print( ratingList );
         print( projectList );
         print( companyList );
       });
@@ -71,10 +114,22 @@ class _CratingState extends State<Crating>{
     }catch(e) { print( e ); }
   } // onCratingAll end
 
+  void onDratingAll( int dPage ) async {
+    try{
+      dio.options.headers['Authorization'] = token;
+      // 개발자 평가 조회
+      final response1 = dio.get("${serverPath}/api/drating?page=${dPage}");
+      // 개발자 조회
+      final response2 = dio.get("${serverPath}/api/project");
+      // 프로젝트 조회
+    }catch(e) { print( e ); }
+  } // onDratingAll end
+
   // 스크롤 추가
   void cOnScroll(){
     if( scrollController.position.pixels >= scrollController.position.maxScrollExtent - 150 ){
       onCratingAll( page +1 );
+      onDratingAll( page +1 );
     } // if end
   } // cOnScroll end
 
@@ -84,10 +139,10 @@ class _CratingState extends State<Crating>{
     return ListView.builder(
 
         controller: scrollController,
-        itemCount: cRatingList.length,
+        itemCount: ratingList.length,
         itemBuilder: (context,index){
           // 각 index 번째 꺼내기
-          final rating = cRatingList[index];
+          final rating = ratingList[index];
           final pno = rating['pno'];
 
           // pno로 프로젝트 찾기
