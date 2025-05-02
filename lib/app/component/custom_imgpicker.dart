@@ -43,7 +43,7 @@ class _CustomImagePicker extends State< CustomImagePicker > {
       children: [
         // 원형 이미지
         CircleAvatar(
-          radius: 60,
+          radius: 50,
           backgroundColor: Colors.grey[200],
           backgroundImage: selectedImage != null
               ? FileImage(File(selectedImage!.path))

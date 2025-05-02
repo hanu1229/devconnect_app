@@ -1,15 +1,15 @@
 import 'package:devconnect_app/app/company/company_login.dart';
-import 'package:devconnect_app/app/company/company_signup.dart';
 import 'package:devconnect_app/app/component/custombottombar.dart';
 import 'package:devconnect_app/app/developer/developer_login.dart';
 import 'package:devconnect_app/app/developer/profile.dart';
+import 'package:devconnect_app/app/developer/profile_project.dart';
+import 'package:devconnect_app/app/developer/profile_rating.dart';
 import 'package:devconnect_app/app/layout/home.dart';
 import 'package:devconnect_app/app/project/project_view.dart';
 import 'package:devconnect_app/app/project/project_write.dart';
 import 'package:devconnect_app/app/rating/crating.dart';
 import 'package:devconnect_app/app/rating/crating_view.dart';
 import 'package:devconnect_app/style/app_colors.dart';
-import 'package:devconnect_app/style/server_path.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -37,15 +37,17 @@ class _MainAppState extends State<MainApp> {
       // 하단 바
       Home(), // 0 : 기본 페이지
       WriteProject(changePage : changePage), // 1 : 프로젝트 작성 페이지
-      Profile(), // 2: 가운데 탭
+      Profile(changePage: changePage,), // 2: 프로필 기본 정보
       Text("기업 목록"), // 3 : 기업 목록
       Text("개발자 순위"), // 4 : 개발자 순위
       // 이동 페이지
       Crating(), // 5 : 평가 페이지
       // DeveloperLogIn( changePage: (index) { setState(() { selectedIndex = index; }); },), // 6 : 개발자 로그인 페이지
       DeveloperLogIn(), // 6 : 개발자 로그인 페이지
-      Companylogin(  ), // 7 : 기업 로그인 페이지
+      Companylogin(), // 7 : 기업 로그인 페이지
       CratingView(), // 8 : 평가 페이지(로그인한 회원)
+      Profile_Project(changePage: changePage), // 9 : 프로젝트 페이지
+      Profile_Rating(changePage: changePage), // 10 : 평가 페이지
     ];
 
     // 앱바 제목
@@ -55,10 +57,12 @@ class _MainAppState extends State<MainApp> {
       '계정 관리', // 2
       '기업 목록', // 3
       '개발자 순위', // 4
-      '기업 평가 목록(전체)', // 5
+      '평가페이지', // 5
       '개발자 로그인', // 6
       '기업 로그인', // 7
-      '기업 평가 목록(개별)' // 8
+      '기업 평가 목록(개별)', // 8
+      '계정 관리', // 9
+      '계정 관리', // 10
     ];
 
     return Scaffold(
@@ -104,7 +108,7 @@ class _MainAppState extends State<MainApp> {
           spaceBetweenChildren: 20, // 열렸을 때 아이콘들의 간격
           children: [
             SpeedDialChild(
-              label: '전체평가',
+              label: '평가',
               onTap: (){
                 setState(() {
                   selectedIndex = 5;

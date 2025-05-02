@@ -6,10 +6,12 @@ import 'package:flutter/material.dart';
 class CustomTextButton extends StatelessWidget {
   final double width;
   final VoidCallback onPressed;
+  final Color color;
   final String title;
 
   const CustomTextButton({
     this.width = 80,
+    this.color = Colors.blueAccent,
     required this.onPressed,
     required this.title,
     Key? key,
@@ -22,7 +24,7 @@ class CustomTextButton extends StatelessWidget {
       child: TextButton(
         onPressed: onPressed,
         style: TextButton.styleFrom(
-          backgroundColor: Colors.blueAccent,
+          backgroundColor: color,
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular( 5 ),
