@@ -163,7 +163,7 @@ class _CratingViewState extends State<CratingView>{
                           // itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
                           itemBuilder: (context, _) => Icon(
                             Icons.star,
-                            color: AppColors.buttonTextColor,
+                            color: AppColors.ratingTextColor,
                           ),
                         ), // RatingBar.builder end
                         SizedBox( height: 12,),
