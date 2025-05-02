@@ -33,7 +33,7 @@ class _HomeState extends State<Home> {
     setState(() { isLoading = true; });
     try {
       // 테스트를 위한 딜레이
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(Duration(seconds: 1));
       // 필요한 정보만 가져오기
       final response = await dio.get("$serverPath/api/project/paging?page=$page&size=$size");
       final data = response.data;
@@ -94,10 +94,10 @@ class _HomeState extends State<Home> {
                       padding : EdgeInsets.only(left : 16, top : 16, right : 16),
                       child : Card(
                         color : AppColors.bgColor,
-                        elevation : 5,
+                        // elevation : 5,
                         shape : RoundedRectangleBorder(
                           borderRadius : BorderRadius.circular(10),
-                          side : BorderSide(color : Color(0xFFD9D9D9), width : 2,),
+                          side : BorderSide(color : AppColors.cardBorderColor, width : 1,),
                         ),
                         child : Padding(
                           padding : EdgeInsets.symmetric(vertical : 10),
@@ -115,13 +115,13 @@ class _HomeState extends State<Home> {
                               crossAxisAlignment : CrossAxisAlignment.start,
                               children : [
                                 SizedBox(height : 10),
-                                Text("소개 : ${data["pintro"]}"),
+                                Text("소개 : ${data["pintro"]}", style : TextStyle(overflow : TextOverflow.ellipsis)),
                                 SizedBox(height : 5),
-                                Text("모집 인원 : ${data["pcount"]}"),
+                                Text("모집 인원 : ${data["pcount"]}", style : TextStyle(overflow : TextOverflow.ellipsis)),
                                 SizedBox(height : 5),
-                                Text("프로젝트 기간 : $pstart ~ $pend"),
+                                Text("프로젝트 기간 : $pstart ~ $pend", style : TextStyle(overflow : TextOverflow.ellipsis)),
                                 SizedBox(height : 5),
-                                Text("모집 기간 : $rpstart ~ $rpend")
+                                Text("모집 기간 : $rpstart ~ $rpend", style : TextStyle(overflow : TextOverflow.ellipsis))
                               ],
                             ),
                           ),
@@ -140,7 +140,7 @@ class _HomeState extends State<Home> {
               },
             ),
           ),
-          SizedBox(height : MediaQuery.of(context).size.height * 0.05),
+          SizedBox(height : MediaQuery.of(context).size.height * 0.03),
         ],
       ),
     );

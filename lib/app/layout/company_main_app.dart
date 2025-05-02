@@ -1,13 +1,13 @@
 import 'package:devconnect_app/app/company/company_login.dart';
-import 'package:devconnect_app/app/company/companybottombar.dart';
-import 'package:devconnect_app/app/company/companyprofile.dart';
+import 'package:devconnect_app/app/company/company_bottombar.dart';
+import 'package:devconnect_app/app/company/company_profile.dart';
 import 'package:devconnect_app/app/component/custombottombar.dart';
 import 'package:devconnect_app/app/developer/developer_login.dart';
 import 'package:devconnect_app/app/developer/profile.dart';
 import 'package:devconnect_app/app/layout/home.dart';
 import 'package:devconnect_app/app/project/project_view.dart';
 import 'package:devconnect_app/app/project/project_write.dart';
-import 'package:devconnect_app/app/rating/crating.dart';
+import 'package:devconnect_app/app/rating/rating_main.dart';
 import 'package:devconnect_app/style/app_colors.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -39,11 +39,13 @@ class _CompanyMainApp extends State<CompanyMainApp> {
       Profile(changePage: changePage,), // 가운데 탭
       ViewProject(),
       Text("게시물"),
-      Crating(), // 5 : 평가페이지
+      RatingMain(), // 5 : 평가페이지 이이후부터
+
+
       // DeveloperLogIn( changePage: (index) { setState(() { selectedIndex = index; }); },), // 6 : 개발자 로그인 페이지
       DeveloperLogIn(), // 6 : 개발자 로그인 페이지
       Companylogin(), // 7 : 기업 로그인 페이지
-      Companyprofile(),// 8 : 기업 프로파일
+      Companyprofile( changePage : changePage )// 8 : 기업 프로파일
     ];
 
     // 앱바 제목

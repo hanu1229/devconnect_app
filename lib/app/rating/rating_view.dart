@@ -1,6 +1,6 @@
 
 
-import 'package:devconnect_app/app/rating/crating_detail.dart';
+import 'package:devconnect_app/app/rating/rating_detail.dart';
 import 'package:devconnect_app/style/app_colors.dart';
 import 'package:devconnect_app/style/server_path.dart';
 import 'package:dio/dio.dart';
@@ -9,14 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class CratingView extends StatefulWidget{
+class RatingView extends StatefulWidget{
   @override
   State<StatefulWidget> createState() {
-    return _CratingViewState();
+    return _RatingViewState();
   } // createState end
 } // c end
 
-class _CratingViewState extends State<CratingView>{
+class _RatingViewState extends State<RatingView>{
 
   int page = 1;
   List<dynamic> cRatingList = []; // 기업평가 리스트
@@ -113,7 +113,7 @@ class _CratingViewState extends State<CratingView>{
           onTap: () => {
             Navigator.push(context,
               MaterialPageRoute(
-                builder: (context) => CratingDetail(
+                builder: (context) => RatingDetail(
                   crno: rating['crno'],
                   pno : project['pno'],
                   cname: company['cname'],
@@ -144,7 +144,6 @@ class _CratingViewState extends State<CratingView>{
                   children: [ // 가로배치할 위젯
                     Container(
                       width: 65, height: 65, // 사이즈,
-                      padding: EdgeInsets.only(top: 20),
                       child: Image.network( // 웹 이미지 출력
                         imageUrl,
                         fit: BoxFit.cover, // 이미지 비율 유지
@@ -164,7 +163,7 @@ class _CratingViewState extends State<CratingView>{
                           // itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
                           itemBuilder: (context, _) => Icon(
                             Icons.star,
-                            color: AppColors.buttonTextColor,
+                            color: AppColors.ratingTextColor,
                           ),
                         ), // RatingBar.builder end
                         SizedBox( height: 12,),

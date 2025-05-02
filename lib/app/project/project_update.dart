@@ -30,6 +30,7 @@ class _UpdateProjectState extends State<UpdateProject> {
   String? pend = DateTime.now().toString().split(" ")[0];
   String? rpstart = DateTime.now().toString().split(" ")[0];
   String? rpend = DateTime.now().toString().split(" ")[0];
+  String nowDate = DateTime.now().toString().split(" ")[0];
 
   List<String> ptypeList = ["전체", "백엔드", "프론트엔드"];
   String? ptypeValue;
@@ -97,7 +98,7 @@ class _UpdateProjectState extends State<UpdateProject> {
                               // 모달창 삭제
                               Navigator.pop(context);
                               // 현재 페이지 삭제
-                              Navigator.pop(context);
+                              Navigator.pop(context, true);
                               return;
                             },
                             style : ElevatedButton.styleFrom(
@@ -108,7 +109,7 @@ class _UpdateProjectState extends State<UpdateProject> {
                             ),
                             child : Text("확인", style : TextStyle(color : AppColors.buttonTextColor)),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -138,7 +139,7 @@ class _UpdateProjectState extends State<UpdateProject> {
         ptypeValue = "백엔드";
         break;
       case 2:
-        ptypeValue = "프론트";
+        ptypeValue = "프론트엔드";
         break;
     }
     pnameController.text = widget.project["pname"];
@@ -202,12 +203,12 @@ class _UpdateProjectState extends State<UpdateProject> {
                   child : Column(
                     crossAxisAlignment : CrossAxisAlignment.start,
                     children : [
-                      Text("제목", style : TextStyle(fontFamily : "NanumGothic", fontSize : 28,),),
+                      Text("제목", style : TextStyle(fontFamily : "NanumGothic", fontWeight : FontWeight.bold, fontSize : 20,),),
                       SizedBox(height : 10),
                       customTextFieldUpdate(labelText: "제목", controller: pnameController),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical : 10),
-                        child: Text("직무", style : TextStyle(fontFamily : "NanumGothic", fontSize : 28,),),
+                        child: Text("직무", style : TextStyle(fontFamily : "NanumGothic", fontWeight : FontWeight.bold, fontSize : 20,),),
                       ),
                       DropdownButtonFormField(
                         value : ptypeValue,
@@ -231,7 +232,7 @@ class _UpdateProjectState extends State<UpdateProject> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical : 10),
-                        child: Text("모집 인원", style : TextStyle(fontFamily : "NanumGothic", fontSize : 28,),),
+                        child: Text("모집 인원", style : TextStyle(fontFamily : "NanumGothic", fontWeight : FontWeight.bold, fontSize : 20,),),
                       ),
                       customTextFieldUpdate(labelText: "모집 인원", controller: pcountController, numberKey : true),
                     ],
@@ -244,10 +245,10 @@ class _UpdateProjectState extends State<UpdateProject> {
                   child : Column(
                     crossAxisAlignment : CrossAxisAlignment.start,
                     children : [
-                      Text("프로젝트 기간", style : TextStyle(fontFamily : "NanumGothic", fontSize : 28, fontWeight : FontWeight.bold),),
+                      Text("프로젝트 기간", style : TextStyle(fontFamily : "NanumGothic", fontSize : 20, fontWeight : FontWeight.bold),),
                       Row(
                         children: [
-                          Text("시작일", style : TextStyle(fontFamily : "NanumGothic", fontSize : 28,),),
+                          Text("시작일", style : TextStyle(fontFamily : "NanumGothic", fontSize : 20,),),
                           TextButton(
                             onPressed: () async {
                               DateTime? dateTime = await showDatePicker(
@@ -262,17 +263,17 @@ class _UpdateProjectState extends State<UpdateProject> {
                               );
                               setState(() {
                                 final dateSplit = dateTime.toString().split(" ");
-                                pstart = dateTime == null ? "" : dateSplit[0];
+                                pstart = dateTime == null ? pstart : dateSplit[0];
                                 print(">> pstart : $pstart");
                               });
                             },
-                            child: Text("${pstart == "" ? "시작일" : pstart}", style : TextStyle(fontFamily : "NanumGothic", fontSize : 28,),),
+                            child: Text("$pstart", style : TextStyle(color : AppColors.buttonColor,fontFamily : "NanumGothic", fontSize : 20,),),
                           ),
                         ],
                       ),
                       Row(
                         children : [
-                          Text("마감일", style : TextStyle(fontFamily : "NanumGothic", fontSize : 28,),),
+                          Text("마감일", style : TextStyle(fontFamily : "NanumGothic", fontSize : 20,),),
                           TextButton(
                             onPressed: () async {
                               DateTime? dateTime = await showDatePicker(
@@ -287,10 +288,10 @@ class _UpdateProjectState extends State<UpdateProject> {
                               );
                               setState(() {
                                 final dateSplit = dateTime.toString().split(" ");
-                                pend = dateTime == null ? "" : dateSplit[0];
+                                pend = dateTime == null ? pend : dateSplit[0];
                               });
                             },
-                            child: Text("${pend == "" ? "마감일" : pend}", style : TextStyle(fontFamily : "NanumGothic", fontSize : 28,),),
+                            child: Text("$pend", style : TextStyle(color : AppColors.buttonColor,fontFamily : "NanumGothic", fontSize : 20,),),
                           ),
                         ],
                       ),
@@ -304,10 +305,10 @@ class _UpdateProjectState extends State<UpdateProject> {
                   child : Column(
                     crossAxisAlignment : CrossAxisAlignment.start,
                     children : [
-                      Text("모집 기간", style : TextStyle(fontFamily : "NanumGothic", fontSize : 28, fontWeight : FontWeight.bold),),
+                      Text("모집 기간", style : TextStyle(fontFamily : "NanumGothic", fontSize : 20, fontWeight : FontWeight.bold),),
                       Row(
                         children : [
-                          Text("시작일", style : TextStyle(fontFamily : "NanumGothic", fontSize : 28,),),
+                          Text("시작일", style : TextStyle(fontFamily : "NanumGothic", fontSize : 20,),),
                           TextButton(
                             onPressed: () async {
                               DateTime? dateTime = await showDatePicker(
@@ -322,16 +323,16 @@ class _UpdateProjectState extends State<UpdateProject> {
                               );
                               setState(() {
                                 final dateSplit = dateTime.toString().split(" ");
-                                rpstart = dateTime == null ? "" : dateSplit[0];
+                                rpstart = dateTime == null ? rpstart : dateSplit[0];
                               });
                             },
-                            child: Text("${rpstart == "" ? "시작일" : rpstart}", style : TextStyle(fontFamily : "NanumGothic", fontSize : 28,),),
+                            child: Text("$rpstart", style : TextStyle(color : AppColors.buttonColor, fontFamily : "NanumGothic", fontSize : 20,),),
                           ),
                         ],
                       ),
                       Row(
                         children : [
-                          Text("마감일", style : TextStyle(fontFamily : "NanumGothic", fontSize : 28,),),
+                          Text("마감일", style : TextStyle(fontFamily : "NanumGothic", fontSize : 20,),),
                           TextButton(
                             onPressed: () async {
                               DateTime? dateTime = await showDatePicker(
@@ -346,10 +347,10 @@ class _UpdateProjectState extends State<UpdateProject> {
                               );
                               setState(() {
                                 final dateSplit = dateTime.toString().split(" ");
-                                rpend = dateTime == null ? "" : dateSplit[0];
+                                rpend = dateTime == null ? rpend : dateSplit[0];
                               });
                             },
-                            child: Text("${rpend == "" ? "마감일" : rpend}", style : TextStyle(fontFamily : "NanumGothic", fontSize : 28,),),
+                            child: Text("$rpend", style : TextStyle(color : AppColors.buttonColor, fontFamily : "NanumGothic", fontSize : 20,),),
                           ),
                         ],
                       ),
@@ -357,7 +358,7 @@ class _UpdateProjectState extends State<UpdateProject> {
                   ),
                 ),
                 SizedBox(height : 20),
-                // 간단한 소개 | 내용 | 연봉
+                // 간단한 소개 | 내용 | 급여
                 CustomCard(
                   elevation : 0,
                   child : Column(
@@ -365,12 +366,12 @@ class _UpdateProjectState extends State<UpdateProject> {
                     children : [
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical : 10),
-                        child: Text("간단한 소개", style : TextStyle(fontFamily : "NanumGothic", fontSize : 28,),),
+                        child: Text("간단한 소개", style : TextStyle(fontFamily : "NanumGothic", fontWeight : FontWeight.bold, fontSize : 20,),),
                       ),
                       customTextFieldUpdate(labelText : "간단한 소개", controller : pintroController),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical : 10),
-                        child: Text("내용", style : TextStyle(fontFamily : "NanumGothic", fontSize : 28,),),
+                        child: Text("내용", style : TextStyle(fontFamily : "NanumGothic", fontWeight : FontWeight.bold, fontSize : 20,),),
                       ),
                       // customTextFieldUpdate(labelText : "내용", controller : null),
                       TextField(
@@ -385,9 +386,9 @@ class _UpdateProjectState extends State<UpdateProject> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical : 10),
-                        child: Text("연봉", style : TextStyle(fontFamily : "NanumGothic", fontSize : 28,),),
+                        child: Text("급여(만원)", style : TextStyle(fontFamily : "NanumGothic", fontWeight : FontWeight.bold, fontSize : 20,),),
                       ),
-                      customTextFieldUpdate(labelText : "연봉", controller : ppayController, numberKey : true),
+                      customTextFieldUpdate(labelText : "급여(만원)", controller : ppayController, numberKey : true),
                     ],
                   ),
                 ),
@@ -407,7 +408,8 @@ class _UpdateProjectState extends State<UpdateProject> {
                     ),
                     child: Text("수정하기", style : TextStyle(fontSize : 20, color : AppColors.buttonTextColor)),
                   ),
-                )
+                ),
+                SizedBox(height : 20),
               ],
             ),
           ),
