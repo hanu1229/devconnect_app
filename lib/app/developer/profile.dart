@@ -119,16 +119,17 @@ class _ProfileState extends State< Profile >{
   // 탈퇴하기
   void onDelete() async {
     try{
-      final sendData = {
-        "dno" : developer['dno'],
-        "dpwd" : dpwdController.text
-      };
+      final dpwd = dpwdController.text;
 
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
 
       dio.options.headers['Authorization'] = token;
-      final response = await dio.put("${serverPath}/api/developer/delete", data: sendData);
+      final response = await dio.put("${serverPath}/api/developer/delete",
+          options: Options( headers: { 'Authorization' : token, 'Content-Type' : 'text/plain', },
+          responseType: ResponseType.plain ),
+          data: dpwd,
+      );
       final data = response.data;
       if( data ){
         await prefs.remove('token');
