@@ -196,30 +196,34 @@ class _RatingMainState extends State<RatingMain>{
             orElse: () => null,
           );
 
-          final images = company?['cprofile'];
-          // 만약에 이미지가 존재하면 대표이미지 , 없으면 기본이미지 (default)
           String? imageUrl;
-          if( images == null || images.isEmpty ){
-            imageUrl = "${serverPath}/upload/default.jpg";
-          }else{
-            imageUrl = "${serverPath}/upload/${ images[0] }";
-          }
 
           if( tokenrole == "Developer" ) {
+/*            if( project == null || company == null || developer == null ){
+              return SizedBox(); // 빈공간 출력
+            } // if end*/
+            final images = company?['cprofile'];
+            // 만약에 이미지가 존재하면 대표이미지 , 없으면 기본이미지 (default)
+            if( images == null || images.isEmpty ){
+              imageUrl = "${serverPath}/upload/default.jpg";
+            }else {
+              imageUrl = "${serverPath}/upload/${ images[0] }";
+            }
             return InkWell(
               onTap: () =>
               {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) =>
-                        RatingDetail(
-                            crno: rating['crno'],
-                            pno: project['pno'],
-                            cname: company['cname'],
-                            cprofile: company['cprofile'],
-                            dname: developer['dname'],
-                        ))
-                )
-              },
+                  MaterialPageRoute(builder: (context) =>
+                    RatingDetail(
+                      crno: rating['crno'],
+                      pno: project['pno'],
+                      cname: company['cname'],
+                      profile: company['cprofile'],
+                      dname: developer['dname'],
+                    ) // RatingDetail end
+                  ) // MaterialPageRoute end
+                ) // Navigator end
+              }, // inTap end
               child: Card(
                 elevation: 7,
                 // 그림자 깊이
@@ -305,6 +309,16 @@ class _RatingMainState extends State<RatingMain>{
               ),
             );
           }else if( tokenrole == "Company") {
+            // if( project == null || company == null || developer == null ){
+            //   return SizedBox(); // 빈공간 출력
+            // } // if end
+            final images = developer?['dprofile'];
+            // 만약에 이미지가 대표이미지 , 없으면 기본 이미지( default )
+            if( images == null || images.isEmpty ){
+              imageUrl = "${serverPath}/upload/default.jpg";
+            }else{
+              imageUrl = "${serverPath}/upload/${ images[0] }";
+          }
             return InkWell(
               onTap: () =>
               {
@@ -314,7 +328,7 @@ class _RatingMainState extends State<RatingMain>{
                       crno: rating['crno'],
                       pno: project['pno'],
                       cname: company['cname'],
-                      cprofile: company['cprofile']
+                      profile: developer['dprofile']
                     ) // CratingDetail end
                   ) // MaterialPageRoute end
                 ) // Navigator end

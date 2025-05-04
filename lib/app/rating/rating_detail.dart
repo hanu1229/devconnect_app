@@ -12,16 +12,15 @@ class RatingDetail extends StatefulWidget{
   // 평가리스트에서 클릭한 Card의 crno , pno , cno 가져오기
   int? crno;
   int? pno;
-  List<dynamic>? cprofile;
+  List<dynamic>? profile;
   String? cname;
   String? dname;
-  RatingDetail( { this.crno , this.pno , this.cprofile , this.cname , this.dname } );
+  RatingDetail( { this.crno , this.pno , this.profile , this.cname , this.dname } );
 
   @override
   State<StatefulWidget> createState() {
     print( crno );
     print( pno );
-    print( cprofile );
     print(cname);
     return _RatingDtailState();
   } // createState end
@@ -30,7 +29,7 @@ class RatingDetail extends StatefulWidget{
 class _RatingDtailState extends State<RatingDetail>{
 
   // 요청 값을 저장하는 상태 변수
-  Map< String , dynamic > crating = {};
+  Map< String , dynamic > rating = {};
   Map< String , dynamic > project = {};
 
   // 상태변수
@@ -41,8 +40,6 @@ class _RatingDtailState extends State<RatingDetail>{
   @override
   void initState() {
     super.initState();
-    // print( widget.cprofile );
-    // print( widget.cname);
     onView();
   } // iniState end
 
@@ -62,7 +59,7 @@ class _RatingDtailState extends State<RatingDetail>{
       print( response2.data );
       // print( response3.data );
       if( response1.data != null && response2.data != null ){
-        setState(() { crating = response1.data; project = response2.data; });
+        setState(() { rating = response1.data; project = response2.data; });
         // 로그인 검증
       }
     }catch(e){print(e);}
@@ -78,7 +75,7 @@ class _RatingDtailState extends State<RatingDetail>{
   @override
   Widget build(BuildContext context) {
     // 공고 정보가 없으면 로딩
-    if (crating.isEmpty || project.isEmpty) {
+    if (rating.isEmpty || project.isEmpty) {
       return Center(child: CircularProgressIndicator());
     }
 
@@ -92,8 +89,8 @@ class _RatingDtailState extends State<RatingDetail>{
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(widget.cname ?? "기업명 없음"),
-            Text("${crating['crscore']}"),
-            Text("${crating['ccontent']}"),
+            Text("${rating['crscore']}"),
+            Text("${rating['ccontent']}"),
             Text("${project['pname']}"),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

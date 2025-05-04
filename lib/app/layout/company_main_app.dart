@@ -8,6 +8,7 @@ import 'package:devconnect_app/app/layout/home.dart';
 import 'package:devconnect_app/app/project/project_view.dart';
 import 'package:devconnect_app/app/project/project_write.dart';
 import 'package:devconnect_app/app/rating/rating_main.dart';
+import 'package:devconnect_app/app/rating/rating_view.dart';
 import 'package:devconnect_app/style/app_colors.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -41,11 +42,11 @@ class _CompanyMainApp extends State<CompanyMainApp> {
       Text("게시물"),
       RatingMain(), // 5 : 평가페이지 이이후부터
 
-
       // DeveloperLogIn( changePage: (index) { setState(() { selectedIndex = index; }); },), // 6 : 개발자 로그인 페이지
       DeveloperLogIn(), // 6 : 개발자 로그인 페이지
       Companylogin(), // 7 : 기업 로그인 페이지
-      Companyprofile( changePage : changePage )// 8 : 기업 프로파일
+      Companyprofile( changePage : changePage ),// 8 : 기업 프로파일
+      RatingView(), // 9 : 평가페이지(개별)
     ];
 
     // 앱바 제목
@@ -58,7 +59,8 @@ class _CompanyMainApp extends State<CompanyMainApp> {
       '평가페이지', // 5
       '개발자 로그인', // 6
       '기업 로그인', // 7
-      '정보 관리'
+      '정보 관리',
+      '평가페이지(개별)' // 9
     ];
 
     return Scaffold(
@@ -120,8 +122,12 @@ class _CompanyMainApp extends State<CompanyMainApp> {
               },
             ),
             SpeedDialChild(
-              child: Icon(Icons.home),
-              label: '홈',
+              label: '개별평가',
+              onTap: (){
+                setState(() {
+                  selectedIndex = 9;
+                });
+              }
             ),SpeedDialChild(
               child: Icon(Icons.home),
               label: '홈',
