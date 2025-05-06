@@ -168,7 +168,13 @@ class _RatingMainState extends State<RatingMain>{
   // 요청 ==========================================================================================================================
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    return ratingList.isEmpty
+        ? Center(
+      child: Text(
+        '작성된 평가가 없습니다.',
+        style: TextStyle(fontSize: 16 , color: AppColors.textSubColor),
+      ),
+    ): ListView.builder(
 
         controller: scrollController,
         itemCount: ratingList.length,
@@ -209,17 +215,19 @@ class _RatingMainState extends State<RatingMain>{
             }else {
               imageUrl = "${serverPath}/upload/${ images[0] }";
             }
+            print(company['cprofile']);              // 값 확인
+            print(company.runtimeType); // 타입 확인
             return InkWell(
               onTap: () =>
               {
                 Navigator.push(context,
                   MaterialPageRoute(builder: (context) =>
                     RatingDetail(
-                      crno: rating['crno'],
-                      pno: project['pno'],
-                      cname: company['cname'],
-                      profile: company['cprofile'],
-                      dname: developer['dname'],
+                      rating: rating,
+                      project: project,
+                      profile: imageUrl,
+                      company: company,
+                      developer: developer,
                     ) // RatingDetail end
                   ) // MaterialPageRoute end
                 ) // Navigator end
@@ -325,10 +333,16 @@ class _RatingMainState extends State<RatingMain>{
                 Navigator.push(context,
                   MaterialPageRoute(builder: (context) =>
                     RatingDetail(
-                      crno: rating['crno'],
-                      pno: project['pno'],
-                      cname: company['cname'],
-                      profile: developer['dprofile']
+                      // crno: rating['crno'],
+                      // pno: project['pno'],
+                      // cname: company['cname'],
+                      // profile: imageUrl,
+                      // dname: developer?['dname'],
+                      rating: rating,
+                      project: project,
+                      profile: imageUrl,
+                      company: company,
+                      developer: developer,
                     ) // CratingDetail end
                   ) // MaterialPageRoute end
                 ) // Navigator end

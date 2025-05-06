@@ -26,7 +26,8 @@ class _RatingViewState extends State<RatingView>{
   List<dynamic> projectList = []; // 프로젝트 리스트
   List<dynamic> companyList = []; // 기업 리스트
   List<dynamic> developerList = []; // 개발자 리스트
-  int dno = 1; // 나중에 개발자Info 페이지 에서 dno를 추출받기 / 여긴 임시로 1
+  int dno = 10; // 나중에 개발자Info 페이지 에서 dno를 추출받기 / 여긴 임시로 1
+  int cno = 1; // 나중에 기업Info 페이지 에서 ㅊno를 추출받기 / 여긴 임시로 1
   final dio = Dio();
 
   final ScrollController scrollController = ScrollController();
@@ -76,7 +77,7 @@ class _RatingViewState extends State<RatingView>{
     print("role :  + ${role} , id :  + ${id} " );
     // 토큰에 따른 데이터 요청
     if( role == "Company" ){
-      onDratingMy(page,dno);
+      onDratingMy(page,cno);
     }else if( role == "Developer" ){
       onCratingMy(page,dno);
     } // if end
@@ -93,6 +94,8 @@ class _RatingViewState extends State<RatingView>{
       final response2 = await dio.get("${serverPath}/api/project");
       // 기업 조회
       final response3 = await dio.get("${serverPath}/api/company/findall");
+      // 개발자 조회
+      final response4 = await dio.get("${serverPath}/api/developer/findall");
       // 페이지 변화
       setState(() {
         page = cPage;
@@ -100,26 +103,28 @@ class _RatingViewState extends State<RatingView>{
           ratingList = response1.data['content'];
           projectList = response2.data;
           companyList = response3.data;
+          developerList = response4.data;
         }else if( page > response1.data['totalPages'] ){
           page = response1.data['totalPages'];
         }else{
           ratingList.addAll( response1.data['content'] );
           projectList = response2.data;
           companyList = response3.data;
+          developerList = response4.data;
         } // if end
-        print( ratingList );
-        print( projectList );
-        print( companyList );
+        // print( ratingList );
+        // print( projectList );
+        // print( companyList );
       });
     }catch(e) { print( e ); }
   } // onCratingMy end
 
   // 자료요청( 로그인한 기업가 쓴 평가들 )
-  void onDratingMy( int dPage , int dno ) async {
+  void onDratingMy( int dPage , int cno ) async {
     try{
       dio.options.headers['Authorization'] = token;
       // 개발자 평가 조회
-      final response1 = await dio.get("${serverPath}/api/drating?page=${dPage}&dno=${dno}");
+      final response1 = await dio.get("${serverPath}/api/drating?page=${dPage}&cno=${cno}");
       // 프로젝트 조회
       final response2 = await dio.get("${serverPath}/api/project");
       // 기업 조회
@@ -156,7 +161,7 @@ class _RatingViewState extends State<RatingView>{
       if( tokenrole == "Developer"){
         onCratingMy( page+1, dno );
       }else if( tokenrole == "Company"){
-        onDratingMy( page +1  , dno );
+        onDratingMy( page +1  , cno );
       } // if end
     } // if end
   } // cOnScroll end
@@ -164,7 +169,13 @@ class _RatingViewState extends State<RatingView>{
   // 요청 ==========================================================================================================================
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    return ratingList.isEmpty
+    ? Center(
+      child: Text(
+        '작성된 평가가 없습니다.',
+        style: TextStyle(fontSize: 16 , color: AppColors.textSubColor),
+      ),
+    ): ListView.builder(
       controller: scrollController,
       itemCount: ratingList.length,
       itemBuilder: (context , i ){
@@ -209,11 +220,11 @@ class _RatingViewState extends State<RatingView>{
               Navigator.push(context,
                   MaterialPageRoute(
                       builder: (context) => RatingDetail(
-                        crno: rating['crno'],
-                        pno : project['pno'],
-                        cname: company['cname'],
-                        profile: company['cprofile'],
-                        dname: developer['dname'],
+                        rating: rating,
+                        project: project,
+                        profile: imageUrl,
+                        company: company,
+                        developer: developer,
                       ) // builder end
                   ) // MaterialPageRoute end
               ) // Navigator end
@@ -313,10 +324,11 @@ class _RatingViewState extends State<RatingView>{
               Navigator.push(context,
                   MaterialPageRoute(
                       builder: (context) => RatingDetail(
-                        crno: rating['crno'],
-                        pno : project['pno'],
-                        cname: company['cname'],
-                        profile: developer['dprofile'],
+                        rating: rating,
+                        project: project,
+                        profile: imageUrl,
+                        company: company,
+                        developer: developer,
                       ) // builder end
                   ) // MaterialPageRoute end
               ) // Navigator end
