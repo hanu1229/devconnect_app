@@ -22,6 +22,10 @@ class _HomeState extends State<Home> {
   bool hasNext = true;
   // 로딩 확인 변수
   bool isLoading = false;
+  // 회사 로고 이미지 경로
+  String logoUrl = "$serverPath/upload/company_logo";
+  // ptype 확인 변수
+  int? checkPtype = 0;
 
   final ScrollController _scrollController = ScrollController();
 
@@ -34,13 +38,23 @@ class _HomeState extends State<Home> {
     try {
       // 테스트를 위한 딜레이
       await Future.delayed(Duration(seconds: 1));
+      if(ptypeValue != checkPtype) { page = 0; }
       // 필요한 정보만 가져오기
-      final response = await dio.get("$serverPath/api/project/paging?page=$page&size=$size");
+      String path = "$serverPath/api/project/paging?ptype=$ptypeValue&page=$page&size=$size";
+      print(path);
+      final response = await dio.get("$serverPath/api/project/paging?ptype=$ptypeValue&page=$page&size=$size");
       final data = response.data;
       print(data);
       if(data.length < size) { hasNext = false; }
       setState(() {
-        list.addAll(data);
+        if(ptypeValue != checkPtype) {
+          checkPtype = ptypeValue;
+          list = data;
+          // checkPtype의 값이 변경될 시 스크롤을 맨 위로 올리는 함수(애니메이션)
+          _scrollController.animateTo(0.0, duration : Duration(milliseconds : 300), curve : Curves.easeInOut,);
+        } else {
+          list.addAll(data);
+        }
         // 페이지 증가
         page += 1;
       });
@@ -64,6 +78,8 @@ class _HomeState extends State<Home> {
    });
   }
 
+  int? ptypeValue = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,6 +87,41 @@ class _HomeState extends State<Home> {
       resizeToAvoidBottomInset : false,
       body: Column(
         children : [
+          Container(
+            padding : EdgeInsets.only(left : 16, top : 8, right : 16, bottom : 0),
+            width : MediaQuery.of(context).size.width,
+            height : 50,
+            child : Row(
+              mainAxisSize : MainAxisSize.max,
+              mainAxisAlignment : MainAxisAlignment.end,
+              crossAxisAlignment : CrossAxisAlignment.center,
+              children : [
+                SizedBox(
+                  width : MediaQuery.of(context).size.width * 0.3,
+                  child: DropdownButtonFormField(
+                    elevation : 0,
+                    dropdownColor : Colors.white,
+                    decoration : InputDecoration(
+                      // hintText : "전체",
+                      contentPadding : EdgeInsets.symmetric(horizontal : 16, vertical : 4),
+                      enabledBorder : OutlineInputBorder(borderSide : BorderSide(color : AppColors.borderColor, width : 1),),
+                      border : OutlineInputBorder(borderSide : BorderSide(color : AppColors.borderColor, width : 1),),
+                      focusedBorder : OutlineInputBorder(borderSide : BorderSide(color : AppColors.focusColor, width : 1),),
+                    ),
+                    value : ptypeValue,
+                    onChanged: (value) { setState(() { ptypeValue = value; print(ptypeValue); findData(); }); },
+                    // validator : (value) => value == null ? "값을 선택해주세요" : null,
+                    items: [
+                      DropdownMenuItem(value : 0, child: Text("전체")),
+                      DropdownMenuItem(value : 1, child: Text("백엔드")),
+                      DropdownMenuItem(value : 2, child: Text("프론트엔드")),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Divider(),
           Expanded(
             child: ListView.builder(
               controller: _scrollController,
@@ -102,6 +153,11 @@ class _HomeState extends State<Home> {
                         child : Padding(
                           padding : EdgeInsets.symmetric(vertical : 10),
                           child : ListTile(
+                            leading : SizedBox(
+                              width : 50,
+                              height : 50,
+                              child: Image.network("$logoUrl/${data["cprofile"]}"),
+                            ),
                             title : Text(
                               "${data["pname"]}",
                               style : TextStyle(
