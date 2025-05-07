@@ -320,42 +320,6 @@ class _CompanyProfileState extends State< Companyprofile >{
         ),
         SizedBox( height: 30,),
 
-        // 세번째 Card
-        Text("회사이력", style: TextStyle( fontSize: 18, fontWeight: FontWeight.bold, ), ),
-        SizedBox( height: 15 ,),
-        CustomCard(
-          child : Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("회사정보",
-                style: TextStyle( fontSize: 15, fontWeight: FontWeight.bold, color: Colors.grey ),
-              ),
-              SizedBox( height: 5 ,),
-
-              Padding(
-                padding: EdgeInsets.fromLTRB( 0, 0, 110, 0),
-                child: Text("회사평가",
-                  style: TextStyle( fontSize: 15, fontWeight: FontWeight.bold ), ),
-              ),
-              SizedBox( height: 15 ,),
-
-              // 버튼
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    CustomTextButton(
-                      onPressed: () => { setState(() => { isUpdate = false }) },
-                      title: "등록",
-                    ),
-                  ]
-              ),
-              SizedBox( height: 15 ,),
-
-            ],
-          ),
-        ),
-        SizedBox( height: 30,),
 
         // 네번째 Card
         Text("계정 탈퇴", style: TextStyle( fontSize: 18, fontWeight: FontWeight.bold, ), ),

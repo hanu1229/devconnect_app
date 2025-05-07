@@ -2,8 +2,6 @@ import 'package:devconnect_app/app/company/Company_appraise.dart';
 import 'package:devconnect_app/app/company/company_login.dart';
 import 'package:devconnect_app/app/company/company_bottombar.dart';
 import 'package:devconnect_app/app/company/company_profile.dart';
-import 'package:devconnect_app/app/company/company_project.dart';
-import 'package:devconnect_app/app/component/custombottombar.dart';
 import 'package:devconnect_app/app/developer/developer_login.dart';
 import 'package:devconnect_app/app/developer/profile.dart';
 import 'package:devconnect_app/app/layout/home.dart';
@@ -39,7 +37,7 @@ class _CompanyMainApp extends State<CompanyMainApp> {
       Home(),
       WriteProject(changePage : changePage),
       Profile(changePage: changePage,), // 가운데 탭
-      ViewProject(),
+      ViewProject(), // 내프로젝트
       Text("게시물"),
       Crating(), // 5 : 평가페이지 이이후부터
 
@@ -48,7 +46,7 @@ class _CompanyMainApp extends State<CompanyMainApp> {
       DeveloperLogIn(), // 6 : 개발자 로그인 페이지
       Companylogin(), // 7 : 기업 로그인 페이지
       Companyprofile( changePage : changePage ),// 8 : 기업 프로파일
-      CompanyProject(changePage: changePage), // 9 : 프로젝트 페이지
+      ViewProject(), // 9 : 프로젝트 페이지
       CompanyAppraise(changePage: changePage) // 10 : 기업 평가페이지
 
     ];
@@ -66,7 +64,7 @@ class _CompanyMainApp extends State<CompanyMainApp> {
       '개발자 로그인', // 6
       '기업 로그인', // 7
       '기업 평가 목록', // 8
-      '기업 관리페이지', // 9
+      '내 프로젝트', // 9
       '기업 관리페이지'
     ];
 

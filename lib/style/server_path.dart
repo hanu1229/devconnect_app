@@ -1,10 +1,10 @@
-// String serverPath = "http://192.168.40.88:8080";
+String serverPath = "http://192.168.40.25:8080";
 // 192.168.40.97
 
 
 
 // magnoria 집
-String serverPath = "http://192.168.45.145:8080";
+//String serverPath = "http://192.168.45.145:8080";
 
 
 // 희만집pc
