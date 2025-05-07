@@ -26,7 +26,7 @@ class _RatingViewState extends State<RatingView>{
   List<dynamic> projectList = []; // 프로젝트 리스트
   List<dynamic> companyList = []; // 기업 리스트
   List<dynamic> developerList = []; // 개발자 리스트
-  int dno = 10; // 나중에 개발자Info 페이지 에서 dno를 추출받기 / 여긴 임시로 1
+  int dno = 2; // 나중에 개발자Info 페이지 에서 dno를 추출받기 / 여긴 임시로 1
   int cno = 1; // 나중에 기업Info 페이지 에서 ㅊno를 추출받기 / 여긴 임시로 1
   final dio = Dio();
 

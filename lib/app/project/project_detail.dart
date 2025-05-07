@@ -30,6 +30,8 @@ class _DetailProjectState extends State<DetailProject> {
   String rpstart = "";
   String rpend = "";
 
+  get logoUrl => null;
+
   /// 서버에서 프로젝트 정보 가져오기 (토큰 필요)
   Future<void> findProject() async {
     try {

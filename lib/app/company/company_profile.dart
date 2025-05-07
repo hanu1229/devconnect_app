@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../component/custom_imgpicker.dart';
 import '../component/custom_menutabs.dart';
+import '../layout/main_app.dart';
 
 class Companyprofile extends StatefulWidget{
 
@@ -32,7 +33,6 @@ class _CompanyProfileState extends State< Companyprofile >{
   Dio dio = Dio();
 
   // 상태변수
-  int mno = 0;
   XFile? profileImage;        // 이미지 파일 받기
   String? profileImageUrl;    // 이미지 url 받기
   // 수정 상태 확인
@@ -55,7 +55,7 @@ class _CompanyProfileState extends State< Companyprofile >{
         onInfo( token );
       });
     }else{
-      // Navigator.pushReplacement( context, MaterialPageRoute(builder: ( context ) =>  ) )
+      widget.changePage(0);
     }
   } // f end
 
@@ -122,26 +122,201 @@ class _CompanyProfileState extends State< Companyprofile >{
     }catch( e ){ print( e ); }
   } // f end
 
-  //회원삭제 상태 변경 // 삭제함수 수정해야함 기본 틀만 만들어 놓음
 
-  void onDelete() async{
+  // 로그아웃 로그아웃부분 token 검사후 배열에 넣은 info data 받아옴
+  void logOut() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
-    final sendData={
-          'cid' : info['cid'],
-          'cpwd' : info['cpwd']
-    };
+    if( token == null ){ return; }
+    dio.options.headers['Authorization'] = token;
+    final response = await dio.get("${serverPath}/api/company/logout");
+    await prefs.remove('token');
+    final data = response.data;
+    isLogIn = false;
+    setState(() {
+      info = {};
+      Navigator.pushReplacement( context, MaterialPageRoute(builder: (context) => MainApp() ) );
+    });
+  } // f end
 
-    try{
-      dio.options.headers['Authorization'] = token;
-      final response = await dio.put("${serverPath}/api/company/delete" , data: sendData);
-      bool result = response.data;
-      if(!result) {print("삭제성공");
-      }else{print("삭제실패");}
 
-    }catch(e){print(e);}
 
+  // 비밀번호 수정 다이얼로그
+  void updateCpw(BuildContext context) {
+    final TextEditingController currnetPwdController = TextEditingController();
+    final TextEditingController newPwdController = TextEditingController();
+    final TextEditingController confirmNewPwdController = TextEditingController();
+
+    if(newPwdController.text != confirmNewPwdController.text){return;}
+
+    //비밀번호 수정함수
+    void onUpdateCpw() async {
+      final sendData = {
+        'cpwd' : currnetPwdController.text,
+        'upcpwd' : newPwdController.text,
+      };
+
+      print("비밀번호 수정함수 부분 : $sendData");
+
+      try{
+        final prefs = await SharedPreferences.getInstance();
+        final token = prefs.getString('token');
+
+        dio.options.headers['Authorization'] = token;
+        final response = await dio.put("${serverPath}/api/company/pwupdate" , data: sendData);
+
+        if(response.data == true){
+          Navigator.pop(context);
+          logOut();
+          widget.changePage(0);
+        }
+      }catch(e){print(e);}
+    }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("비밀번호 변경"),
+              SizedBox( height: 7,),
+              Divider(),
+            ],
+          ),
+          content: SizedBox(
+            width: 350,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("현재 비밀번호"),
+                SizedBox( height: 10,),
+                CustomTextField(
+                  controller: currnetPwdController,
+                  obscureText: true,
+                ),
+                SizedBox( height: 15,),
+
+                Text("변경할 비밀번호"),
+                SizedBox( height: 10,),
+                CustomTextField(
+                  controller:  newPwdController,
+                  obscureText: true,
+                ),
+                SizedBox( height: 15,),
+
+                Text("비밀번호 확인"),
+                SizedBox( height: 10,),
+                CustomTextField(
+                  controller: confirmNewPwdController,
+                  obscureText: true,
+                ),
+
+              ],
+            ),
+          ),
+          actions: [
+            CustomOutlineButton(
+                onPressed: () => { Navigator.pop( context ) },
+                title: "취소"
+            ),
+            CustomTextButton(
+                onPressed: onUpdateCpw,
+                title: "저장"
+            ),
+          ],
+        );
+      },
+    );
   }
+
+
+
+
+  //회원삭제  //상태변경으로 변경
+void CustomDialog(BuildContext context) {
+    final TextEditingController customPwdController = TextEditingController();
+
+  void onDelete() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    print("삭제함수 토큰 확인 : $token");
+
+    final sendData = {
+      'cid': info['cid'],
+      'cpwd': customPwdController.text
+    };
+    print("sendData확인:$sendData");
+    try {
+      dio.options.headers['Authorization'] = token;
+      final response = await dio.put(
+          "${serverPath}/api/company/state", data: sendData);
+      bool result = response.data;
+      if (!result) {
+        print("변경실패");
+
+      } else {
+        print("변경성공");
+        Navigator.pop(context);
+        logOut();
+
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("정말 삭제하시겠습니까?"),
+              SizedBox( height: 7,),
+              Divider(),
+            ],
+          ),
+
+          content: SizedBox(
+            width: 350,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+
+                Text("기존 비밀번호"),
+                SizedBox( height: 10,),
+                CustomTextField(
+                  controller: customPwdController,
+                  obscureText: true,
+                ),
+                SizedBox( height: 15,),
+
+              ],
+            ),
+          ),
+          actions: [
+            CustomOutlineButton(
+                onPressed: () => { Navigator.pop( context ) },
+                title: "취소"
+            ),
+            CustomTextButton(
+                onPressed: onDelete,
+                title: "저장"
+            ),
+          ],
+        );
+      },
+    );
+
+
+}
 
 
 
@@ -289,13 +464,14 @@ class _CompanyProfileState extends State< Companyprofile >{
         Text("비밀번호", style: TextStyle( fontSize: 18, fontWeight: FontWeight.bold, ), ),
         SizedBox( height: 15 ,),
 
-        // 두번째 Card
+
+        // 두번째 Card // 비밀번호 변경 card
         CustomCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text("최근 업데이트 : ${info['updateAt'].split('T')[0]}", // 스플라이스 개념 헷갈리는듯 다시하기
-                style: TextStyle( fontSize: 15, ),
+                style: TextStyle( fontSize: 15, fontWeight: FontWeight.bold, color: Colors.grey),
               ),
               SizedBox( height: 5 ,),
 
@@ -308,7 +484,7 @@ class _CompanyProfileState extends State< Companyprofile >{
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   CustomOutlineButton(
-                    onPressed: () => { setState(() => { isUpdate = false }) },
+                    onPressed: () => { setState(() => { updateCpw(context) }) },
                     title: "비밀번호 변경",
                     width: 150,
                   ),
@@ -346,7 +522,7 @@ class _CompanyProfileState extends State< Companyprofile >{
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     CustomTextButton(
-                      onPressed: () => { setState(() => { isUpdate = false }) },
+                      onPressed: () => { CustomDialog(context) }, // 삭제 실행후 이동경로
                       title: "회원 탈퇴",
                       width: 90,
                       color: Colors.red,

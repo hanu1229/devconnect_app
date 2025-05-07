@@ -37,7 +37,7 @@ class _CompanyMainApp extends State<CompanyMainApp> {
     final List<Widget> pages = [
       Home(),
       WriteProject(changePage : changePage),
-      Profile(changePage: changePage,), // 가운데 탭
+      Companyprofile(changePage: changePage,), // 가운데 탭
       ViewProject(), // 내프로젝트
       Text("게시물"),
       RatingMain(), // 5 : 평가페이지 이이후부터

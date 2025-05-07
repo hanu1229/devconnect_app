@@ -131,7 +131,7 @@ class _ProfileState extends State< Profile >{
           final token = prefs.getString('token');
 
           dio.options.headers['Authorization'] = token;
-          final response = await dio.put("${serverPath}/api/developer/");
+          final response = await dio.put("${serverPath}/api/develㄹoper");
         }catch( e ){ print( e ); }
 
     } // f end
