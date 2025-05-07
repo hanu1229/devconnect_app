@@ -1,6 +1,7 @@
 // projectjoin_company_view.dart : 기업이 본인 프로젝트에 따른 신청 현황을 보는 페이지
 
 import "package:devconnect_app/app/component/custom_card.dart";
+import "package:devconnect_app/style/app_colors.dart";
 import "package:devconnect_app/style/server_path.dart";
 import "package:dio/dio.dart";
 import "package:flutter/material.dart";
@@ -51,7 +52,11 @@ class _ViewProjectJoinState extends State<ViewProjectJoin> {
       if(data.length < size) { hasNext = false; }
       if(response.statusCode == 200 && data != null) {
         setState(() {
-          joinList.addAll(data["content"]);
+          if(page == 0) {
+            joinList = data["content"];
+          } else {
+            joinList.addAll(data["content"]);
+          }
           // 페이지 증가
           page += 1;
         });
@@ -60,6 +65,78 @@ class _ViewProjectJoinState extends State<ViewProjectJoin> {
       print(e);
     } finally {
       setState(() { isLoading = false; });
+    }
+  }
+
+  /// 신청한 개발자 상태 변경 함수
+  Future<void> updateProjectJoin({required BuildContext context, required int pjno, required int pjtype}) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString("token");
+      final sendData = {
+        "pjno" : pjno,
+        "pjtype" : pjtype,
+      };
+      print(">> sendData = $sendData");
+      final options = Options(headers : {"Authorization" : token});
+      final response = await dio.put("$serverPath/api/project-join", data : sendData, options : options);
+      final data = response.data;
+      if(response.statusCode == 200 && data == true) {
+        showModalBottomSheet(
+          context: context,
+          isDismissible : false,
+          enableDrag : false,
+          builder: (context) {
+            return SafeArea(
+              child: Container(
+                margin : EdgeInsets.all(16),
+                height : 100,
+                width : MediaQuery.of(context).size.width,
+                decoration : BoxDecoration(
+                  color : AppColors.bgColor,
+                  borderRadius : BorderRadius.all(Radius.circular(12)),
+                ),
+                child : Center(
+                  child : Padding(
+                    padding: EdgeInsets.symmetric(vertical : 16),
+                    child : Column(
+                      mainAxisAlignment : MainAxisAlignment.spaceAround,
+                      children : [
+                        Container(
+                          padding : EdgeInsets.only(left : 16, top : 0, right : 16, bottom : 0),
+                          width : MediaQuery.of(context).size.width,
+                          child : ElevatedButton(
+                            onPressed : () {
+                              setState( () {
+                                page = 0;
+                                hasNext = true;
+                                findProjectJoin();
+                              });
+                              // 모달창 삭제
+                              Navigator.pop(context);
+                              return;
+                            },
+                            style : ElevatedButton.styleFrom(
+                              backgroundColor : AppColors.buttonColor,
+                              shape : RoundedRectangleBorder(
+                                borderRadius : BorderRadius.circular(12),
+                              ),
+                            ),
+                            child : Text("확인", style : TextStyle(color : AppColors.buttonTextColor)),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+          backgroundColor : Colors.transparent,
+        );
+      }
+    } catch(e) {
+      print(e);
     }
   }
 
@@ -109,20 +186,156 @@ class _ViewProjectJoinState extends State<ViewProjectJoin> {
                           break;
                       }
                       return GestureDetector(
-                        onTap : () {
-                          print("클릭 $index!");
+                        onLongPress : () {
+                          if(developer["pjtype"] == 0) {
+                            showModalBottomSheet(
+                              context: context,
+                              // 모달창 바깥 터치 막음
+                              isDismissible: false,
+                              // 드래그로 닫히지 않게 막음
+                              enableDrag: false,
+                              builder: (context) {
+                                return SafeArea(
+                                  child: Container(
+                                    margin: EdgeInsets.all(16),
+                                    height: 230,
+                                    width: MediaQuery.of(context).size.width,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.bgColor,
+                                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                                    ),
+                                    child: Center(
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(vertical: 16),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment
+                                              .spaceAround,
+                                          children: [
+                                            // 수락 버튼
+                                            Container(
+                                              padding: EdgeInsets.only(left: 16, top: 0, right: 16, bottom: 0),
+                                              width: MediaQuery.of(context).size.width,
+                                              child: ElevatedButton(
+                                                onPressed: () {
+                                                  // 모달창 삭제
+                                                  Navigator.pop(context);
+                                                  setState(() { updateProjectJoin(context: context, pjno: developer["pjno"], pjtype: 1); });
+                                                  return;
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: AppColors.buttonColor,
+                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12),),
+                                                ),
+                                                child: Text("수락", style: TextStyle(color: AppColors.buttonTextColor, fontSize: 20,),),
+                                              ),
+                                            ),
+                                            // 거절 버튼
+                                            Container(
+                                              padding: EdgeInsets.only(left: 16, top: 0, right: 16, bottom: 0),
+                                              width: MediaQuery.of(context).size.width,
+                                              child: ElevatedButton(
+                                                onPressed: () {
+                                                  // 모달창 삭제
+                                                  Navigator.pop(context);
+                                                  setState(() { updateProjectJoin(context: context, pjno: developer["pjno"], pjtype: 2); });
+                                                  return;
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.red,
+                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12),),
+                                                ),
+                                                child: Text("거절", style: TextStyle(color: AppColors.buttonTextColor, fontSize: 20,),),
+                                              ),
+                                            ),
+                                            // 취소 버튼
+                                            Container(
+                                              padding: EdgeInsets.only(left: 16, top: 0, right: 16, bottom: 0),
+                                              width: MediaQuery.of(context).size.width,
+                                              child: ElevatedButton(
+                                                onPressed: () {
+                                                  // 모달창 삭제
+                                                  Navigator.pop(context);
+                                                  return;
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.grey,
+                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12),),
+                                                ),
+                                                child: Text("취소", style: TextStyle(color: AppColors.buttonTextColor, fontSize: 20,),),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                              backgroundColor: Colors.transparent,
+                            );
+                          } else {
+                            showModalBottomSheet(
+                              context: context,
+                              builder: (context) {
+                                return SafeArea(
+                                  child: Container(
+                                    margin: EdgeInsets.all(16),
+                                    height: 100,
+                                    width: MediaQuery.of(context).size.width,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.bgColor,
+                                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                                    ),
+                                    child: Center(
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(vertical: 16),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                          children: [
+                                            // 확인 버튼
+                                            Container(
+                                              padding: EdgeInsets.only(left: 16, top: 0, right: 16, bottom: 0),
+                                              width: MediaQuery.of(context).size.width,
+                                              child: ElevatedButton(
+                                                onPressed: () {
+                                                  // 모달창 삭제
+                                                  Navigator.pop(context);
+                                                  return;
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: AppColors.buttonColor,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius
+                                                        .circular(12),
+                                                  ),
+                                                ),
+                                                child: Text("확인", style: TextStyle(color: AppColors.buttonTextColor, fontSize: 20,),),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                              backgroundColor: Colors.transparent,
+                            );
+                          }
                         },
                         child : CustomCard(
                           elevation : 0,
                           child : Row(
                             mainAxisAlignment : MainAxisAlignment.spaceBetween,
                             children: [
-                              Column(
-                                crossAxisAlignment : CrossAxisAlignment.start,
-                                children : [
-                                  Text("상태 : ${state ?? ""}", style : TextStyle(fontSize : 20,),),
-                                  Text("이름(레벨) : ${developer["dname"]}(${developer["dlevel"]})", style : TextStyle(fontSize : 20,),),
-                                ],
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment : CrossAxisAlignment.start,
+                                  children : [
+                                    Text("상태 : ${state ?? ""}", style : TextStyle(fontSize : 20,),),
+                                    Text("이름(레벨) : ${developer["dname"]}(${developer["dlevel"]})", style : TextStyle(fontSize : 20,),),
+                                  ],
+                                ),
                               ),
                               Text("평점 : ${developer["davg"]}", style : TextStyle(fontSize : 20,),),
                             ],

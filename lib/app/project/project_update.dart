@@ -33,7 +33,7 @@ class _UpdateProjectState extends State<UpdateProject> {
   String nowDate = DateTime.now().toString().split(" ")[0];
 
   List<String> ptypeList = ["전체", "백엔드", "프론트엔드"];
-  String? ptypeValue;
+  int? ptypeValue;
 
   DateTime parseDate(String date) => DateTime.parse(date);
 
@@ -52,12 +52,10 @@ class _UpdateProjectState extends State<UpdateProject> {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString("token");
-      int index = ptypeList.indexOf(ptypeValue!);
-      if(index == -1) { return; }
       Map<String, dynamic> sendData = {
         "pno" : widget.project["pno"],
         "pname" : pnameController.text,
-        "ptype" : index,
+        "ptype" : ptypeValue,
         "pcount" : int.parse(pcountController.text),
         "pstart" : parseDate(pstart!).toIso8601String(),
         "pend" : parseDate(pend!).toIso8601String(),
@@ -128,22 +126,11 @@ class _UpdateProjectState extends State<UpdateProject> {
   @override
   void initState() {
     super.initState();
+    print(widget.project["ptype"].runtimeType);
     print(widget.project);
     print(">> ${widget.project["pno"].runtimeType}");
-    int ptype = widget.project["ptype"];
-    switch(ptype) {
-      case 0 :
-        ptypeValue = "전체";
-        break;
-      case 1:
-        ptypeValue = "백엔드";
-        break;
-      case 2:
-        ptypeValue = "프론트엔드";
-        break;
-    }
     pnameController.text = widget.project["pname"];
-    // ptypeValue =  widget.project["ptype"];
+    ptypeValue = widget.project["ptype"];
     pcountController.text = widget.project["pcount"].toString();
     pstart = widget.project["pstart"].toString().split("T")[0];
     pend = widget.project["pend"].toString().split("T")[0];
@@ -210,25 +197,26 @@ class _UpdateProjectState extends State<UpdateProject> {
                         padding: const EdgeInsets.symmetric(vertical : 10),
                         child: Text("직무", style : TextStyle(fontFamily : "NanumGothic", fontWeight : FontWeight.bold, fontSize : 20,),),
                       ),
-                      DropdownButtonFormField(
-                        value : ptypeValue,
-                        dropdownColor : Colors.white,
-                        decoration : InputDecoration(
-                          hintText : "직무",
-                          enabledBorder : OutlineInputBorder(borderSide : BorderSide(color : AppColors.borderColor, width : 1),),
-                          border : OutlineInputBorder(borderSide : BorderSide(color : AppColors.borderColor, width : 1),),
-                          focusedBorder : OutlineInputBorder(borderSide : BorderSide(color : AppColors.focusColor, width : 1),),
+                      Container(
+                        decoration : BoxDecoration(
+                          borderRadius : BorderRadius.circular(6),
+                          border : Border.all(color : Colors.black, width : 1),
                         ),
-                        items: ptypeList.map((item) {
-                          return DropdownMenuItem<String>(
-                            value : item,
-                            child : Text(item),
-                          );
-                        }).toList(),
-                        onChanged: (String? value) {
-                          setState(() { ptypeValue = value; });
-                        },
-                        validator: (value) => value == null ? '값을 선택해주세요' : null,
+                        child: DropdownButton(
+                          padding : EdgeInsets.symmetric(horizontal : 8),
+                          isExpanded : true,
+                          // 테두리가 없어서 대체로 사용
+                          elevation : 9,
+                          dropdownColor : Colors.white,
+                          value : ptypeValue,
+                          onChanged: (value) { setState(() { ptypeValue = value; print(ptypeValue); }); },
+                          underline : SizedBox.shrink(),
+                          items: [
+                            DropdownMenuItem(value : 0, child : Text("전체"),),
+                            DropdownMenuItem(value : 1, child : Text("백엔드"),),
+                            DropdownMenuItem(value : 2, child : Text("프론트엔드"),),
+                          ],
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical : 10),
