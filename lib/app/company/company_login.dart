@@ -83,7 +83,6 @@ class _CompanyLogin extends State<Companylogin>{
       backgroundColor: Color(0xFF0078FF),
       resizeToAvoidBottomInset : false,
       body: Container(
-        height: 420,
         padding: EdgeInsets.fromLTRB(30, 50, 30, 120),
         margin: EdgeInsets.fromLTRB(30, 100, 30, 0),  // left, top , light, bottom
         decoration: BoxDecoration(

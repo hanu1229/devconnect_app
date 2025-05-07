@@ -4,6 +4,7 @@ import 'package:devconnect_app/app/component/custom_outlinebutton.dart';
 import 'package:devconnect_app/app/component/custom_scrollview.dart';
 import 'package:devconnect_app/app/component/custom_textbutton.dart';
 import 'package:devconnect_app/app/component/custom_textfield.dart';
+import 'package:devconnect_app/app/layout/company_main_app.dart';
 import 'package:devconnect_app/style/server_path.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -123,7 +124,7 @@ class _CompanyProfileState extends State< Companyprofile >{
   } // f end
 
 
-  // 로그아웃 로그아웃부분 token 검사후 배열에 넣은 info data 받아옴
+  // 로그아웃 로그아웃부분 token 검사후 배열에 넣은 info data 받아옴 //이거 안만들어도 됨  await prefs.remove('token');
   void logOut() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
@@ -149,14 +150,14 @@ class _CompanyProfileState extends State< Companyprofile >{
 
     if(newPwdController.text != confirmNewPwdController.text){return;}
 
-    //비밀번호 수정함수
+    //비밀번호 수정함수 틀렸을시 주석한곳 확인하기
     void onUpdateCpw() async {
       final sendData = {
         'cpwd' : currnetPwdController.text,
         'upcpwd' : newPwdController.text,
       };
 
-      print("비밀번호 수정함수 부분 : $sendData");
+      //print("비밀번호 수정함수 부분 : $sendData");
 
       try{
         final prefs = await SharedPreferences.getInstance();
@@ -164,11 +165,10 @@ class _CompanyProfileState extends State< Companyprofile >{
 
         dio.options.headers['Authorization'] = token;
         final response = await dio.put("${serverPath}/api/company/pwupdate" , data: sendData);
-
+        //print("비밀번호 수정함수 부분 신호 받는지 : $response");
         if(response.data == true){
-          Navigator.pop(context);
-          logOut();
-          widget.changePage(0);
+
+          Navigator.pushReplacement( context, MaterialPageRoute(builder: (context) => CompanyMainApp() ) );
         }
       }catch(e){print(e);}
     }
@@ -250,18 +250,23 @@ void CustomDialog(BuildContext context) {
       'cpwd': customPwdController.text
     };
     print("sendData확인:$sendData");
+
     try {
       dio.options.headers['Authorization'] = token;
       final response = await dio.put(
           "${serverPath}/api/company/state", data: sendData);
       bool result = response.data;
+        print(result);
+
       if (!result) {
         print("변경실패");
+
 
       } else {
         print("변경성공");
         Navigator.pop(context);
-        logOut();
+        //logOut();
+        await prefs.remove('token');
 
       }
     } catch (e) {
@@ -277,7 +282,7 @@ void CustomDialog(BuildContext context) {
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("정말 삭제하시겠습니까?"),
+              Text("정말 탈퇴하시겠습니까?"),
               SizedBox( height: 7,),
               Divider(),
             ],
@@ -296,6 +301,7 @@ void CustomDialog(BuildContext context) {
                   controller: customPwdController,
                   obscureText: true,
                 ),
+
                 SizedBox( height: 15,),
 
               ],

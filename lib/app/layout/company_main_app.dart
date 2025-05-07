@@ -1,19 +1,18 @@
-import 'package:devconnect_app/app/company/Company_appraise.dart';
 import 'package:devconnect_app/app/company/company_login.dart';
 import 'package:devconnect_app/app/company/company_bottombar.dart';
 import 'package:devconnect_app/app/company/company_profile.dart';
 import 'package:devconnect_app/app/developer/developer_login.dart';
-import 'package:devconnect_app/app/developer/profile.dart';
 import 'package:devconnect_app/app/layout/home.dart';
 import 'package:devconnect_app/app/project/project_view.dart';
 import 'package:devconnect_app/app/project/project_write.dart';
 import 'package:devconnect_app/app/rating/rating_main.dart';
-import 'package:devconnect_app/app/rating/rating_view.dart';
 import 'package:devconnect_app/style/app_colors.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../developer/profile.dart';
 
 class CompanyMainApp extends StatefulWidget {
   @override
@@ -37,7 +36,7 @@ class _CompanyMainApp extends State<CompanyMainApp> {
     final List<Widget> pages = [
       Home(),
       WriteProject(changePage : changePage),
-      Companyprofile(changePage: changePage,), // 가운데 탭
+      Profile(changePage: changePage,), // 가운데 탭
       ViewProject(), // 내프로젝트
       Text("게시물"),
       RatingMain(), // 5 : 평가페이지 이이후부터
@@ -48,9 +47,10 @@ class _CompanyMainApp extends State<CompanyMainApp> {
       Companylogin(), // 7 : 기업 로그인 페이지
       Companyprofile( changePage : changePage ),// 8 : 기업 프로파일
       ViewProject(), // 9 : 프로젝트 페이지
-      CompanyAppraise(changePage: changePage) // 10 : 기업 평가페이지
+
 
     ];
+    print("pages : $pages" );
 
     // 앱바 제목
     final List<String> pageTitle = [
@@ -65,7 +65,7 @@ class _CompanyMainApp extends State<CompanyMainApp> {
       '기업 로그인', // 7
       '기업 평가 목록', // 8
       '내 프로젝트', // 9
-      '기업 관리페이지'
+
     ];
 
     return Scaffold(
