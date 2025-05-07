@@ -140,6 +140,7 @@ class _Profile_Project extends State< Profile_Project >{
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      backgroundColor: Color( 0xfffbfbfb ),
       body: Padding(
         padding: EdgeInsets.all( 20 ),
         child: Column(
@@ -176,10 +177,10 @@ class _Profile_Project extends State< Profile_Project >{
                         padding : EdgeInsets.only(left : 16, top : 16, right : 16),
                         child : Card(
                           color : AppColors.bgColor,
-                          elevation : 5,
+                          elevation : 0,
                           shape : RoundedRectangleBorder(
                             borderRadius : BorderRadius.circular(10),
-                            side : BorderSide(color : Color(0xFFD9D9D9), width : 2,),
+                            side : BorderSide(color : Color(0xFFD9D9D9), width : 1,),
                           ),
                           child : Padding(
                             padding : EdgeInsets.symmetric(vertical : 10),
@@ -223,8 +224,6 @@ class _Profile_Project extends State< Profile_Project >{
               ),
             ),
             SizedBox( height: 30,),
-
-
 
             SizedBox(height: 50 + MediaQuery.of(context).padding.bottom),
 

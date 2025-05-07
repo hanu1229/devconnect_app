@@ -41,7 +41,6 @@ class _ProfileState extends State< Profile >{
     loginCheck();
   } // f end
 
-
   // 로그인 상태 확인
   bool? isLogIn;
 
@@ -114,7 +113,30 @@ class _ProfileState extends State< Profile >{
         });
       }
     }catch( e ){ print( e ); }
+    dpwdController = TextEditingController(text: "");
   } // f end
+
+  // 탈퇴하기
+  void onDelete() async {
+    try{
+      final sendData = {
+        "dno" : developer['dno'],
+        "dpwd" : dpwdController.text
+      };
+
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+
+      dio.options.headers['Authorization'] = token;
+      final response = await dio.put("${serverPath}/api/developer/delete", data: sendData);
+      final data = response.data;
+      if( data ){
+        await prefs.remove('token');
+        widget.changePage(0);
+      }
+    }catch( e ){ print( e ); }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -227,7 +249,8 @@ class _ProfileState extends State< Profile >{
                   children: [
 
                     CustomOutlineButton(
-                      onPressed: () => { setState(() => { isUpdate = false }) },
+                      onPressed: () => { setState(() => {
+                        isUpdate = false, dpwdController = TextEditingController( text: "" ), }) },
                       title: "취소",
                     ),
                     SizedBox( width: 15,),
@@ -299,7 +322,7 @@ class _ProfileState extends State< Profile >{
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    CustomTextButton(
+                    CustomOutlineButton(
                       onPressed: () => { setState(() => { isUpdate = false }) },
                       title: "등록",
                     ),
@@ -326,7 +349,7 @@ class _ProfileState extends State< Profile >{
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    CustomTextButton(
+                    CustomOutlineButton(
                       onPressed: () => { setState(() => { isUpdate = false }) },
                       title: "등록",
                     ),
@@ -364,7 +387,7 @@ class _ProfileState extends State< Profile >{
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     CustomTextButton(
-                      onPressed: () => { setState(() => { isUpdate = false }) },
+                      onPressed: onDelete,
                       title: "회원 탈퇴",
                       width: 90,
                       color: Colors.red,
