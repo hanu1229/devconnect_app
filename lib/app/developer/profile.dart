@@ -117,9 +117,6 @@ class _ProfileState extends State< Profile >{
     dpwdController = TextEditingController(text: "");
   } // f end
 
-  // 비밀번호 수정 다이얼로그
-
-
   // 탈퇴하기
   void onDelete() async {
     try{
