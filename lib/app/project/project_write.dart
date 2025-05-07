@@ -1,5 +1,7 @@
 // project_write.dart : 프로젝트 등록 페이지
 
+import "dart:io";
+
 import "package:devconnect_app/app/component/custom_card.dart";
 import "package:devconnect_app/app/layout/main_app.dart";
 import "package:devconnect_app/style/app_colors.dart";
@@ -8,6 +10,7 @@ import "package:fluttertoast/fluttertoast.dart";
 import "package:dio/dio.dart";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
+import "package:image_picker/image_picker.dart";
 import "package:shared_preferences/shared_preferences.dart";
 
 class WriteProject extends StatefulWidget {
@@ -47,7 +50,7 @@ class _WriteProjectState extends State<WriteProject> {
   String nowDate = DateTime.now().toString().split(" ")[0];
 
   List<String> ptypeList = ["전체", "백엔드", "프론트엔드"];
-  String? ptypeValue;
+  int? ptypeValue = 0;
 
   DateTime parseDate(String date) => DateTime.parse(date);
   
@@ -134,15 +137,11 @@ class _WriteProjectState extends State<WriteProject> {
     try {
       SharedPreferences pref = await SharedPreferences.getInstance();
       final token = pref.getString("token");
-      int ptype = 0;
-      if(ptypeValue == "전체") { ptype = 0; }
-      else if(ptypeValue == "백엔드") { ptype = 1; }
-      else if(ptypeValue == "프론트엔드") { ptype = 2; }
       final formData = FormData.fromMap({
         "pname" : pnameController.text,
         "pintro" : pintroController.text,
         "pcomment" : pcommentController.text,
-        "ptype" : ptype,
+        "ptype" : ptypeValue,
         "pcount" : int.parse(pcountController.text),
         "pstart" : parseDate(pstart!).toIso8601String(),
         "pend" : parseDate(pend!).toIso8601String(),
@@ -150,6 +149,10 @@ class _WriteProjectState extends State<WriteProject> {
         "recruit_pend" : parseDate(rpend!).toIso8601String(),
         "ppay" : ppayController.text,
       });
+      for(XFile image in selectedImage) {
+        final file = await MultipartFile.fromFile(image.path, filename : image.name);
+        formData.files.add(MapEntry("files", file));
+      }
       print(formData);
       final response = await dio.post(
         "$serverPath/api/project",
@@ -196,7 +199,7 @@ class _WriteProjectState extends State<WriteProject> {
                                 borderRadius : BorderRadius.circular(12),
                               ),
                             ),
-                            child : Text("확인", style : TextStyle(color : AppColors.buttonTextColor)),
+                            child : Text("확인", style : TextStyle(color : AppColors.buttonTextColor, fontSize : 20)),
                           ),
                         )
                       ],
@@ -231,6 +234,42 @@ class _WriteProjectState extends State<WriteProject> {
     }
   }
 
+  /// 이미지 피커
+  List<XFile> selectedImage = [];
+  void onSelectImage() async {
+    try {
+      ImagePicker picker = ImagePicker();
+      // 사용자가 선택한 이미지들을 XFile 파일로 반환
+      List<XFile> pickerFiles = await picker.pickMultiImage();
+      if(pickerFiles.isNotEmpty) { setState(() { selectedImage = pickerFiles; }); }
+    } catch(e) {
+      print(e);
+    }
+  }
+
+  /// 선택한 이미지 미리보기 함수
+  Widget ImagePreview() {
+    return Container(
+      height : 100,
+      child : ListView.builder(
+          scrollDirection : Axis.horizontal,
+          itemCount : selectedImage.length,
+          itemBuilder : (context, index) {
+            final XFile xFile = selectedImage[index];
+            return Padding(
+              padding : EdgeInsets.all(5),
+              child : Container(
+                width : 100,
+                height : 100,
+                decoration : BoxDecoration(border : Border.all(color : Colors.black, width : 1,),),
+                child : Image.file(File(xFile.path)),
+              ),
+            );
+          }
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -255,25 +294,26 @@ class _WriteProjectState extends State<WriteProject> {
                         padding: const EdgeInsets.symmetric(vertical : 10),
                         child: Text("직무", style : TextStyle(fontFamily : "NanumGothic", fontWeight : FontWeight.bold, fontSize : 20,),),
                       ),
-                      DropdownButtonFormField(
-                        value : ptypeValue,
-                        dropdownColor : Colors.white,
-                        decoration : InputDecoration(
-                          hintText : "직무",
-                          enabledBorder : OutlineInputBorder(borderSide : BorderSide(color : AppColors.borderColor, width : 1),),
-                          border : OutlineInputBorder(borderSide : BorderSide(color : AppColors.borderColor, width : 1),),
-                          focusedBorder : OutlineInputBorder(borderSide : BorderSide(color : AppColors.focusColor, width : 1),),
+                      Container(
+                        decoration : BoxDecoration(
+                          borderRadius : BorderRadius.circular(6),
+                          border : Border.all(color : Colors.black, width : 1),
                         ),
-                        items: ptypeList.map((item) {
-                          return DropdownMenuItem<String>(
-                            value : item,
-                            child : Text(item),
-                          );
-                        }).toList(),
-                        onChanged: (String? value) {
-                          setState(() { ptypeValue = value; });
-                        },
-                        validator: (value) => value == null ? '값을 선택해주세요' : null,
+                        child: DropdownButton(
+                          padding : EdgeInsets.symmetric(horizontal : 8),
+                          isExpanded : true,
+                          // 테두리가 없어서 대체로 사용
+                          elevation : 9,
+                          dropdownColor : Colors.white,
+                          value : ptypeValue,
+                          onChanged: (value) { setState(() { ptypeValue = value; print(ptypeValue); }); },
+                          underline : SizedBox.shrink(),
+                          items: [
+                            DropdownMenuItem(value : 0, child : Text("전체"),),
+                            DropdownMenuItem(value : 1, child : Text("백엔드"),),
+                            DropdownMenuItem(value : 2, child : Text("프론트엔드"),),
+                          ],
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical : 10),
@@ -418,7 +458,7 @@ class _WriteProjectState extends State<WriteProject> {
                       customTextFieldUpdate(labelText : "간단한 소개", controller : pintroController),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical : 10),
-                        child: Text("내용", style : TextStyle(fontFamily : "NanumGothic", fontSize : 20,),),
+                        child: Text("내용", style : TextStyle(fontFamily : "NanumGothic", fontWeight : FontWeight.bold, fontSize : 20,),),
                       ),
                       // customTextFieldUpdate(labelText : "내용", controller : null),
                       TextField(
@@ -433,9 +473,27 @@ class _WriteProjectState extends State<WriteProject> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical : 10),
-                        child: Text("급여(만원)", style : TextStyle(fontFamily : "NanumGothic", fontSize : 20,),),
+                        child: Text("급여(만원)", style : TextStyle(fontFamily : "NanumGothic", fontWeight : FontWeight.bold, fontSize : 20,),),
                       ),
                       customTextFieldUpdate(labelText : "급여(만원)", controller : ppayController, numberKey : true),
+                    ],
+                  ),
+                ),
+                SizedBox(height : 20),
+                // 이미지 추가
+                CustomCard(
+                  elevation : 0,
+                  child : Column(
+                    crossAxisAlignment : CrossAxisAlignment.start,
+                    children : [
+                      Text("이미지 추가", style : TextStyle(fontFamily : "NanumGothic", fontWeight : FontWeight.bold, fontSize : 20,),),
+                      TextButton.icon(
+                        onPressed : () { onSelectImage(); },
+                        icon : Icon(Icons.image),
+                        label : Text("이미지 선택 : ${selectedImage.length}"),
+                      ),
+                      // 이미지 미리보기
+                      ImagePreview(),
                     ],
                   ),
                 ),

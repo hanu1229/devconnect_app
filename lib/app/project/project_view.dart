@@ -195,9 +195,12 @@ class _ViewProjectState extends State<ViewProject> {
                                             return;
                                           },
                                           style : ElevatedButton.styleFrom(
-                                            backgroundColor : Colors.black,
+                                            backgroundColor : Colors.deepPurpleAccent,
+                                            shape : RoundedRectangleBorder(
+                                              borderRadius : BorderRadius.circular(12),
+                                            ),
                                           ),
-                                          child : Text("신청 현황", style : TextStyle(color : AppColors.buttonTextColor)),
+                                          child : Text("신청 현황", style : TextStyle(color : AppColors.buttonTextColor, fontSize : 20)),
                                         ),
                                       ),
                                       // 수정 버튼
@@ -216,8 +219,11 @@ class _ViewProjectState extends State<ViewProject> {
                                           },
                                           style : ElevatedButton.styleFrom(
                                             backgroundColor : AppColors.buttonColor,
+                                            shape : RoundedRectangleBorder(
+                                              borderRadius : BorderRadius.circular(12),
+                                            ),
                                           ),
-                                          child : Text("수정하기", style : TextStyle(color : AppColors.buttonTextColor)),
+                                          child : Text("수정하기", style : TextStyle(color : AppColors.buttonTextColor, fontSize : 20)),
                                         ),
                                       ),
                                       // 삭제 버튼
@@ -230,8 +236,11 @@ class _ViewProjectState extends State<ViewProject> {
                                           },
                                           style : ElevatedButton.styleFrom(
                                             backgroundColor : Colors.red,
+                                            shape : RoundedRectangleBorder(
+                                              borderRadius : BorderRadius.circular(12),
+                                            ),
                                           ),
-                                          child : Text("삭제하기", style : TextStyle(color : AppColors.buttonTextColor)),
+                                          child : Text("삭제하기", style : TextStyle(color : AppColors.buttonTextColor, fontSize : 20)),
                                         ),
                                       ),
                                     ],
