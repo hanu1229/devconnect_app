@@ -1,12 +1,10 @@
 
 import 'package:devconnect_app/app/component/custom_card.dart';
-import 'package:devconnect_app/app/component/custom_imgpicker.dart';
 import 'package:devconnect_app/app/component/custom_menutabs.dart';
 import 'package:devconnect_app/app/component/custom_outlinebutton.dart';
 import 'package:devconnect_app/app/component/custom_scrollview.dart';
 import 'package:devconnect_app/app/component/custom_textbutton.dart';
 import 'package:devconnect_app/app/component/custom_textfield.dart';
-import 'package:devconnect_app/style/app_colors.dart';
 import 'package:devconnect_app/style/server_path.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -115,6 +113,88 @@ class _ProfileState extends State< Profile >{
     }catch( e ){ print( e ); }
     dpwdController = TextEditingController(text: "");
   } // f end
+
+  // 비밀번호 수정 다이얼로그
+  void CustomPwdDialog(BuildContext context) {
+    final TextEditingController _prevPwdController = TextEditingController();
+    final TextEditingController _pwdController = TextEditingController();
+    final TextEditingController _confirmPwdController = TextEditingController();
+
+    // 비밀번호 수정 함수
+    void onPwdChange() async {
+      // 유효성 검사
+      if( _prevPwdController.text != null )
+      if( _pwdController.text != _confirmPwdController.text ){ return; }
+
+        try{
+          final prefs = await SharedPreferences.getInstance();
+          final token = prefs.getString('token');
+
+          dio.options.headers['Authorization'] = token;
+          final response = await dio.put("${serverPath}/api/developer/");
+        }catch( e ){ print( e ); }
+
+    } // f end
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("비밀번호 변경"),
+              SizedBox( height: 7,),
+              Divider(),
+            ],
+          ),
+          content: SizedBox(
+            width: 350,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("현재 비밀번호"),
+                SizedBox( height: 10,),
+                CustomTextField(
+                  controller: _prevPwdController,
+                  obscureText: true,
+                ),
+                SizedBox( height: 15,),
+
+                Text("비밀번호"),
+                SizedBox( height: 10,),
+                CustomTextField(
+                  controller: _pwdController,
+                  obscureText: true,
+                ),
+                SizedBox( height: 15,),
+
+                Text("비밀번호 확인"),
+                SizedBox( height: 10,),
+                CustomTextField(
+                  controller: _confirmPwdController,
+                  obscureText: true,
+                ),
+
+              ],
+            ),
+          ),
+          actions: [
+            CustomOutlineButton(
+                onPressed: () => { Navigator.pop( context ) },
+                title: "취소"
+            ),
+            CustomTextButton(
+                onPressed: onPwdChange,
+                title: "저장"
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   // 탈퇴하기
   void onDelete() async {
@@ -288,7 +368,7 @@ class _ProfileState extends State< Profile >{
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   CustomOutlineButton(
-                    onPressed: () => { setState(() => { isUpdate = false }) },
+                    onPressed: () => CustomPwdDialog(context),
                     title: "비밀번호 변경",
                     width: 150,
                   ),

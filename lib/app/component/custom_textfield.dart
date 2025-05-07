@@ -6,10 +6,12 @@ import 'package:flutter/material.dart';
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
   final bool readOnly;
+  final bool obscureText;
 
   const CustomTextField({
     required this.controller,
     this.readOnly = false,
+    this.obscureText = false,
     Key? key,
   }) : super(key: key);
 
@@ -21,6 +23,7 @@ class CustomTextField extends StatelessWidget {
     return TextField(
       controller: controller,
       readOnly: readOnly,
+      obscureText: obscureText,
       decoration: InputDecoration(
         filled: true,
         fillColor: AppColors.textFieldBGColor,

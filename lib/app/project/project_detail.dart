@@ -76,7 +76,7 @@ class _DetailProjectState extends State<DetailProject> {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString("token");
       if(token == null) { return; }
-      final response = await dio.post("$serverPath/api/project_join?pno=${project["pno"]}", options : Options(headers : {"Authorization" : token}));
+      final response = await dio.post("$serverPath/api/project-join?pno=${project["pno"]}", options : Options(headers : {"Authorization" : token}));
       final data = response.data;
       final statusCode = response.statusCode;
       if(statusCode == 201 && data == true) {
@@ -180,14 +180,26 @@ class _DetailProjectState extends State<DetailProject> {
                   // 제목 | 회사명
                   CustomCard(
                     elevation : 0,
-                    child : Column(
-                      crossAxisAlignment : CrossAxisAlignment.start,
-                      children : [
-                        Text("${project["pname"]}", style : TextStyle(fontSize : 20, fontWeight : FontWeight.bold),),
-                        SizedBox(height : 10),
-                        Text("${project["cname"]}", style : TextStyle(fontSize : 16, fontWeight : FontWeight.bold),),
-                        SizedBox(height : 10),
-                        Text("급여 : $pay 만원", style : TextStyle(fontSize : 16),),
+                    child : Row(
+                      children: [
+                        SizedBox(
+                          width : 100,
+                          height : 100,
+                          child: Image.network("$logoUrl/${project["cprofile"]}"),
+                        ),
+                        SizedBox(width : 20),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment : CrossAxisAlignment.start,
+                            children : [
+                              Text("${project["pname"]}", maxLines : 2, style : TextStyle(fontSize : 20, fontWeight : FontWeight.bold, overflow : TextOverflow.visible), softWrap : true,),
+                              SizedBox(height : 10),
+                              Text("${project["cname"]}", style : TextStyle(fontSize : 16, fontWeight : FontWeight.bold),),
+                              SizedBox(height : 10),
+                              Text("급여 : $pay 만원", style : TextStyle(fontSize : 16),),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -221,7 +233,7 @@ class _DetailProjectState extends State<DetailProject> {
                       children : [
                         Text("업무 소개", style : TextStyle(fontSize : 20, fontWeight : FontWeight.bold),),
                         SizedBox(height : 10),
-                        Text("${project["pcomment"]}"),
+                        Text("${project["pcomment"]}", style : TextStyle(fontSize : 16,),),
                       ],
                     ),
                   ),

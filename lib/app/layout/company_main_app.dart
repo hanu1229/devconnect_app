@@ -8,6 +8,7 @@ import 'package:devconnect_app/app/layout/home.dart';
 import 'package:devconnect_app/app/project/project_view.dart';
 import 'package:devconnect_app/app/project/project_write.dart';
 import 'package:devconnect_app/app/rating/rating_main.dart';
+import 'package:devconnect_app/app/rating/rating_view.dart';
 import 'package:devconnect_app/style/app_colors.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +51,6 @@ class _CompanyMainApp extends State<CompanyMainApp> {
       CompanyAppraise(changePage: changePage) // 10 : 기업 평가페이지
 
     ];
-    print("pages : $pages" );
 
     // 앱바 제목
     final List<String> pageTitle = [

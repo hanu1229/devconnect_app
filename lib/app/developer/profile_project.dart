@@ -105,7 +105,7 @@ class _Profile_Project extends State< Profile_Project >{
 
       // 필요한 정보만 가져오기
       dio.options.headers['Authorization'] = token;
-      final response = await dio.get("${serverPath}/api/project_join/findall?page=${page}&size=${size}");
+      final response = await dio.get("${serverPath}/api/project-join/findall?page=${page}&size=${size}");
       final data = response.data;
 
       final List<dynamic> contentData = data['content'];
