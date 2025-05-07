@@ -60,7 +60,7 @@ class _CompanyProfileState extends State< Companyprofile >{
   } // f end
 
   // 회원정보 가져오기
-  Map<String, dynamic> developer = {};
+  Map<String, dynamic> info = {};
 
   void onInfo( token ) async {
     try{
@@ -69,9 +69,10 @@ class _CompanyProfileState extends State< Companyprofile >{
       print("response : $response");
       final data = response.data;
       print("data : $data");
+
       if( data != '' ){
         setState(() {
-          developer = data;
+          info = data;
           profileImageUrl = data['cprofile']; /// 프로파일 이미지 받음
         });
       }
@@ -121,12 +122,37 @@ class _CompanyProfileState extends State< Companyprofile >{
     }catch( e ){ print( e ); }
   } // f end
 
+  //회원삭제 상태 변경 // 삭제함수 수정해야함 기본 틀만 만들어 놓음
+
+  void onDelete() async{
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    final sendData={
+          'cid' : info['cid'],
+          'cpwd' : info['cpwd']
+    };
+
+    try{
+      dio.options.headers['Authorization'] = token;
+      final response = await dio.put("${serverPath}/api/company/delete" , data: sendData);
+      bool result = response.data;
+      if(!result) {print("삭제성공");
+      }else{print("삭제실패");}
+
+    }catch(e){print(e);}
+
+  }
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
 
-    if( developer.isEmpty ){ return Center( child: CircularProgressIndicator(), ); }
+    if( info.isEmpty ){ return Center( child: CircularProgressIndicator(), ); }
 
-    final image = developer['cprofile']; // 이미지 문제 있었음
+    final image = info['cprofile']; // 이미지 문제 있었음
     String imgUrl = "${serverPath}/upload/${image}";
 
     // if( !isLogIn ){ Navigator.pushNamed( context, MainApp() ) }
@@ -160,11 +186,11 @@ class _CompanyProfileState extends State< Companyprofile >{
                 ),
                 SizedBox( height: 20, ),
 
-                Text( developer['cname'],   // 이부분 수정함
+                Text( info['cname'],   // 이부분 수정함
                     style: TextStyle( fontSize: 20, fontWeight: FontWeight.bold, ) ),
                 SizedBox( height: 12, ),
 
-                Text( developer['cemail'], // 이부분 수정함
+                Text( info['cemail'], // 이부분 수정함
                     style: TextStyle( fontSize: 15, ) ),
                 SizedBox( height: 12, ),
 
@@ -176,12 +202,12 @@ class _CompanyProfileState extends State< Companyprofile >{
                       onPressed: () => {
                         setState(() {
                           isUpdate = true;
-                          cidController.text = developer['cid'];
-                          cnameController.text = developer['cname'];
-                          cphoneController.text = developer['cphone'];
-                          cemailController.text = developer['cemail'];
-                          cadressController.text = developer['cadress'];
-                          // cbusinessController.text = developer['cbusiness'];
+                          cidController.text = info['cid'];
+                          cnameController.text = info['cname'];
+                          cphoneController.text = info['cphone'];
+                          cemailController.text = info['cemail'];
+                          cadressController.text = info['cadress'];
+                          // cbusinessController.text = info['cbusiness'];
                         }),
                       },
                       title: "수정",
@@ -268,7 +294,7 @@ class _CompanyProfileState extends State< Companyprofile >{
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("최근 업데이트 : ${developer['updateAt'].split('T')[0]}", // 스플라이스 개념 헷갈리는듯 다시하기
+              Text("최근 업데이트 : ${info['updateAt'].split('T')[0]}", // 스플라이스 개념 헷갈리는듯 다시하기
                 style: TextStyle( fontSize: 15, ),
               ),
               SizedBox( height: 5 ,),
@@ -338,7 +364,7 @@ class _CompanyProfileState extends State< Companyprofile >{
           child : Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("아이디 생성일 : ${developer['createAt'].split('T')[0]}",
+              Text("아이디 생성일 : ${info['createAt'].split('T')[0]}",
                 style: TextStyle( fontSize: 15, fontWeight: FontWeight.bold, color: Colors.grey ),
               ),
               SizedBox( height: 5 ,),

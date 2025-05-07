@@ -1,6 +1,7 @@
 import 'package:devconnect_app/app/company/company_login.dart';
 import 'package:devconnect_app/app/company/company_bottombar.dart';
 import 'package:devconnect_app/app/company/company_profile.dart';
+import 'package:devconnect_app/app/company/company_project.dart';
 import 'package:devconnect_app/app/component/custombottombar.dart';
 import 'package:devconnect_app/app/developer/developer_login.dart';
 import 'package:devconnect_app/app/developer/profile.dart';
@@ -40,13 +41,16 @@ class _CompanyMainApp extends State<CompanyMainApp> {
       Profile(changePage: changePage,), // 가운데 탭
       ViewProject(),
       Text("게시물"),
-      RatingMain(), // 5 : 평가페이지 이이후부터
+      Crating(), // 5 : 평가페이지 이이후부터
+
 
       // DeveloperLogIn( changePage: (index) { setState(() { selectedIndex = index; }); },), // 6 : 개발자 로그인 페이지
       DeveloperLogIn(), // 6 : 개발자 로그인 페이지
       Companylogin(), // 7 : 기업 로그인 페이지
       Companyprofile( changePage : changePage ),// 8 : 기업 프로파일
-      RatingView(), // 9 : 평가페이지(개별)
+      CompanyProject(changePage: changePage), // 9 : 프로젝트 페이지
+      CompanyAppraise(changePage: changePage) // 10 : 기업 평가페이지
+
     ];
 
     // 앱바 제목
@@ -57,10 +61,12 @@ class _CompanyMainApp extends State<CompanyMainApp> {
       '내 프로젝트',
       '게시물',
       '평가페이지', // 5
+
       '개발자 로그인', // 6
       '기업 로그인', // 7
-      '정보 관리',
-      '평가페이지(개별)' // 9
+      '기업 평가 목록', // 8
+      '기업 관리페이지', // 9
+      '기업 관리페이지'
     ];
 
     return Scaffold(
@@ -84,8 +90,7 @@ class _CompanyMainApp extends State<CompanyMainApp> {
               ),
             ],
           )
-        // backgroundColor: AppColors.bgColor,
-        // shape : Border(bottom : BorderSide(color : Color(0x5F000000), width : 1)),
+
       ),
       body: pages[selectedIndex],
       bottomNavigationBar: CompanyBottomNavBar( // 이부분 변경
@@ -121,17 +126,12 @@ class _CompanyMainApp extends State<CompanyMainApp> {
                 });
               },
             ),
+
             SpeedDialChild(
-              label: '개별평가',
-              onTap: (){
-                setState(() {
-                  selectedIndex = 9;
-                });
-              }
-            ),SpeedDialChild(
               child: Icon(Icons.home),
               label: '홈',
             ),
+
             SpeedDialChild(
                 child: Icon(Icons.home),
                 label: '임시',
