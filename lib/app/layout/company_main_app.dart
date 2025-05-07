@@ -7,7 +7,7 @@ import 'package:devconnect_app/app/developer/profile.dart';
 import 'package:devconnect_app/app/layout/home.dart';
 import 'package:devconnect_app/app/project/project_view.dart';
 import 'package:devconnect_app/app/project/project_write.dart';
-import 'package:devconnect_app/app/rating/crating.dart';
+import 'package:devconnect_app/app/rating/rating_main.dart';
 import 'package:devconnect_app/style/app_colors.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +39,7 @@ class _CompanyMainApp extends State<CompanyMainApp> {
       Profile(changePage: changePage,), // 가운데 탭
       ViewProject(), // 내프로젝트
       Text("게시물"),
-      Crating(), // 5 : 평가페이지 이이후부터
+      RatingMain(), // 5 : 평가페이지 이이후부터
 
 
       // DeveloperLogIn( changePage: (index) { setState(() { selectedIndex = index; }); },), // 6 : 개발자 로그인 페이지

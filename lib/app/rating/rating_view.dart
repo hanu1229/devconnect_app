@@ -1,6 +1,6 @@
 
 
-import 'package:devconnect_app/app/rating/crating_detail.dart';
+import 'package:devconnect_app/app/rating/rating_detail.dart';
 import 'package:devconnect_app/style/app_colors.dart';
 import 'package:devconnect_app/style/server_path.dart';
 import 'package:dio/dio.dart';
@@ -9,14 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class CratingView extends StatefulWidget{
+class RatingView extends StatefulWidget{
   @override
   State<StatefulWidget> createState() {
-    return _CratingViewState();
+    return _RatingViewState();
   } // createState end
 } // c end
 
-class _CratingViewState extends State<CratingView>{
+class _RatingViewState extends State<RatingView>{
 
   int page = 1;
   List<dynamic> cRatingList = []; // 기업평가 리스트
@@ -113,7 +113,7 @@ class _CratingViewState extends State<CratingView>{
           onTap: () => {
             Navigator.push(context,
               MaterialPageRoute(
-                builder: (context) => CratingDetail(
+                builder: (context) => RatingDetail(
                   crno: rating['crno'],
                   pno : project['pno'],
                   cname: company['cname'],

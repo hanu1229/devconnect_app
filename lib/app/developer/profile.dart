@@ -41,7 +41,6 @@ class _ProfileState extends State< Profile >{
     loginCheck();
   } // f end
 
-
   // 로그인 상태 확인
   bool? isLogIn;
 
@@ -114,7 +113,31 @@ class _ProfileState extends State< Profile >{
         });
       }
     }catch( e ){ print( e ); }
+    dpwdController = TextEditingController(text: "");
   } // f end
+
+  // 탈퇴하기
+  void onDelete() async {
+    try{
+      final dpwd = dpwdController.text;
+
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+
+      dio.options.headers['Authorization'] = token;
+      final response = await dio.put("${serverPath}/api/developer/delete",
+          options: Options( headers: { 'Authorization' : token, 'Content-Type' : 'text/plain', },
+          responseType: ResponseType.plain ),
+          data: dpwd,
+      );
+      final data = response.data;
+      if( data ){
+        await prefs.remove('token');
+        widget.changePage(0);
+      }
+    }catch( e ){ print( e ); }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -185,13 +208,12 @@ class _ProfileState extends State< Profile >{
                 : // 수정버튼 클릭 후
               [
                 Center(
-                  child: CustomImagePicker(
-                    dprofile: profileImageUrl,
-                    onImageSelected: ( XFile image ) {
-                      setState(() {
-                        profileImage = image;
-                      });
-                    },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(999),
+                    child: Container(
+                      width: 100, height: 100,
+                      child: Image.network( imgUrl, fit: BoxFit.cover, ),
+                    ),
                   ),
                 ),
                 SizedBox( height: 20, ),
@@ -227,7 +249,8 @@ class _ProfileState extends State< Profile >{
                   children: [
 
                     CustomOutlineButton(
-                      onPressed: () => { setState(() => { isUpdate = false }) },
+                      onPressed: () => { setState(() => {
+                        isUpdate = false, dpwdController = TextEditingController( text: "" ), }) },
                       title: "취소",
                     ),
                     SizedBox( width: 15,),
@@ -245,6 +268,8 @@ class _ProfileState extends State< Profile >{
         // 두번째 Card
         Text("비밀번호", style: TextStyle( fontSize: 18, fontWeight: FontWeight.bold, ), ),
         SizedBox( height: 15 ,),
+
+        // 두번째 Card
         CustomCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -299,7 +324,7 @@ class _ProfileState extends State< Profile >{
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    CustomTextButton(
+                    CustomOutlineButton(
                       onPressed: () => { setState(() => { isUpdate = false }) },
                       title: "등록",
                     ),
@@ -326,7 +351,7 @@ class _ProfileState extends State< Profile >{
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    CustomTextButton(
+                    CustomOutlineButton(
                       onPressed: () => { setState(() => { isUpdate = false }) },
                       title: "등록",
                     ),
@@ -364,7 +389,7 @@ class _ProfileState extends State< Profile >{
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     CustomTextButton(
-                      onPressed: () => { setState(() => { isUpdate = false }) },
+                      onPressed: onDelete,
                       title: "회원 탈퇴",
                       width: 90,
                       color: Colors.red,
