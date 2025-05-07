@@ -114,28 +114,41 @@ class _ProfileState extends State< Profile >{
     dpwdController = TextEditingController(text: "");
   } // f end
 
-  // 비밀번호 수정
-  void onPwdChange() async {
-    try{
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('token');
-      final response = await dio.put("${serverPath}/api/developer/");
-    }catch( e ){ print( e ); }
-
-  } // f end
-
   // 비밀번호 수정 다이얼로그
   void CustomPwdDialog(BuildContext context) {
     final TextEditingController _prevPwdController = TextEditingController();
     final TextEditingController _pwdController = TextEditingController();
     final TextEditingController _confirmPwdController = TextEditingController();
 
+    // 비밀번호 수정 함수
+    void onPwdChange() async {
+      // 유효성 검사
+      if( _prevPwdController.text != null )
+      if( _pwdController.text != _confirmPwdController.text ){ return; }
+
+        try{
+          final prefs = await SharedPreferences.getInstance();
+          final token = prefs.getString('token');
+
+          dio.options.headers['Authorization'] = token;
+          final response = await dio.put("${serverPath}/api/developer/");
+        }catch( e ){ print( e ); }
+
+    } // f end
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.white,
-          title: Text("비밀번호 변경"),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("비밀번호 변경"),
+              SizedBox( height: 7,),
+              Divider(),
+            ],
+          ),
           content: SizedBox(
             width: 350,
             child: Column(
@@ -174,7 +187,7 @@ class _ProfileState extends State< Profile >{
                 title: "취소"
             ),
             CustomTextButton(
-                onPressed: () => {},
+                onPressed: onPwdChange,
                 title: "저장"
             ),
           ],
