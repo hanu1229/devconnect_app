@@ -218,7 +218,7 @@ class _RatingMainState extends State<RatingMain>{
             if( images == null || images.isEmpty ){
               imageUrl = "${serverPath}/upload/default.jpg";
             }else {
-              imageUrl = "${serverPath}/upload/${ images[0] }";
+              imageUrl = "${serverPath}/upload/$images";
             }
             print(company['cprofile']);              // 값 확인
             print(company.runtimeType); // 타입 확인
@@ -332,7 +332,7 @@ class _RatingMainState extends State<RatingMain>{
             if( images == null || images.isEmpty ){
               imageUrl = "${serverPath}/upload/default.jpg";
             }else{
-              imageUrl = "${serverPath}/upload/${ images[0] }";
+              imageUrl = "${serverPath}/upload/$images";
           }
             return InkWell(
               onTap: () async {
