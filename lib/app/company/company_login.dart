@@ -57,12 +57,12 @@ class _CompanyLogin extends State<Companylogin>{
       }
 
     }on DioException catch(e){
-     // if(e.response == null && e.response.statusCode == 401) {
-     //   print("로그인실패");
-     //   setState(() {
-     //     errorMessage = "존재하지않는 회원입니다.";
-     //   });
-     // }else {
+     if(e.response == null && e.response!.statusCode == 401) {
+       print("로그인실패");
+       setState(() {
+         errorMessage = "존재하지않는 회원입니다.";
+       });
+     }else {
        print("로그인오류");
        setState(() {
          errorMessage = "로그인중 오류가 발생했습니다.";
