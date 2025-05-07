@@ -1,3 +1,4 @@
+import 'package:devconnect_app/app/company/Company_appraise.dart';
 import 'package:devconnect_app/app/company/company_login.dart';
 import 'package:devconnect_app/app/company/company_bottombar.dart';
 import 'package:devconnect_app/app/company/company_profile.dart';
@@ -41,7 +42,7 @@ class _CompanyMainApp extends State<CompanyMainApp> {
       Profile(changePage: changePage,), // 가운데 탭
       ViewProject(),
       Text("게시물"),
-      Crating(), // 5 : 평가페이지 이이후부터
+      RatingMain(), // 5 : 평가페이지 이이후부터
 
 
       // DeveloperLogIn( changePage: (index) { setState(() { selectedIndex = index; }); },), // 6 : 개발자 로그인 페이지
