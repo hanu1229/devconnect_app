@@ -84,7 +84,7 @@ class _CompanyProfileState extends State< Companyprofile >{
   final TextEditingController cphoneController= TextEditingController();
   final TextEditingController cadressController = TextEditingController();
   final TextEditingController cemailController = TextEditingController();
-  final TextEditingController cbusinessController = TextEditingController();
+
 
   // 상세정보 수정
   void onUpdate( ) async {
@@ -95,10 +95,11 @@ class _CompanyProfileState extends State< Companyprofile >{
     formData.fields.add(MapEntry("cname", cnameController.text,) );
     formData.fields.add(MapEntry("cphone", cphoneController.text,) );
     formData.fields.add(MapEntry("cemail", cemailController.text,) );
-    formData.fields.add(MapEntry("caderess", cadressController.text) );
+    formData.fields.add(MapEntry("cadress", cadressController.text) );
     
     final file = await MultipartFile.fromFile(profileImage!.path, filename: profileImage!.name); //경로 이름
     formData.files.add(MapEntry("file" , file)); // 파일로 보냄
+    print(formData);
 
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
@@ -211,6 +212,12 @@ class _CompanyProfileState extends State< Companyprofile >{
                 SizedBox( height: 12, ),
                 CustomTextField( controller: cpwdController, ),
                 SizedBox( height: 12, ),
+
+                Text("기업명"),
+                SizedBox( height: 12, ),
+                CustomTextField( controller: cnameController, ),
+                SizedBox( height: 12, ),
+
 
                 Text("휴대번호"),
                 SizedBox( height: 12, ),

@@ -2,6 +2,7 @@
 
 import "package:devconnect_app/app/project/project_detail.dart";
 import "package:devconnect_app/app/project/project_update.dart";
+import "package:devconnect_app/app/project/projectjoin_company_view.dart";
 import "package:devconnect_app/style/app_colors.dart";
 import "package:devconnect_app/style/server_path.dart";
 import "package:dio/dio.dart";
@@ -167,7 +168,7 @@ class _ViewProjectState extends State<ViewProject> {
                           return SafeArea(
                             child : Container(
                               margin : EdgeInsets.all(16),
-                              height : 150,
+                              height : 200,
                               width : MediaQuery.of(context).size.width,
                               decoration : BoxDecoration(
                                 color : AppColors.bgColor,
@@ -179,6 +180,27 @@ class _ViewProjectState extends State<ViewProject> {
                                   child : Column(
                                     mainAxisAlignment : MainAxisAlignment.spaceAround,
                                     children : [
+                                      // 신청 현황 버튼
+                                      Container(
+                                        padding : EdgeInsets.only(left : 16, top : 0, right : 16, bottom : 0),
+                                        width : MediaQuery.of(context).size.width,
+                                        child : ElevatedButton(
+                                          onPressed : () async {
+                                            Navigator.pop(context);
+                                            bool? result = await Navigator.push(
+                                              context,
+                                              MaterialPageRoute(builder : (context) => ViewProjectJoin(pno : projectList[index]["pno"], pname : projectList[index]["pname"])),
+                                            );
+                                            if(result == true) { setState(() { findAllMyProject(); }); }
+                                            return;
+                                          },
+                                          style : ElevatedButton.styleFrom(
+                                            backgroundColor : Colors.black,
+                                          ),
+                                          child : Text("신청 현황", style : TextStyle(color : AppColors.buttonTextColor)),
+                                        ),
+                                      ),
+                                      // 수정 버튼
                                       Container(
                                         padding : EdgeInsets.only(left : 16, top : 0, right : 16, bottom : 0),
                                         width : MediaQuery.of(context).size.width,
@@ -198,6 +220,7 @@ class _ViewProjectState extends State<ViewProject> {
                                           child : Text("수정하기", style : TextStyle(color : AppColors.buttonTextColor)),
                                         ),
                                       ),
+                                      // 삭제 버튼
                                       Container(
                                         padding : EdgeInsets.only(left : 16, top : 0, right : 16, bottom : 0),
                                         width : MediaQuery.of(context).size.width,
