@@ -186,7 +186,7 @@ class _ProfileState extends State< Profile >{
                     ),
                     if (errorMsg.isNotEmpty)
                       Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
+                        padding: const EdgeInsets.only(left: 8),
                         child: Text(
                           errorMsg,
                           style: TextStyle(color: Colors.red),
