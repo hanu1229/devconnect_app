@@ -174,15 +174,25 @@ class _RatingDtailState extends State<RatingDetail>{
   
   // 성공 알림창
   void success( String message ){
+    Navigator.pop(context,true);
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text("성공"),
+          backgroundColor: Colors.white,
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("성공"),
+              SizedBox( height: 7,),
+              Divider(),
+            ],
+          ),
           content: Text(message),
           actions: [
-            TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text("확인"),
+            CustomTextButton(
+              title: "확인",
+              color: Colors.grey,
+              onPressed: () => Navigator.of(context).pop(),
             )
           ],
         )
@@ -356,38 +366,49 @@ class _RatingDtailState extends State<RatingDetail>{
                               context: context,
                               barrierDismissible: false, // 바깥 클릭 막기
                               builder: (context) {
-                                return Dialog(
+                                return AlertDialog(
+                                  backgroundColor: Colors.white,
+                                  title: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "평가 수정",
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      SizedBox(height: 7),
+                                      Divider(),
+                                    ],
+                                  ),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20),
                                   ),
-                                  child: Container(
-                                    width: MediaQuery.of(context).size.width * 0.5, // 가로폭 제한
-                                    padding: const EdgeInsets.all(20),
+                                  content: Container(
+                                    width: MediaQuery.of(context).size.width * 0.8, // 가로폭 제한
+                                    padding: const EdgeInsets.all(10),
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          "평가 수정",
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        SizedBox(height: 20),
                                         TextField(
+                                          style: TextStyle( fontSize: 14 ),
                                           controller: titleController,
                                           decoration: InputDecoration(
                                             labelText: "제목",
+                                            labelStyle: TextStyle( fontSize: 20 ),
                                             border: OutlineInputBorder(),
                                           ),
                                         ),
-                                        SizedBox(height: 15),
+                                        SizedBox(height: 30),
                                         TextField(
+                                          style: TextStyle( fontSize: 14 ),
                                           controller: contentController,
                                           maxLines: 4,
                                           decoration: InputDecoration(
                                             labelText: "내용",
+                                            labelStyle: TextStyle( fontSize: 20 ),
                                             border: OutlineInputBorder(),
                                           ),
                                         ),
@@ -414,27 +435,24 @@ class _RatingDtailState extends State<RatingDetail>{
                                             ),
                                         ),
                                         SizedBox(height: 20,),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            CustomTextButton(
-                                              title: "취소",
-                                              color: Colors.grey,
-                                              onPressed: () => Navigator.of(context).pop(),
-                                            ),
-                                            CustomTextButton(
-                                              title: "수정",
-                                              color: Colors.red,
-                                              onPressed: () {
-                                                Navigator.of(context).pop(); // 다이얼로그 닫기
-                                                cUpdate();                   // 수정 함수 실행
-                                              },
-                                            ),
-                                          ],
-                                        ),
                                       ],
                                     ),
                                   ),
+                                  actions: [
+                                    CustomTextButton(
+                                      title: "취소",
+                                      color: Colors.grey,
+                                      onPressed: () => Navigator.of(context).pop(),
+                                    ),
+                                    CustomTextButton(
+                                      title: "수정",
+                                      color: Colors.blue,
+                                      onPressed: () {
+                                        Navigator.of(context).pop(); // 다이얼로그 닫기
+                                        cUpdate(); // 수정 함수 실행
+                                      },
+                                    ),
+                                  ],
                                 );
                               },
                             );
@@ -446,27 +464,30 @@ class _RatingDtailState extends State<RatingDetail>{
                             showDialog(
                                 context: context,
                                 builder: (context) => AlertDialog(
-                                  title: Text("삭제 확인"),
+                                  backgroundColor: Colors.white,
+                                  title: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text( "삭제 확인", ),
+                                      SizedBox( height:  7 ,),
+                                      Divider(),
+                                    ],
+                                  ),
                                   content: Text("정말로 이 평가를 삭제하시겠습니까?"),
                                   actions: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        CustomTextButton(
-                                          title: "취소",
-                                          color: Colors.grey,
-                                          onPressed: () => Navigator.of(context).pop(),
-                                        ),
-                                        CustomTextButton(
-                                          title: "삭제",
-                                          color: Colors.red,
-                                          onPressed: () {
-                                            Navigator.of(context).pop(); // 다이얼로그 닫기
-                                            cDelete();                   // 삭제 함수 실행
-                                          },
-                                        ),
-                                      ],
-                                    )
+                                    CustomTextButton(
+                                      title: "취소",
+                                      color: Colors.grey,
+                                      onPressed: () => Navigator.of(context).pop(),
+                                    ),
+                                    CustomTextButton(
+                                      title: "삭제",
+                                      color: Colors.blue,
+                                      onPressed: () {
+                                        Navigator.of(context).pop(); // 다이얼로그 닫기
+                                        cDelete();                   // 삭제 함수 실행
+                                      },
+                                    ),
                                   ],
                                 )
                             );
@@ -640,38 +661,49 @@ class _RatingDtailState extends State<RatingDetail>{
                                   context: context,
                                   barrierDismissible: false, // 바깥 클릭 막기
                                   builder: (context) {
-                                    return Dialog(
+                                    return AlertDialog(
+                                      backgroundColor: Colors.white,
+                                      title: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "평가 수정",
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          SizedBox(height: 7),
+                                          Divider(),
+                                        ],
+                                      ),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(20),
                                       ),
-                                      child: Container(
-                                        width: MediaQuery.of(context).size.width * 0.5, // 가로폭 제한
-                                        padding: const EdgeInsets.all(20),
+                                      content: Container(
+                                        width: MediaQuery.of(context).size.width * 0.8, // 가로폭 제한
+                                        padding: const EdgeInsets.all(10),
                                         child: Column(
                                           mainAxisSize: MainAxisSize.min,
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Text(
-                                              "평가 수정",
-                                              style: TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            SizedBox(height: 20),
                                             TextField(
+                                              style: TextStyle( fontSize: 14 ),
                                               controller: titleController,
                                               decoration: InputDecoration(
                                                 labelText: "제목",
+                                                labelStyle: TextStyle( fontSize: 20),
                                                 border: OutlineInputBorder(),
                                               ),
                                             ),
-                                            SizedBox(height: 15),
+                                            SizedBox(height: 30),
                                             TextField(
+                                              style: TextStyle( fontSize: 14 ),
                                               controller: contentController,
                                               maxLines: 4,
                                               decoration: InputDecoration(
                                                 labelText: "내용",
+                                                labelStyle: TextStyle( fontSize: 20),
                                                 border: OutlineInputBorder(),
                                               ),
                                             ),
@@ -698,27 +730,24 @@ class _RatingDtailState extends State<RatingDetail>{
                                               ),
                                             ),
                                             SizedBox(height: 20,),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                CustomTextButton(
-                                                  title: "취소",
-                                                  color: Colors.grey,
-                                                  onPressed: () => Navigator.of(context).pop(),
-                                                ),
-                                                CustomTextButton(
-                                                  title: "수정",
-                                                  color: Colors.red,
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop(); // 다이얼로그 닫기
-                                                    dUpdate(); // 수정 함수 실행
-                                                  },
-                                                ),
-                                              ],
-                                            ),
                                           ],
                                         ),
                                       ),
+                                      actions: [
+                                        CustomTextButton(
+                                          title: "취소",
+                                          color: Colors.grey,
+                                          onPressed: () => Navigator.of(context).pop(),
+                                        ),
+                                        CustomTextButton(
+                                          title: "수정",
+                                          color: Colors.blue,
+                                          onPressed: () {
+                                            Navigator.of(context).pop(); // 다이얼로그 닫기
+                                            dUpdate(); // 수정 함수 실행
+                                          },
+                                        ),
+                                      ],
                                     );
                                   },
                                 );
@@ -730,27 +759,30 @@ class _RatingDtailState extends State<RatingDetail>{
                                 showDialog(
                                     context: context,
                                     builder: (context) => AlertDialog(
-                                      title: Text("삭제 확인"),
+                                      backgroundColor: Colors.white,
+                                      title: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text( "삭제 확인", ),
+                                          SizedBox( height:  7 ,),
+                                          Divider(),
+                                        ],
+                                      ),
                                       content: Text("정말로 이 평가를 삭제하시겠습니까?"),
                                       actions: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            CustomTextButton(
-                                              title: "취소",
-                                              color: Colors.grey,
-                                              onPressed: () => Navigator.of(context).pop(),
-                                            ),
-                                            CustomTextButton(
-                                              title: "삭제",
-                                              color: Colors.red,
-                                              onPressed: () {
-                                                Navigator.of(context).pop(); // 다이얼로그 닫기
-                                                dDelete(); // 삭제 함수 실행
-                                              },
-                                            ),
-                                          ],
-                                        )
+                                        CustomTextButton(
+                                          title: "취소",
+                                          color: Colors.grey,
+                                          onPressed: () => Navigator.of(context).pop(),
+                                        ),
+                                        CustomTextButton(
+                                          title: "삭제",
+                                          color: Colors.blue,
+                                          onPressed: () {
+                                            Navigator.of(context).pop(); // 다이얼로그 닫기
+                                            dDelete(); // 삭제 함수 실행
+                                          },
+                                        ),
                                       ],
                                     )
                                 );
@@ -759,6 +791,7 @@ class _RatingDtailState extends State<RatingDetail>{
                             )
                           ],
                         ),
+
                     ]
                 ),
               ),
