@@ -4,9 +4,10 @@ import 'package:devconnect_app/app/component/custom_card.dart';
 import 'package:devconnect_app/app/component/custom_menutabs.dart';
 import 'package:devconnect_app/app/component/custom_outlinebutton.dart';
 import 'package:devconnect_app/app/component/custom_scrollview.dart';
-import 'package:devconnect_app/app/component/custom_simplealert.dart';
+import 'package:devconnect_app/app/component/custom_boolalert.dart';
 import 'package:devconnect_app/app/component/custom_textbutton.dart';
 import 'package:devconnect_app/app/component/custom_textfield.dart';
+import 'package:devconnect_app/app/layout/main_app.dart';
 import 'package:devconnect_app/style/server_path.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -186,10 +187,13 @@ class _ProfileState extends State< Profile >{
                     ),
                     if (errorMsg.isNotEmpty)
                       Padding(
-                        padding: const EdgeInsets.only(left: 8),
+                        padding: const EdgeInsets.only(left: 15),
                         child: Text(
                           errorMsg,
-                          style: TextStyle(color: Colors.red),
+                          style: TextStyle(
+                            color: Color(0xffbc443d),
+                            fontSize: 12
+                          ),
                         ),
                       ),
                     SizedBox(height: 15),
@@ -214,17 +218,19 @@ class _ProfileState extends State< Profile >{
                       validator: (value) =>
                       _pwdController.text != _confirmPwdController.text
                           ? '비밀번호가 일치하지 않습니다.'
+                          : _prevPwdController.text == _pwdController.text ?
+                          '기존 비밀번호와 다른 번호를 입력해주세요.'
                           : null,
                     ),
                   ],
                 ),
               ),
               onPressed: () async {
-                if (_formKey.currentState!.validate()) {
-                  errorMsg = '';
+                setState(() { errorMsg = ''; });
+                if(_formKey.currentState!.validate()){
                   await onPwdChange();
                 }
-              },
+              }
             );
           },
         );
@@ -233,27 +239,54 @@ class _ProfileState extends State< Profile >{
   }
 
   // 탈퇴하기
-  void onDelete() async {
-    try{
-      final dpwd = dpwdController.text;
+  void CustomDeleteDialog(BuildContext context) {
+    final _formKey = GlobalKey<FormState>();
+    TextEditingController _deletePwdController = TextEditingController();
 
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('token');
+    void onDelete() async {
+      try {
+        final String dpwd = _deletePwdController.text;
+        final prefs = await SharedPreferences.getInstance();
+        final token = prefs.getString('token');
 
-      dio.options.headers['Authorization'] = token;
-      final response = await dio.put("${serverPath}/api/developer/delete",
-          options: Options( headers: { 'Authorization' : token, 'Content-Type' : 'text/plain', },
-          responseType: ResponseType.plain ),
+        dio.options.headers['Authorization'] = token;
+        final response = await dio.put("${serverPath}/api/developer/delete",
+          options: Options(
+              headers: { 'Authorization': token, 'Content-Type': 'text/plain',},
+              responseType: ResponseType.plain),
           data: dpwd,
-      );
-      final data = response.data;
-      if( data ){
-        await prefs.remove('token');
-        widget.changePage(0);
+        );
+        final data = response.data;
+        print(data);
+        if ( data.toString().toLowerCase() == "true" ) {
+          await prefs.remove('token');
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainApp() ) );
+        }
+      } catch (e) {
+        print(e);
       }
-    }catch( e ){ print( e ); }
-  }
+    }
 
+    showDialog(
+      context: context,
+      builder: (context) => CustomAlertDialog(
+        title: "정말 탈퇴하시겠습니까?",
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text("비밀번호를 입력해주세요."),
+            SizedBox( height: 7,),
+            CustomTextField(
+              controller: _deletePwdController,
+              obscureText: true,
+            ),
+          ],
+        ),
+        onPressed: onDelete
+      )
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -505,7 +538,7 @@ class _ProfileState extends State< Profile >{
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     CustomTextButton(
-                      onPressed: onDelete,
+                      onPressed: () => CustomDeleteDialog(context),
                       title: "회원 탈퇴",
                       width: 90,
                       color: Colors.red,
