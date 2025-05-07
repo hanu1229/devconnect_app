@@ -95,6 +95,9 @@ class _RatingMainState extends State<RatingMain>{
       final response3 = await dio.get("${serverPath}/api/company/findall");
       // print( response3.data );
 
+      // 개발자 조회
+      final response4 = await dio.get("${serverPath}/api/developer/findall");
+
       // 페이지 변화
       setState(() {
         page = cPage;
@@ -102,12 +105,14 @@ class _RatingMainState extends State<RatingMain>{
           ratingList = response1.data['content'];
           projectList = response2.data;
           companyList = response3.data;
+          developerList = response4.data;
         }else if( page > response1.data['totalPages'] ){
           page = response1.data['totalPages'];
         }else{
           ratingList.addAll( response1.data['content'] );
           projectList = response2.data;
           companyList = response3.data;
+          developerList = response4.data;
         } // if end
         print( ratingList );
         print( projectList );
@@ -218,9 +223,8 @@ class _RatingMainState extends State<RatingMain>{
             print(company['cprofile']);              // 값 확인
             print(company.runtimeType); // 타입 확인
             return InkWell(
-              onTap: () =>
-              {
-                Navigator.push(context,
+              onTap: () async {
+                final result = await Navigator.push(context,
                   MaterialPageRoute(builder: (context) =>
                     RatingDetail(
                       rating: rating,
@@ -230,7 +234,10 @@ class _RatingMainState extends State<RatingMain>{
                       developer: developer,
                     ) // RatingDetail end
                   ) // MaterialPageRoute end
-                ) // Navigator end
+                ); // Navigator end
+                if( result == true ) {
+                  onCratingAll(1);
+                } // if end
               }, // inTap end
               child: Card(
                 elevation: 7,
@@ -328,16 +335,10 @@ class _RatingMainState extends State<RatingMain>{
               imageUrl = "${serverPath}/upload/${ images[0] }";
           }
             return InkWell(
-              onTap: () =>
-              {
-                Navigator.push(context,
+              onTap: () async {
+                final result = await Navigator.push(context,
                   MaterialPageRoute(builder: (context) =>
                     RatingDetail(
-                      // crno: rating['crno'],
-                      // pno: project['pno'],
-                      // cname: company['cname'],
-                      // profile: imageUrl,
-                      // dname: developer?['dname'],
                       rating: rating,
                       project: project,
                       profile: imageUrl,
@@ -345,7 +346,10 @@ class _RatingMainState extends State<RatingMain>{
                       developer: developer,
                     ) // CratingDetail end
                   ) // MaterialPageRoute end
-                ) // Navigator end
+                ); // Navigator end
+                if( result == true ){
+                  onDratingAll(1);
+                } // if end
               }, // onTap end
               child: Card(
                 elevation: 7,
@@ -433,6 +437,7 @@ class _RatingMainState extends State<RatingMain>{
             );
           } // if end
         } // itemBuilder end
+
     );
   } // build end
 } // c end
