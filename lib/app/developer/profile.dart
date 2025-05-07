@@ -1,12 +1,12 @@
 
+import 'package:devconnect_app/app/component/custom_alert.dart';
 import 'package:devconnect_app/app/component/custom_card.dart';
-import 'package:devconnect_app/app/component/custom_imgpicker.dart';
 import 'package:devconnect_app/app/component/custom_menutabs.dart';
 import 'package:devconnect_app/app/component/custom_outlinebutton.dart';
 import 'package:devconnect_app/app/component/custom_scrollview.dart';
+import 'package:devconnect_app/app/component/custom_simplealert.dart';
 import 'package:devconnect_app/app/component/custom_textbutton.dart';
 import 'package:devconnect_app/app/component/custom_textfield.dart';
-import 'package:devconnect_app/style/app_colors.dart';
 import 'package:devconnect_app/style/server_path.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -116,19 +116,136 @@ class _ProfileState extends State< Profile >{
     dpwdController = TextEditingController(text: "");
   } // f end
 
+  // 비밀번호 수정 다이얼로그
+  void CustomPwdDialog(BuildContext context) {
+    final _formKey = GlobalKey<FormState>();
+    final TextEditingController _prevPwdController = TextEditingController();
+    final TextEditingController _pwdController = TextEditingController();
+    final TextEditingController _confirmPwdController = TextEditingController();
+
+    String errorMsg = '';
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            Future<void> onPwdChange() async {
+              try {
+                final prefs = await SharedPreferences.getInstance();
+                final token = prefs.getString('token');
+                final sendData = {
+                  'newPwd': _pwdController.text,
+                  'matchPwd': _prevPwdController.text,
+                };
+
+                final response = await dio.put("$serverPath/api/developer/update/pwd", data: sendData );
+
+                final pwdResp = response.data;
+                if (pwdResp['success']) {
+                  Navigator.pop(context); // 다이얼로그 닫기
+                  onInfo(token);
+                  showDialog(
+                    context: context,
+                    builder: (context) => CustomBoolAlertDialog(
+                      title: pwdResp['message'],
+                    ),
+                  );
+                }
+              } on DioException catch (e) {
+                setState(() {
+                  errorMsg = e.response?.data['message'] ?? '비밀번호 변경 실패';
+                });
+              } catch (e) {
+                setState(() {
+                  errorMsg = '서버 오류 발생';
+                });
+              }
+            }
+
+            return CustomAlertDialog(
+              title: "비밀번호 변경",
+              width: 350,
+              content: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("현재 비밀번호"),
+                    SizedBox(height: 10),
+                    CustomTextField(
+                      controller: _prevPwdController,
+                      obscureText: true,
+                      validator: (value) =>
+                        value == null || value.isEmpty
+                            ? '현재 비밀번호를 입력해주세요.'
+                            : value.length < 3
+                            ? '비밀번호는 8자리 이상이어야 합니다.'
+                            : null,
+                    ),
+                    if (errorMsg.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Text(
+                          errorMsg,
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    SizedBox(height: 15),
+                    Text("비밀번호"),
+                    SizedBox(height: 10),
+                    CustomTextField(
+                      controller: _pwdController,
+                      obscureText: true,
+                      validator: (value) =>
+                      value == null || value.isEmpty
+                          ? '비밀번호를 입력해 주세요.'
+                          : value.length < 8
+                          ? '비밀번호는 8자리 이상이어야 합니다.'
+                          : null,
+                    ),
+                    SizedBox(height: 15),
+                    Text("비밀번호 확인"),
+                    SizedBox(height: 10),
+                    CustomTextField(
+                      controller: _confirmPwdController,
+                      obscureText: true,
+                      validator: (value) =>
+                      _pwdController.text != _confirmPwdController.text
+                          ? '비밀번호가 일치하지 않습니다.'
+                          : null,
+                    ),
+                  ],
+                ),
+              ),
+              onPressed: () async {
+                if (_formKey.currentState!.validate()) {
+                  errorMsg = '';
+                  await onPwdChange();
+                }
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
   // 탈퇴하기
   void onDelete() async {
     try{
-      final sendData = {
-        "dno" : developer['dno'],
-        "dpwd" : dpwdController.text
-      };
+      final dpwd = dpwdController.text;
 
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
 
       dio.options.headers['Authorization'] = token;
-      final response = await dio.put("${serverPath}/api/developer/delete", data: sendData);
+      final response = await dio.put("${serverPath}/api/developer/delete",
+          options: Options( headers: { 'Authorization' : token, 'Content-Type' : 'text/plain', },
+          responseType: ResponseType.plain ),
+          data: dpwd,
+      );
       final data = response.data;
       if( data ){
         await prefs.remove('token');
@@ -207,13 +324,12 @@ class _ProfileState extends State< Profile >{
                 : // 수정버튼 클릭 후
               [
                 Center(
-                  child: CustomImagePicker(
-                    dprofile: profileImageUrl,
-                    onImageSelected: ( XFile image ) {
-                      setState(() {
-                        profileImage = image;
-                      });
-                    },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(999),
+                    child: Container(
+                      width: 100, height: 100,
+                      child: Image.network( imgUrl, fit: BoxFit.cover, ),
+                    ),
                   ),
                 ),
                 SizedBox( height: 20, ),
@@ -268,6 +384,8 @@ class _ProfileState extends State< Profile >{
         // 두번째 Card
         Text("비밀번호", style: TextStyle( fontSize: 18, fontWeight: FontWeight.bold, ), ),
         SizedBox( height: 15 ,),
+
+        // 두번째 Card
         CustomCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -286,7 +404,7 @@ class _ProfileState extends State< Profile >{
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   CustomOutlineButton(
-                    onPressed: () => { setState(() => { isUpdate = false }) },
+                    onPressed: () => CustomPwdDialog(context),
                     title: "비밀번호 변경",
                     width: 150,
                   ),

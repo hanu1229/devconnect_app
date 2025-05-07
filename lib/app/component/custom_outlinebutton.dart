@@ -6,11 +6,13 @@ import 'package:flutter/material.dart';
 
 class CustomOutlineButton extends StatelessWidget {
   final double width;
+  final Color backgroundColor;
   final VoidCallback onPressed;
   final String title;
 
   const CustomOutlineButton({
     this.width = 80,
+    this.backgroundColor = AppColors.bgColor,
     required this.onPressed,
     required this.title,
     Key? key,
@@ -23,6 +25,7 @@ class CustomOutlineButton extends StatelessWidget {
       child: OutlinedButton(
         onPressed: onPressed,
         style: OutlinedButton.styleFrom(
+          backgroundColor: backgroundColor,
           side: BorderSide(
             color: AppColors.textFieldColor,
             width: 1,
