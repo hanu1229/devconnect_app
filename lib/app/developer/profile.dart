@@ -4,6 +4,7 @@ import 'package:devconnect_app/app/component/custom_imgpicker.dart';
 import 'package:devconnect_app/app/component/custom_menutabs.dart';
 import 'package:devconnect_app/app/component/custom_outlinebutton.dart';
 import 'package:devconnect_app/app/component/custom_scrollview.dart';
+import 'package:devconnect_app/app/component/custom_showpwddialog.dart';
 import 'package:devconnect_app/app/component/custom_textbutton.dart';
 import 'package:devconnect_app/app/component/custom_textfield.dart';
 import 'package:devconnect_app/style/app_colors.dart';
@@ -115,6 +116,9 @@ class _ProfileState extends State< Profile >{
     }catch( e ){ print( e ); }
     dpwdController = TextEditingController(text: "");
   } // f end
+
+  // 비밀번호 수정 다이얼로그
+
 
   // 탈퇴하기
   void onDelete() async {
@@ -288,7 +292,7 @@ class _ProfileState extends State< Profile >{
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   CustomOutlineButton(
-                    onPressed: () => { setState(() => { isUpdate = false }) },
+                    onPressed: () => CustomPwdDialog(context),
                     title: "비밀번호 변경",
                     width: 150,
                   ),

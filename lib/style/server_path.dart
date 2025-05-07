@@ -1,4 +1,4 @@
-String serverPath = "http://192.168.0.8:8080";
+// String serverPath = "http://192.168.0.8:8080";
 // String serverPath = "http://localhost:8080";
 // 192.168.40.97
 
@@ -6,7 +6,7 @@ String serverPath = "http://192.168.0.8:8080";
 // String serverPath = "http://192.168.0.2:8080";
 
 // 희만학원pc
-// String serverPath = "http://192.168.40.97:8080";
+String serverPath = "http://192.168.40.97:8080";
 
 // 웅재학원pc
 // String serverPath = "http://192.168.40.38:8080";
