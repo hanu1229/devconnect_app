@@ -1,5 +1,6 @@
 // project_view.dart : 자신의 프로젝트 목록을 출력 하는 페이지
 
+import "package:devconnect_app/app/company/company_menutabs.dart";
 import "package:devconnect_app/app/project/project_detail.dart";
 import "package:devconnect_app/app/project/project_update.dart";
 import "package:devconnect_app/app/project/projectjoin_company_view.dart";
@@ -9,14 +10,20 @@ import "package:dio/dio.dart";
 import "package:flutter/material.dart";
 import "package:shared_preferences/shared_preferences.dart";
 
-class ViewProject extends StatefulWidget {
+class CompanyProjectView extends StatefulWidget {
+
+  final Function(int) changePage;
+
+  const CompanyProjectView({
+    required this.changePage,
+  });
 
   @override
-  State<ViewProject> createState() => _ViewProjectState();
+  State<CompanyProjectView> createState() => _CompanyProjectViewState();
 
 }
 
-class _ViewProjectState extends State<ViewProject> {
+class _CompanyProjectViewState extends State<CompanyProjectView> {
 
   Dio dio = Dio();
   List<dynamic> projectList = [];
@@ -145,11 +152,19 @@ class _ViewProjectState extends State<ViewProject> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body : SafeArea(
+      backgroundColor: AppColors.textFieldBGColor,
+      body : Padding(
+        padding: EdgeInsets.all(20),
         child: Container(
-          padding : EdgeInsets.all(16),
           child : Column(
             children : [
+              CompanyMenuTabs(
+                  changePage: widget.changePage,
+                  selectedIndex: 8,
+              ),
+              SizedBox( height: 15 ,),
+              Text("내프로젝트", style: TextStyle( fontSize: 18, fontWeight: FontWeight.bold, ), ),
+              SizedBox( height: 10 ,),
               Expanded(child : ListView.builder(
                 controller : null,
                 itemCount : projectList.length,
@@ -195,12 +210,9 @@ class _ViewProjectState extends State<ViewProject> {
                                             return;
                                           },
                                           style : ElevatedButton.styleFrom(
-                                            backgroundColor : Colors.deepPurpleAccent,
-                                            shape : RoundedRectangleBorder(
-                                              borderRadius : BorderRadius.circular(12),
-                                            ),
+                                            backgroundColor : Colors.black,
                                           ),
-                                          child : Text("신청 현황", style : TextStyle(color : AppColors.buttonTextColor, fontSize : 20)),
+                                          child : Text("신청 현황", style : TextStyle(color : AppColors.buttonTextColor)),
                                         ),
                                       ),
                                       // 수정 버튼
@@ -219,11 +231,8 @@ class _ViewProjectState extends State<ViewProject> {
                                           },
                                           style : ElevatedButton.styleFrom(
                                             backgroundColor : AppColors.buttonColor,
-                                            shape : RoundedRectangleBorder(
-                                              borderRadius : BorderRadius.circular(12),
-                                            ),
                                           ),
-                                          child : Text("수정하기", style : TextStyle(color : AppColors.buttonTextColor, fontSize : 20)),
+                                          child : Text("수정하기", style : TextStyle(color : AppColors.buttonTextColor)),
                                         ),
                                       ),
                                       // 삭제 버튼
@@ -236,11 +245,8 @@ class _ViewProjectState extends State<ViewProject> {
                                           },
                                           style : ElevatedButton.styleFrom(
                                             backgroundColor : Colors.red,
-                                            shape : RoundedRectangleBorder(
-                                              borderRadius : BorderRadius.circular(12),
-                                            ),
                                           ),
-                                          child : Text("삭제하기", style : TextStyle(color : AppColors.buttonTextColor, fontSize : 20)),
+                                          child : Text("삭제하기", style : TextStyle(color : AppColors.buttonTextColor)),
                                         ),
                                       ),
                                     ],

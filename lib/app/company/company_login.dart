@@ -224,4 +224,5 @@ class _CompanyLogin extends State<Companylogin>{
 
     );
   }
+
 }

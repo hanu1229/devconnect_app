@@ -45,9 +45,10 @@ class _MainAppState extends State<MainApp> {
       // DeveloperLogIn( changePage: (index) { setState(() { selectedIndex = index; }); },), // 6 : 개발자 로그인 페이지
       DeveloperLogIn(), // 6 : 개발자 로그인 페이지
       Companylogin(), // 7 : 기업 로그인 페이지
-      RatingView(), // 8 : 평가 페이지(로그인한 회원)
+      RatingView(changePage: changePage,), // 8 : 평가 페이지(로그인한 회원)
       Profile_Project(changePage: changePage), // 9 : 프로젝트 페이지
-      Profile_Rating(changePage: changePage), // 10 : 평가 페이지
+      // Profile_Rating(changePage: changePage), // 10 : 평가 페이지
+      RatingView(changePage: changePage,), // 10 평가페이지 개별
     ];
 
     // 앱바 제목

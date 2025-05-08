@@ -106,7 +106,7 @@ class _CompanyBottomNavBarState extends State<CompanyBottomNavBar> {
                 _navItem(Icons.article, "프로젝트등록", 1),
                 const SizedBox(width: 70), // 중앙 공간 확보
                 _navItem(Icons.article_outlined, "내 프로젝트", 3),
-                _navItem(Icons.article_outlined, "게시물", 4),
+                _navItem(Icons.article_outlined, "전체평가", 4),
               ],
             ),
             Positioned(
@@ -153,7 +153,7 @@ class _CompanyBottomNavBarState extends State<CompanyBottomNavBar> {
                                       title: Text('프로필 보기'),
                                       onTap: () {
                                         Navigator.pop(context);
-                                        widget.onTap(8);
+                                        widget.onTap(2);
                                       },
                                     ),
                                     ListTile(
@@ -172,7 +172,7 @@ class _CompanyBottomNavBarState extends State<CompanyBottomNavBar> {
                                        title: Text('기업 로그인'),
                                        onTap: () {
                                          Navigator.pop(context);
-                                         widget.onTap(7); // 기업 로그인 페이지로 이동
+                                         widget.onTap(6); // 기업 로그인 페이지로 이동
                                        },
                                      ),
                                      ListTile(
@@ -180,7 +180,7 @@ class _CompanyBottomNavBarState extends State<CompanyBottomNavBar> {
                                        title: Text('개발자 로그인'),
                                        onTap: () {
                                          Navigator.pop(context);
-                                        widget.onTap(6); // 개발자 로그인 페이지로 이동
+                                        widget.onTap(5); // 개발자 로그인 페이지로 이동
                                        },
                                     ),
                                    ]

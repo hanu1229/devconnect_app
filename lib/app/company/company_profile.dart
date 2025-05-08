@@ -1,4 +1,5 @@
 
+import 'package:devconnect_app/app/company/company_menutabs.dart';
 import 'package:devconnect_app/app/component/custom_card.dart';
 import 'package:devconnect_app/app/component/custom_outlinebutton.dart';
 import 'package:devconnect_app/app/component/custom_scrollview.dart';
@@ -340,7 +341,7 @@ void CustomDialog(BuildContext context) {
 
     return CustomSingleChildScrollview(
       children: [
-        CustomMenuTabs(
+        CompanyMenuTabs(
           changePage: widget.changePage,
           selectedIndex: 2,
         ),

@@ -30,7 +30,7 @@ class _DetailProjectState extends State<DetailProject> {
   String rpstart = "";
   String rpend = "";
 
-  get logoUrl => null;
+  final PageController _imagePageController = PageController(initialPage : 0);
 
   /// 서버에서 프로젝트 정보 가져오기 (토큰 필요)
   Future<void> findProject() async {
@@ -167,6 +167,31 @@ class _DetailProjectState extends State<DetailProject> {
   Widget build(BuildContext context) {
 
     String pay = project["ppay"].toString().replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},');
+    final List<dynamic> images = project["images"] ?? [];
+    Widget imageWidget;
+    if(images.isNotEmpty) {
+      imageWidget = Container(
+        height : 300,
+        child : PageView.builder(
+          controller : _imagePageController,
+          scrollDirection : Axis.horizontal,
+          itemCount : images.length,
+          itemBuilder : (context, index) {
+            String imageUrl = "$serverPath/upload/project_image/${images[index]}";
+            return Padding(
+              padding : EdgeInsets.all(5),
+              child : Container(
+                width : MediaQuery.of(context).size.width * 0.8,
+                height : 300,
+                child: Image.network(imageUrl),
+              ),
+            );
+          }
+        ),
+      );
+    } else {
+      imageWidget = SizedBox.shrink();
+    }
 
     return Scaffold(
       appBar : AppBar(title : Text("프로젝트 상세보기"),),
@@ -204,6 +229,12 @@ class _DetailProjectState extends State<DetailProject> {
                         ),
                       ],
                     ),
+                  ),
+                  SizedBox(height : 20),
+                  // 이미지
+                  CustomCard(
+                    elevation : 0,
+                    child : imageWidget,
                   ),
                   SizedBox(height : 20),
                   // 직무 | 프로젝트 기간 | 모집 기간
@@ -256,7 +287,7 @@ class _DetailProjectState extends State<DetailProject> {
                         backgroundColor : AppColors.buttonColor,
                         shape : RoundedRectangleBorder(borderRadius : BorderRadius.circular(5),),
                       ),
-                      child: Text("지원하기", style : TextStyle(color : AppColors.buttonTextColor,),),
+                      child: Text("지원하기", style : TextStyle(color : AppColors.buttonTextColor, fontSize : 20),),
                     ),
                   ),
                   SizedBox(height : 20),

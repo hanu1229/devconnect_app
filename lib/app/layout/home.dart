@@ -26,19 +26,22 @@ class _HomeState extends State<Home> {
   String logoUrl = "$serverPath/upload/company_logo";
   // ptype 확인 변수
   int? checkPtype = 0;
+  //
+  int? ptypeValue = 0;
 
   final ScrollController _scrollController = ScrollController();
 
   List<dynamic> list = [];
 
   Future<void> findData() async {
+    if(ptypeValue != checkPtype) { page = 0; hasNext = true; }
+    print(">> before : ptypeValue : $ptypeValue , checkPtype : $checkPtype");
     // 중복 호출 방지
     if(isLoading || !hasNext) { return; }
     setState(() { isLoading = true; });
     try {
       // 테스트를 위한 딜레이
       await Future.delayed(Duration(seconds: 1));
-      if(ptypeValue != checkPtype) { page = 0; }
       // 필요한 정보만 가져오기
       String path = "$serverPath/api/project/paging?ptype=$ptypeValue&page=$page&size=$size";
       print(path);
@@ -55,6 +58,7 @@ class _HomeState extends State<Home> {
         } else {
           list.addAll(data);
         }
+        print(">> after : ptypeValue : $ptypeValue , checkPtype : $checkPtype");
         // 페이지 증가
         page += 1;
       });
@@ -78,8 +82,6 @@ class _HomeState extends State<Home> {
    });
   }
 
-  int? ptypeValue = 0;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,7 +90,7 @@ class _HomeState extends State<Home> {
       body: Column(
         children : [
           Container(
-            padding : EdgeInsets.only(left : 16, top : 8, right : 16, bottom : 0),
+            padding : EdgeInsets.only(left : 18, top : 8, right : 18, bottom : 0),
             width : MediaQuery.of(context).size.width,
             height : 50,
             child : Row(
@@ -96,25 +98,26 @@ class _HomeState extends State<Home> {
               mainAxisAlignment : MainAxisAlignment.end,
               crossAxisAlignment : CrossAxisAlignment.center,
               children : [
-                SizedBox(
+                Container(
+                  // padding : EdgeInsets.symmetric(horizontal : 8),
                   width : MediaQuery.of(context).size.width * 0.3,
-                  child: DropdownButtonFormField(
-                    elevation : 0,
+                  decoration : BoxDecoration(
+                    borderRadius : BorderRadius.circular(6),
+                    border : Border.all(color : Colors.black, width : 1),
+                  ),
+                  child: DropdownButton(
+                    padding : EdgeInsets.symmetric(horizontal : 8),
+                    isExpanded : true,
+                    // 테두리가 없어서 대체로 사용
+                    elevation : 9,
                     dropdownColor : Colors.white,
-                    decoration : InputDecoration(
-                      // hintText : "전체",
-                      contentPadding : EdgeInsets.symmetric(horizontal : 16, vertical : 4),
-                      enabledBorder : OutlineInputBorder(borderSide : BorderSide(color : AppColors.borderColor, width : 1),),
-                      border : OutlineInputBorder(borderSide : BorderSide(color : AppColors.borderColor, width : 1),),
-                      focusedBorder : OutlineInputBorder(borderSide : BorderSide(color : AppColors.focusColor, width : 1),),
-                    ),
                     value : ptypeValue,
                     onChanged: (value) { setState(() { ptypeValue = value; print(ptypeValue); findData(); }); },
-                    // validator : (value) => value == null ? "값을 선택해주세요" : null,
+                    underline : SizedBox.shrink(),
                     items: [
-                      DropdownMenuItem(value : 0, child: Text("전체")),
-                      DropdownMenuItem(value : 1, child: Text("백엔드")),
-                      DropdownMenuItem(value : 2, child: Text("프론트엔드")),
+                      DropdownMenuItem(value : 0, child : Text("전체"),),
+                      DropdownMenuItem(value : 1, child : Text("백엔드"),),
+                      DropdownMenuItem(value : 2, child : Text("프론트엔드"),),
                     ],
                   ),
                 ),
@@ -153,31 +156,46 @@ class _HomeState extends State<Home> {
                         child : Padding(
                           padding : EdgeInsets.symmetric(vertical : 10),
                           child : ListTile(
-                            leading : SizedBox(
-                              width : 50,
-                              height : 50,
-                              child: Image.network("$logoUrl/${data["cprofile"]}"),
+                            title : Row(
+                              children: [
+                                SizedBox(
+                                  width : 50,
+                                  height : 50,
+                                  child: Image.network("$logoUrl/${data["cprofile"]}"),
+                                ),
+                                SizedBox(width : 15),
+                                Expanded(
+                                  child: Text(
+                                    "${data["pname"]}",
+                                    maxLines : 2,
+                                    style : TextStyle(
+                                      fontFamily : "NanumGothic",
+                                      fontSize : 20,
+                                      fontWeight : FontWeight.bold,
+                                      overflow : TextOverflow.visible
+                                    ),
+                                    softWrap : true,
+                                  ),
+                                ),
+                              ],
                             ),
-                            title : Text(
-                              "${data["pname"]}",
-                              style : TextStyle(
-                                fontFamily : "NanumGothic",
-                                fontSize : 20,
-                                fontWeight : FontWeight.bold,
-                              ),
-                            ),
-                            subtitle: Column(
-                              mainAxisAlignment : MainAxisAlignment.start,
-                              crossAxisAlignment : CrossAxisAlignment.start,
-                              children : [
-                                SizedBox(height : 10),
-                                Text("소개 : ${data["pintro"]}", style : TextStyle(overflow : TextOverflow.ellipsis)),
-                                SizedBox(height : 5),
-                                Text("모집 인원 : ${data["pcount"]}", style : TextStyle(overflow : TextOverflow.ellipsis)),
-                                SizedBox(height : 5),
-                                Text("프로젝트 기간 : $pstart ~ $pend", style : TextStyle(overflow : TextOverflow.ellipsis)),
-                                SizedBox(height : 5),
-                                Text("모집 기간 : $rpstart ~ $rpend", style : TextStyle(overflow : TextOverflow.ellipsis))
+                            subtitle: Row(
+                              children: [
+                                SizedBox(width : 65),
+                                Column(
+                                  mainAxisAlignment : MainAxisAlignment.start,
+                                  crossAxisAlignment : CrossAxisAlignment.start,
+                                  children : [
+                                    SizedBox(height : 10),
+                                    // Text("소개 : ${data["pintro"]}", style : TextStyle(overflow : TextOverflow.ellipsis)),
+                                    // SizedBox(height : 5),
+                                    // Text("모집 인원 : ${data["pcount"]}", style : TextStyle(overflow : TextOverflow.ellipsis)),
+                                    // SizedBox(height : 5),
+                                    Text("프로젝트 기간\n$pstart ~ $pend", style : TextStyle(overflow : TextOverflow.ellipsis)),
+                                    SizedBox(height : 5),
+                                    Text("모집 기간\n$rpstart ~ $rpend", style : TextStyle(overflow : TextOverflow.ellipsis))
+                                  ],
+                                ),
                               ],
                             ),
                           ),
