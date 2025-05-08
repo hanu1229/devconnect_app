@@ -1,11 +1,14 @@
 import 'package:devconnect_app/style/app_colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
   final bool readOnly;
   final bool obscureText;
+  final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
   final String? Function(String?)? validator;
   final String? errorText;
 
@@ -15,6 +18,8 @@ class CustomTextField extends StatelessWidget {
     this.obscureText = false,
     this.validator,
     this.errorText,
+    this.keyboardType,
+    this.inputFormatters,
     Key? key,
   }) : super(key: key);
 
@@ -28,6 +33,8 @@ class CustomTextField extends StatelessWidget {
       readOnly: readOnly,
       obscureText: obscureText,
       validator: validator,
+      keyboardType: keyboardType,
+      inputFormatters: inputFormatters,
       decoration: InputDecoration(
         errorText: errorText,
         errorBorder: OutlineInputBorder(
