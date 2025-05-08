@@ -65,6 +65,27 @@ class _DeveloperSignUp extends State< DeveloperSignUp >{
     }catch( e ){ print( e ); }
   } // f end
 
+  // 정규식 유효성 검사
+  String? idValidator(String? value) {
+    final idReg = RegExp(r'^[a-zA-Z가-힣]{6,}$');
+    if ( value == null || value.isEmpty ) {
+      return '아이디를 입력해주세요';
+    } else if ( !idReg.hasMatch(value) ) {
+      return '아이디는 한글, 영어, 6자 이상';
+    }
+    return null;
+  }
+
+  String? emailValidator(String? value) {
+    final emailReg = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    if (value == null || value.isEmpty) {
+      return '이메일을 입력해주세요';
+    } else if (!emailReg.hasMatch(value)) {
+      return '유효한 이메일 형식이 아닙니다';
+    }
+    return null;
+  }
+  
   @override
   Widget build(BuildContext context) {
     return CustomSingleChildScrollview(
@@ -89,7 +110,10 @@ class _DeveloperSignUp extends State< DeveloperSignUp >{
 
             Text("아이디", style: TextStyle( fontWeight: FontWeight.bold ),),
             SizedBox( height: 7, ),
-            CustomTextField( controller: didController ),
+            CustomTextField(
+              controller: didController,
+              validator: (value) => idValidator(value)
+            ),
             SizedBox( height: 12, ),
 
             Text("비밀번호", style: TextStyle( fontWeight: FontWeight.bold ),),
