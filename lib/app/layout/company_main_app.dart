@@ -38,12 +38,12 @@ class _CompanyMainApp extends State<CompanyMainApp> {
       Home(),
       WriteProject(changePage : changePage),
       Companyprofile(changePage: changePage,), // 가운데 탭
-      ViewProject(), // 3 : 내프로젝트( 메뉴탭 X )
+      CompanyProjectView(changePage : changePage), // 3 : 내 프로젝트( 메뉴탭 O )
       RatingMain(), // 4 : 개발자 평가페이지(전체)
       DeveloperLogIn(), // 5 : 개발자 로그인 페이지
       Companylogin(), // 6 : 기업 로그인 페이지
       RatingView(changePage: changePage,), // 7 : 개발자 평가페이지(로그인한 회원)
-      CompanyProjectView(changePage : changePage), // 8 : 내 프로젝트( 메뉴탭 O )
+
     ];
 
     // 앱바 제목
@@ -51,12 +51,11 @@ class _CompanyMainApp extends State<CompanyMainApp> {
       '프로젝트', // 0
       '프로젝트 등록', // 1
       '기업계정 관리', // 2
-      '내 프로젝트', // 3
+      '기업계정 관리', // 3
       '전체평가', // 4
       '개발자 로그인', // 5
       '기업 로그인', // 6
       '기업계정 관리', // 7
-      '기업계정 관리', // 8
     ];
 
     return Scaffold(
