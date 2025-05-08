@@ -267,7 +267,7 @@ void CustomDialog(BuildContext context) {
         Navigator.pop(context);
         //logOut();
         await prefs.remove('token');
-
+        Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyMainApp()));
       }
     } catch (e) {
       print(e);
