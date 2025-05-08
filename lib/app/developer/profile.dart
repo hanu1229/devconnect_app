@@ -128,6 +128,7 @@ class _ProfileState extends State< Profile >{
     String errorMsg = '';
 
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (context) {
         return StatefulBuilder(
@@ -144,7 +145,7 @@ class _ProfileState extends State< Profile >{
                 final response = await dio.put("$serverPath/api/developer/update/pwd", data: sendData );
 
                 final pwdResp = response.data;
-                if (pwdResp['success']) {
+                if ( pwdResp['success'] ) {
                   Navigator.pop(context); // 다이얼로그 닫기
                   onInfo(token);
                   showDialog(
@@ -261,14 +262,16 @@ class _ProfileState extends State< Profile >{
         print(data);
         if ( data.toString().toLowerCase() == "true" ) {
           await prefs.remove('token');
+          Navigator.pop(context);
+
           showDialog(
+            barrierDismissible: false,
             context: context,
             builder: (context) => CustomBoolAlertDialog(
               title: "탈퇴 완료",
               content: Text("이용해주셔서 감사합니다."),
-              onPressed: () => {
-                Navigator.pop(context),
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainApp() ) ),
+              onPressed: () {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainApp() ) );
               },
             )
           );
@@ -279,6 +282,7 @@ class _ProfileState extends State< Profile >{
     }
 
     showDialog(
+      barrierDismissible: false, // 바깥 영역 터치시 창닫기 x
       context: context,
       builder: (context) => CustomAlertDialog(
         title: "정말 탈퇴하시겠습니까?",

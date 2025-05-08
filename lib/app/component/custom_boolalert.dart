@@ -46,7 +46,7 @@ class CustomBoolAlertDialog extends StatelessWidget {
         ]
       : [
         CustomTextButton(
-          onPressed: () => onPressed,
+          onPressed: onPressed!,
         title: "확인",
         ),
         ],
