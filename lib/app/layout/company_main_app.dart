@@ -1,4 +1,3 @@
-import 'package:devconnect_app/app/company/Company_appraise.dart';
 import 'package:devconnect_app/app/company/company_login.dart';
 import 'package:devconnect_app/app/company/company_bottombar.dart';
 import 'package:devconnect_app/app/company/company_profile.dart';
@@ -8,6 +7,7 @@ import 'package:devconnect_app/app/layout/home.dart';
 import 'package:devconnect_app/app/project/project_view.dart';
 import 'package:devconnect_app/app/project/project_write.dart';
 import 'package:devconnect_app/app/rating/rating_main.dart';
+import 'package:devconnect_app/app/rating/rating_view.dart';
 import 'package:devconnect_app/style/app_colors.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
