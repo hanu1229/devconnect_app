@@ -44,8 +44,13 @@ class _ViewProjectJoinState extends State<ViewProjectJoin> {
       await Future.delayed(Duration(seconds: 1));
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString("token");
+      print(">> $token");
+      print(">>$serverPath/api/project-join/paging?pno=${widget.pno}&page=$page&size=$size");
       if(token == null) { return; }
-      final response = await dio.get("$serverPath/api/project-join/paging?pno=${widget.pno}&page=$page&size=$size", options : Options(headers : {"Authorization" : token}));
+      dio.options.headers['Authorization'] = token;
+      print( dio.options.headers );
+      final response = await dio.get("$serverPath/api/project-join/paging?pno=${widget.pno}&page=$page&size=$size");
+      print( response );
       final data = response.data;
       print(data);
       print(data["content"]);
@@ -337,7 +342,7 @@ class _ViewProjectJoinState extends State<ViewProjectJoin> {
                                   ],
                                 ),
                               ),
-                              Text("평점 : ${developer["davg"]}", style : TextStyle(fontSize : 16,),),
+                              // Text("평점 : ${developer["davg"]}", style : TextStyle(fontSize : 16,),),
                             ],
                           ),
                         ),
