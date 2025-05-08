@@ -145,7 +145,7 @@ class _ProfileState extends State< Profile >{
                 final response = await dio.put("$serverPath/api/developer/update/pwd", data: sendData );
 
                 final pwdResp = response.data;
-                if (pwdResp['success']) {
+                if ( pwdResp['success'] ) {
                   Navigator.pop(context); // 다이얼로그 닫기
                   onInfo(token);
                   showDialog(

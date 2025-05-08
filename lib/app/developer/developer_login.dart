@@ -59,16 +59,26 @@ class _DeveloperLogInState extends State< DeveloperLogIn >{
       resizeToAvoidBottomInset : false,
       backgroundColor: Color(0xFF0078FF),
       body: Container(
-        height: 420,
-        padding: EdgeInsets.fromLTRB(30, 50, 30, 120),
+        padding: EdgeInsets.fromLTRB(30, 30, 30, 70), // 희만 변경
         margin: EdgeInsets.fromLTRB(30, 100, 30, 0),  // left, top , light, bottom
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [ // 하위 요소들 위젯
+            Center(  // 희만 추가
+              child: Text("개발자 로그인",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20
+                ),
+              ),
+            ),
+            SizedBox(height: 30,),
+
             SizedBox(
               width : double.infinity, // 넓이 화면 크기에 따라 자동 조절
               child:
