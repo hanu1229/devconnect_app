@@ -6,12 +6,14 @@ import 'package:devconnect_app/app/component/custom_scrollview.dart';
 import 'package:devconnect_app/app/component/custom_textbutton.dart';
 import 'package:devconnect_app/app/component/custom_textfield.dart';
 import 'package:devconnect_app/app/layout/company_main_app.dart';
+import 'package:devconnect_app/app/layout/home.dart';
 import 'package:devconnect_app/style/server_path.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../component/custom_boolalert.dart';
 import '../component/custom_imgpicker.dart';
 import '../component/custom_menutabs.dart';
 import '../layout/main_app.dart';
@@ -99,10 +101,10 @@ class _CompanyProfileState extends State< Companyprofile >{
     formData.fields.add(MapEntry("cphone", cphoneController.text,) );
     formData.fields.add(MapEntry("cemail", cemailController.text,) );
     formData.fields.add(MapEntry("cadress", cadressController.text) );
-    
+
     final file = await MultipartFile.fromFile(profileImage!.path, filename: profileImage!.name); //경로 이름
     formData.files.add(MapEntry("file" , file)); // 파일로 보냄
-    print(formData);
+    //print(formData);
 
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
@@ -125,7 +127,7 @@ class _CompanyProfileState extends State< Companyprofile >{
   } // f end
 
 
-  // 로그아웃 로그아웃부분 token 검사후 배열에 넣은 info data 받아옴 //이거 안만들어도 됨  await prefs.remove('token');
+  // 로그아웃 로그아웃부분 token 검사후 배열에 넣은 info data 받아옴 //이거 안만들어도 됨  await prefs.remove('token'); 으로 로그아웃 됨
   void logOut() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
@@ -143,6 +145,7 @@ class _CompanyProfileState extends State< Companyprofile >{
 
 
 
+
   // 비밀번호 수정 다이얼로그
   void updateCpw(BuildContext context) {
     final TextEditingController currnetPwdController = TextEditingController();
@@ -151,14 +154,14 @@ class _CompanyProfileState extends State< Companyprofile >{
 
     if(newPwdController.text != confirmNewPwdController.text){return;}
 
-    //비밀번호 수정함수 틀렸을시 주석한곳 확인하기
+    //비밀번호 수정함수
     void onUpdateCpw() async {
       final sendData = {
         'cpwd' : currnetPwdController.text,
         'upcpwd' : newPwdController.text,
       };
 
-      //print("비밀번호 수정함수 부분 : $sendData");
+      print("비밀번호 수정함수 부분 : $sendData");
 
       try{
         final prefs = await SharedPreferences.getInstance();
@@ -166,10 +169,11 @@ class _CompanyProfileState extends State< Companyprofile >{
 
         dio.options.headers['Authorization'] = token;
         final response = await dio.put("${serverPath}/api/company/pwupdate" , data: sendData);
-        //print("비밀번호 수정함수 부분 신호 받는지 : $response");
-        if(response.data == true){
 
-          Navigator.pushReplacement( context, MaterialPageRoute(builder: (context) => CompanyMainApp() ) );
+        if(response.data == true){
+          Navigator.pop(context);
+          Navigator.push(context, MaterialPageRoute(builder: (context) => (CompanyMainApp()))); // 안할시 로그아웃 사용이 불가능함
+         //widget.changePage(0); 이동후 로그아웃이 안됨
         }
       }catch(e){print(e);}
     }
@@ -233,8 +237,6 @@ class _CompanyProfileState extends State< Companyprofile >{
       },
     );
   }
-
-
 
 
   //회원삭제  //상태변경으로 변경
@@ -321,8 +323,6 @@ void CustomDialog(BuildContext context) {
         );
       },
     );
-
-
 }
 
 

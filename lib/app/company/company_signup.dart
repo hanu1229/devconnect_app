@@ -5,6 +5,7 @@
 import 'dart:core';
 import 'dart:io';
 
+import 'package:devconnect_app/app/layout/company_main_app.dart';
 import 'package:devconnect_app/app/layout/home.dart';
 import 'package:devconnect_app/style/server_path.dart';
 import 'package:dio/dio.dart';
@@ -67,7 +68,7 @@ class _SignupState extends State<Signup>{
          //Dio 요청
          final response = await dio.post("${serverPath}/api/company/signup" , data: formData);
 
-         if(response.statusCode == 201 && response.data == true){print("회원가입완료"); Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home()));
+         if(response.statusCode == 201 && response.data == true){print("회원가입완료"); Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CompanyMainApp()));
          } else{
            print("회원가입 실패 또는 응답 오류: ${response.statusCode}");
          }
