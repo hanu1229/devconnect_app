@@ -30,20 +30,6 @@ class CustomTextField extends StatelessWidget {
       validator: validator,
       decoration: InputDecoration(
         errorText: errorText,
-        errorBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.red,
-            width: 3
-          ),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-              color: AppColors.focusColor,
-              width: 3
-          ),
-          borderRadius: BorderRadius.circular(8),
-        ),
         filled: true,
         fillColor: AppColors.textFieldBGColor,
         contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),

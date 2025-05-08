@@ -1,10 +1,7 @@
 
 
 import 'package:devconnect_app/app/company/company_signup.dart';
-import 'package:devconnect_app/app/layout/home.dart';
 import 'package:devconnect_app/app/layout/company_main_app.dart';
-import 'package:devconnect_app/app/layout/home.dart';
-import 'package:devconnect_app/app/layout/main_app.dart';
 import 'package:devconnect_app/style/server_path.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -27,28 +24,51 @@ class _CompanyLogin extends State<Companylogin>{
   TextEditingController idController = TextEditingController();
   TextEditingController pwdController = TextEditingController();
 
+  //오류메시지 변수
+  String errorMessage = '';
+
 
   //2. 자바 통신
   void login() async{
+    // 로그인 시도 전에 이전 오류 메시지 초기화
+    setState(() {
+      errorMessage = '';
+    });
+
     try{
       Dio dio = Dio();
       final sendData={
         'cid' : idController.text,
         'cpwd' : pwdController.text,
-      };
+      };print("1234");
       final response = await dio.post("${serverPath}/api/company/login" ,data: sendData );
       final data = response.data;
-      if(data != ''){
+      print("로그인쪽 data정보 : $data");
+
+      if(data != null){
         SharedPreferences prefs = await SharedPreferences.getInstance();
 
-        await prefs.setString('token', data);
+        await prefs.setString('token', data); // SharePreference에 토큰 저장
 
+        setState(() {
+          errorMessage = '';
+        });
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CompanyMainApp())); // 추후 루트 수정하기
-      }else{
-        print("회원가입실패");
       }
 
-    }catch(e){print(e);}
+    }on DioException catch(e){
+     if(e.response == null && e.response!.statusCode == 401) {
+       print("로그인실패");
+       setState(() {
+         errorMessage = "존재하지않는 회원입니다.";
+       });
+     }else {
+       print("로그인오류");
+       setState(() {
+         errorMessage = "로그인중 오류가 발생했습니다.";
+       });
+     }
+    }
   }
 
 
@@ -134,6 +154,18 @@ class _CompanyLogin extends State<Companylogin>{
               ),
             ),
 
+            if(errorMessage.isNotEmpty)
+              Padding(padding: EdgeInsets.only(top: 8.0),
+                child: Text(errorMessage,
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 12.0,
+                  fontFamily: "NanumGothic" , //폰트유지
+                ),
+                textAlign: TextAlign.center,
+              ),
+              ),
+
             SizedBox(height: 15,),
 
             SizedBox(
@@ -193,4 +225,5 @@ class _CompanyLogin extends State<Companylogin>{
 
     );
   }
+
 }

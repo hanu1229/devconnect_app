@@ -25,7 +25,7 @@ class AppColors {
   /// Button 배경 색상 | #2196F3
   static const Color buttonColor = Color(0xFF2196F3);
   /// Button 글자 색상 | #FFFFFF
-  static const Color buttonTextColor = Color(0xFFC1C1C1);
+  static const Color buttonTextColor = Color(0xFFFFFFFF);
   /// rating(별점) 색상
   static const Color ratingTextColor = Color(0xFFCFAD15);
   /// TextField 테두리 색상
