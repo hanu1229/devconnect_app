@@ -42,7 +42,6 @@ class _MainAppState extends State<MainApp> {
       Text("개발자 순위"), // 4 : 개발자 순위
       // 이동 페이지
       RatingMain(), // 5 : 평가 페이지
-      // DeveloperLogIn( changePage: (index) { setState(() { selectedIndex = index; }); },), // 6 : 개발자 로그인 페이지
       DeveloperLogIn(), // 6 : 개발자 로그인 페이지
       Companylogin(), // 7 : 기업 로그인 페이지
       RatingView(changePage: changePage,), // 8 : 평가 페이지(로그인한 회원)
@@ -59,8 +58,8 @@ class _MainAppState extends State<MainApp> {
       '기업 목록', // 3
       '개발자 순위', // 4
       '평가페이지', // 5
-      '개발자 로그인', // 6
-      '기업 로그인', // 7
+      '', // 6
+      '', // 7
       '기업 평가 목록(개별)', // 8
       '계정 관리', // 9
       '계정 관리', // 10

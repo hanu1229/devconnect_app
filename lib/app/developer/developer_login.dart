@@ -20,6 +20,7 @@ class DeveloperLogIn extends StatefulWidget{
 class _DeveloperLogInState extends State< DeveloperLogIn >{
   TextEditingController didController = TextEditingController();
   TextEditingController dpwdController = TextEditingController();
+  String errorMsg = '';
 
   void login() async{
     try{
@@ -30,17 +31,26 @@ class _DeveloperLogInState extends State< DeveloperLogIn >{
       };
       final response = await dio.post("${serverPath}/api/developer/login" ,data: sendData );
       final data = response.data;
-      if(data != ''){
+      if(data['data'] != ''){
         SharedPreferences prefs = await SharedPreferences.getInstance();
 
-        await prefs.setString('token', data);
+        await prefs.setString('token', data['data']);
 
         Navigator.pushReplacement( context, MaterialPageRoute(builder: (context) => MainApp())); // 추후 루트 수정하기
       }else{
         print("로그인 실패");
       }
 
-    }catch(e){print(e);}
+    } on DioException catch(e){
+      setState(() {
+        errorMsg = e.response?.data['message'] ?? '아이디와 비밀번호를 확인해주세요.';
+      });
+    }catch(e){
+      print(e);
+      setState(() {
+        errorMsg = '서버 오류 발생';
+      });
+    }
   }
 
   @override
@@ -49,25 +59,32 @@ class _DeveloperLogInState extends State< DeveloperLogIn >{
       resizeToAvoidBottomInset : false,
       backgroundColor: Color(0xFF0078FF),
       body: Container(
-        height: 420,
-        padding: EdgeInsets.fromLTRB(30, 50, 30, 120),
+        padding: EdgeInsets.fromLTRB(30, 30, 30, 70), // 희만 변경
         margin: EdgeInsets.fromLTRB(30, 100, 30, 0),  // left, top , light, bottom
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [ // 하위 요소들 위젯
+            Center(  // 희만 추가
+              child: Text("개발자 로그인",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20
+                ),
+              ),
+            ),
+            SizedBox(height: 30,),
+
             SizedBox(
               width : double.infinity, // 넓이 화면 크기에 따라 자동 조절
               child:
               TextField(
                 controller: didController,
-                style: TextStyle(
-                  fontFamily: "NanumGothic",
-                  fontSize: 13,
-                ),
+                style: TextStyle( fontSize: 13, ),
                 decoration: InputDecoration(
                   labelText: "id",
                   enabledBorder: OutlineInputBorder(
@@ -95,10 +112,7 @@ class _DeveloperLogInState extends State< DeveloperLogIn >{
               child: TextField(
                 controller: dpwdController,
                 obscureText: true, // 입력값 감추기
-                style: TextStyle(
-                  fontFamily: "NanumGothic",
-                  fontSize: 13,
-                ),
+                style: TextStyle( fontSize: 13, ),
                 decoration: InputDecoration(
                   labelText: "비밀번호",
                   enabledBorder: OutlineInputBorder(
@@ -118,8 +132,20 @@ class _DeveloperLogInState extends State< DeveloperLogIn >{
                 ),
               ),
             ),
+            SizedBox(height: 8,),
 
-            SizedBox(height: 15,),
+            if (errorMsg.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(left: 15),
+                child: Text(
+                  errorMsg,
+                  style: TextStyle(
+                      color: Color(0xffbc443d),
+                      fontSize: 12
+                  ),
+                ),
+              ),
+            SizedBox(height: 8,),
 
             CustomTextButton(
               onPressed: login,

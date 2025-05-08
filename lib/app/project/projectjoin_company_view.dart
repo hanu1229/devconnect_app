@@ -332,12 +332,12 @@ class _ViewProjectJoinState extends State<ViewProjectJoin> {
                                 child: Column(
                                   crossAxisAlignment : CrossAxisAlignment.start,
                                   children : [
-                                    Text("상태 : ${state ?? ""}", style : TextStyle(fontSize : 20,),),
-                                    Text("이름(레벨) : ${developer["dname"]}(${developer["dlevel"]})", style : TextStyle(fontSize : 20,),),
+                                    Text("상태 : ${state ?? ""}", style : TextStyle(fontSize : 16,),),
+                                    Text("이름(레벨) : ${developer["dname"]}(${developer["dlevel"]})", style : TextStyle(fontSize : 16,),),
                                   ],
                                 ),
                               ),
-                              Text("평점 : ${developer["davg"]}", style : TextStyle(fontSize : 20,),),
+                              Text("평점 : ${developer["davg"]}", style : TextStyle(fontSize : 16,),),
                             ],
                           ),
                         ),
