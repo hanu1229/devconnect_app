@@ -1,6 +1,7 @@
 
 import 'package:devconnect_app/app/component/custom_alert.dart';
 import 'package:devconnect_app/app/component/custom_card.dart';
+import 'package:devconnect_app/app/component/custom_imgpicker.dart';
 import 'package:devconnect_app/app/component/custom_menutabs.dart';
 import 'package:devconnect_app/app/component/custom_outlinebutton.dart';
 import 'package:devconnect_app/app/component/custom_scrollview.dart';
@@ -140,7 +141,6 @@ class _ProfileState extends State< Profile >{
                   'matchPwd': _prevPwdController.text,
                 };
 
-
                 final response = await dio.put("$serverPath/api/developer/update/pwd", data: sendData );
 
                 final pwdResp = response.data;
@@ -154,11 +154,11 @@ class _ProfileState extends State< Profile >{
                     ),
                   );
                 }
-              } on DioException catch (e) {
+              } on DioException catch(e){
                 setState(() {
                   errorMsg = e.response?.data['message'] ?? '비밀번호 변경 실패';
                 });
-              } catch (e) {
+              } catch(e){
                 setState(() {
                   errorMsg = '서버 오류 발생';
                 });
@@ -261,7 +261,17 @@ class _ProfileState extends State< Profile >{
         print(data);
         if ( data.toString().toLowerCase() == "true" ) {
           await prefs.remove('token');
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainApp() ) );
+          showDialog(
+            context: context,
+            builder: (context) => CustomBoolAlertDialog(
+              title: "탈퇴 완료",
+              content: Text("이용해주셔서 감사합니다."),
+              onPressed: () => {
+                Navigator.pop(context),
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainApp() ) ),
+              },
+            )
+          );
         }
       } catch (e) {
         print(e);
@@ -296,8 +306,6 @@ class _ProfileState extends State< Profile >{
 
     final image = developer['dprofile'];
     String imgUrl = "${serverPath}/upload/${image}";
-
-    // if( !isLogIn ){ Navigator.pushNamed( context, MainApp() ) }
 
     return CustomSingleChildScrollview(
       children: [
@@ -358,12 +366,13 @@ class _ProfileState extends State< Profile >{
                 : // 수정버튼 클릭 후
               [
                 Center(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(999),
-                    child: Container(
-                      width: 100, height: 100,
-                      child: Image.network( imgUrl, fit: BoxFit.cover, ),
-                    ),
+                  child: CustomImagePicker(
+                    dprofile: profileImageUrl,
+                    onImageSelected: ( XFile image ) {
+                      setState(() {
+                        profileImage = image;
+                      });
+                    },
                   ),
                 ),
                 SizedBox( height: 20, ),
@@ -418,8 +427,6 @@ class _ProfileState extends State< Profile >{
         // 두번째 Card
         Text("비밀번호", style: TextStyle( fontSize: 18, fontWeight: FontWeight.bold, ), ),
         SizedBox( height: 15 ,),
-
-        // 두번째 Card
         CustomCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

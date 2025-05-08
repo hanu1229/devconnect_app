@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 class CustomBoolAlertDialog extends StatelessWidget {
   final double width;
   final String title;
+  final bool onCancleBtn;
   final Widget? content;
   final VoidCallback? onPressed;
 
@@ -12,6 +13,7 @@ class CustomBoolAlertDialog extends StatelessWidget {
     this.width = 200,
     this.content,
     this.onPressed,
+    this.onCancleBtn = false,
     required this.title,
     Key? key,
   }) : super(key: key);
@@ -31,7 +33,7 @@ class CustomBoolAlertDialog extends StatelessWidget {
         width: width,
         child: content,
       ),
-      actions: onPressed != null
+      actions: onCancleBtn
         ? [
           CustomOutlineButton(
             onPressed: () => Navigator.pop(context),
@@ -43,8 +45,8 @@ class CustomBoolAlertDialog extends StatelessWidget {
           ),
         ]
       : [
-        CustomOutlineButton(
-          onPressed: () => Navigator.pop(context),
+        CustomTextButton(
+          onPressed: () => onPressed,
         title: "확인",
         ),
         ],
