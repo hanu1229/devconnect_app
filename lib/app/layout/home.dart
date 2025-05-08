@@ -157,6 +157,7 @@ class _HomeState extends State<Home> {
                           padding : EdgeInsets.symmetric(vertical : 10),
                           child : ListTile(
                             title : Row(
+                              crossAxisAlignment : CrossAxisAlignment.start,
                               children: [
                                 SizedBox(
                                   width : 50,
