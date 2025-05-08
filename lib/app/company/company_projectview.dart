@@ -1,6 +1,9 @@
 // project_view.dart : 자신의 프로젝트 목록을 출력 하는 페이지
 
 import "package:devconnect_app/app/company/company_menutabs.dart";
+import "package:devconnect_app/app/component/custom_alert.dart";
+import "package:devconnect_app/app/component/custom_boolalert.dart";
+import "package:devconnect_app/app/component/custom_textfield.dart";
 import "package:devconnect_app/app/project/project_detail.dart";
 import "package:devconnect_app/app/project/project_update.dart";
 import "package:devconnect_app/app/project/projectjoin_company_view.dart";
@@ -8,6 +11,7 @@ import "package:devconnect_app/style/app_colors.dart";
 import "package:devconnect_app/style/server_path.dart";
 import "package:dio/dio.dart";
 import "package:flutter/material.dart";
+import "package:flutter_rating_bar/flutter_rating_bar.dart";
 import "package:shared_preferences/shared_preferences.dart";
 
 class CompanyProjectView extends StatefulWidget {
@@ -27,6 +31,9 @@ class _CompanyProjectViewState extends State<CompanyProjectView> {
 
   Dio dio = Dio();
   List<dynamic> projectList = [];
+  List<dynamic> dnoList = [];
+  double updateValue = 0;
+  int? pno = 0;
 
   /// 내 프로젝트 목록 전체 가져오기
   Future<void> findAllMyProject() async {
@@ -105,6 +112,59 @@ class _CompanyProjectViewState extends State<CompanyProjectView> {
     }
   }
 
+  // 입력 컨트롤러
+  TextEditingController titleController = TextEditingController();
+  TextEditingController contentController = TextEditingController();
+
+  // dno 추출 05-08 이민진 추가
+  void getDno( pno ) async {
+    try{
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString("token");
+      dio.options.headers["Authorization"] = token;
+      final response = await dio.get("${serverPath}/api/project-join/getdno?pno=${pno}");
+      if( response.data != null ){
+        dnoList = response.data;
+        print( "dnoList : ${dnoList}");
+      }
+    }catch(e) { print(e); }
+  } // getDno end
+
+  // 평가등록 05-08 이민진 추가
+  void ratingWrite() async {
+    try {
+      final sendData = {
+        "dtitle": titleController.text,
+        "dcontent": contentController.text,
+        "drscore" : updateValue,
+        "pno": pno,
+        "dno": dnoList,
+      };
+      print("senddata : ${sendData}");
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString("token");
+      dio.options.headers['Authorization'] = token;
+      final response = await dio.post("${serverPath}/api/drating", data: sendData);
+      final data = response.data;
+      if( data == true ){
+        showDialog(
+            context: context,
+            builder: (context) => CustomBoolAlertDialog(
+              title: "등록 완료",
+              content: Text("평가를 등록했습니다."),
+              onPressed: () {
+                setState(() {
+                  Navigator.of(context).pop();
+                });
+              },
+            )
+        );
+      }
+    } catch (e) {
+      print(e);
+    }
+  } // ratingWrite end
+
   @override
   void initState() {
     super.initState();
@@ -151,6 +211,7 @@ class _CompanyProjectViewState extends State<CompanyProjectView> {
 
   @override
   Widget build(BuildContext context) {
+    print("projectList : ${projectList}");
     return Scaffold(
       backgroundColor: AppColors.textFieldBGColor,
       body : Padding(
@@ -215,6 +276,91 @@ class _CompanyProjectViewState extends State<CompanyProjectView> {
                                           child : Text("신청 현황", style : TextStyle(color : AppColors.buttonTextColor)),
                                         ),
                                       ),
+                                      // 평가 버튼
+                                      Container(
+                                        padding: EdgeInsets.only(left: 16, top: 0 , right: 16, bottom: 0 ),
+                                        width: MediaQuery.of(context).size.width,
+                                        child: ElevatedButton(
+                                            onPressed: () async {
+                                              Navigator.pop(context);
+                                              pno = projectList[index]["pno"];
+                                              getDno(pno);
+                                              print( "pno : ${pno }");
+                                              showDialog(
+                                                  context: context,
+                                                  barrierDismissible: false, // 바깥 클릭 막기
+                                                  builder: (context) {
+                                                    return CustomAlertDialog(
+                                                      width: MediaQuery.of(context).size.width * 0.9, // 가로폭 제한
+                                                      title: "평가하기",
+                                                      btnTitle: "평가",
+                                                      content: Container(
+                                                        constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.7 ),
+                                                        child: SingleChildScrollView(
+                                                          child: Column(
+                                                            mainAxisSize: MainAxisSize.min,
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Text("제목"),
+                                                              SizedBox( height: 10,),
+                                                              CustomTextField(
+                                                                controller: titleController,
+                                                              ),
+                                                              SizedBox(height: 15),
+                                                              Text("내용"),
+                                                              SizedBox( height: 10,),
+                                                              CustomTextField(
+                                                                controller: contentController,
+                                                                maxLines: 5,
+                                                              ),
+                                                              SizedBox(height: 10),
+                                                              Center(
+                                                                child:
+                                                                  RatingBar(
+                                                                    initialRating: updateValue,
+                                                                    minRating: 0.5,
+                                                                    direction: Axis.horizontal,
+                                                                    itemCount: 5,
+                                                                    itemSize: 40,
+                                                                    allowHalfRating: true,
+                                                                    onRatingUpdate: (ratingValue) {
+                                                                      setState(() {
+                                                                        updateValue = ratingValue;
+                                                                      });
+                                                                      },
+                                                                    ratingWidget: RatingWidget(
+                                                                      full: Icon(Icons.star,
+                                                                        color: AppColors
+                                                                            .ratingTextColor,),
+                                                                      half: Icon(Icons.star_half,
+                                                                        color: AppColors
+                                                                            .ratingTextColor,),
+                                                                      empty: Icon(Icons.star_border,
+                                                                        color: AppColors
+                                                                            .ratingTextColor,),
+                                                                    ),
+                                                                  ),
+                                                              ),
+                                                              SizedBox(height: 10,),
+                                                              Divider(),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      onPressed: () {
+                                                        Navigator.of(context).pop();
+                                                        ratingWrite();
+                                                      },
+                                                    );
+                                                  }
+                                              );
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: AppColors.focusColor,
+                                            ),
+                                            child: Text("평가하기" , style: TextStyle( color: AppColors.buttonTextColor) ),
+                                        ),
+                                      ),
                                       // 수정 버튼
                                       Container(
                                         padding : EdgeInsets.only(left : 16, top : 0, right : 16, bottom : 0),
@@ -269,5 +415,4 @@ class _CompanyProjectViewState extends State<CompanyProjectView> {
       ),
     );
   }
-
 }
