@@ -90,6 +90,7 @@ class _CompanyLogin extends State<Companylogin>{
           borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [ // 하위 요소들 위젯
             SizedBox(
