@@ -1,3 +1,4 @@
+import 'package:devconnect_app/app/company/company_all.dart';
 import 'package:devconnect_app/app/company/company_login.dart';
 import 'package:devconnect_app/app/component/custombottombar.dart';
 import 'package:devconnect_app/app/developer/developer_login.dart';
@@ -38,7 +39,7 @@ class _MainAppState extends State<MainApp> {
       Home(), // 0 : 기본 페이지
       WriteProject(changePage : changePage), // 1 : 프로젝트 작성 페이지
       Profile(changePage: changePage,), // 2: 프로필 기본 정보
-      Text("기업 목록"), // 3 : 기업 목록
+      CompanyAll(), // 3 : 기업 목록
       Text("개발자 순위"), // 4 : 개발자 순위
       // 이동 페이지
       RatingMain(), // 5 : 평가 페이지
