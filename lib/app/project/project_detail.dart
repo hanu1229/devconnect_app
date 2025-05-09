@@ -177,7 +177,7 @@ class _DetailProjectState extends State<DetailProject> {
           scrollDirection : Axis.horizontal,
           itemCount : images.length,
           itemBuilder : (context, index) {
-            String imageUrl = "$serverPath/upload/project_image/${images[index]}";
+            String imageUrl = "${images[index]}";
             return Padding(
               padding : EdgeInsets.all(5),
               child : Container(
@@ -212,7 +212,10 @@ class _DetailProjectState extends State<DetailProject> {
                         SizedBox(
                           width : 100,
                           height : 100,
-                          child: Image.network("$logoUrl/${project["cprofile"]}"),
+                          // child: Image.network("$logoUrl/${project["cprofile"]}"),
+                          child: Image.network(
+                              "http://springweb-env.eba-ecxdumxg.ap-northeast-2.elasticbeanstalk.com/upload/company_logo/logo_small.png"
+                          ),
                         ),
                         SizedBox(width : 20),
                         Expanded(

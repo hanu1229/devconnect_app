@@ -23,7 +23,7 @@ class _HomeState extends State<Home> {
   // 로딩 확인 변수
   bool isLoading = false;
   // 회사 로고 이미지 경로
-  String logoUrl = "$serverPath/upload/company_logo";
+  // String logoUrl = "$serverPath/upload/company_logo";
   // ptype 확인 변수
   int? checkPtype = 0;
   //
@@ -161,7 +161,9 @@ class _HomeState extends State<Home> {
                                 SizedBox(
                                   width : 50,
                                   height : 50,
-                                  child: Image.network("$logoUrl/${data["cprofile"]}"),
+                                  // child: Image.network("$logoUrl/${data["cprofile"]}"),
+                                  // child: Image.network("${data["cprofile"]}"),
+                                  child: Image.network("https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/company_logo/logo_small.png"),
                                 ),
                                 SizedBox(width : 15),
                                 Expanded(
