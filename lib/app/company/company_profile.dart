@@ -5,12 +5,15 @@ import 'package:devconnect_app/app/component/custom_outlinebutton.dart';
 import 'package:devconnect_app/app/component/custom_scrollview.dart';
 import 'package:devconnect_app/app/component/custom_textbutton.dart';
 import 'package:devconnect_app/app/component/custom_textfield.dart';
+import 'package:devconnect_app/app/layout/company_main_app.dart';
+import 'package:devconnect_app/app/layout/home.dart';
 import 'package:devconnect_app/style/server_path.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../component/custom_boolalert.dart';
 import '../component/custom_imgpicker.dart';
 import '../component/custom_menutabs.dart';
 import '../layout/main_app.dart';
@@ -32,6 +35,9 @@ class Companyprofile extends StatefulWidget{
 
 class _CompanyProfileState extends State< Companyprofile >{
   Dio dio = Dio();
+
+  //오류메시지 변수
+  String errorMessage = '';
 
   // 상태변수
   XFile? profileImage;        // 이미지 파일 받기
@@ -98,10 +104,10 @@ class _CompanyProfileState extends State< Companyprofile >{
     formData.fields.add(MapEntry("cphone", cphoneController.text,) );
     formData.fields.add(MapEntry("cemail", cemailController.text,) );
     formData.fields.add(MapEntry("cadress", cadressController.text) );
-    
+
     final file = await MultipartFile.fromFile(profileImage!.path, filename: profileImage!.name); //경로 이름
     formData.files.add(MapEntry("file" , file)); // 파일로 보냄
-    print(formData);
+    //print(formData);
 
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
@@ -124,7 +130,7 @@ class _CompanyProfileState extends State< Companyprofile >{
   } // f end
 
 
-  // 로그아웃 로그아웃부분 token 검사후 배열에 넣은 info data 받아옴
+  // 로그아웃 로그아웃부분 token 검사후 배열에 넣은 info data 받아옴 //이거 안만들어도 됨  await prefs.remove('token'); 으로 로그아웃 됨
   void logOut() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
@@ -139,6 +145,7 @@ class _CompanyProfileState extends State< Companyprofile >{
       Navigator.pushReplacement( context, MaterialPageRoute(builder: (context) => MainApp() ) );
     });
   } // f end
+
 
 
 
@@ -169,7 +176,7 @@ class _CompanyProfileState extends State< Companyprofile >{
         if(response.data == true){
           Navigator.pop(context);
           logOut();
-          widget.changePage(0);
+          Navigator.push(context, MaterialPageRoute(builder: (context) => MainApp()));
         }
       }catch(e){print(e);}
     }
@@ -235,8 +242,6 @@ class _CompanyProfileState extends State< Companyprofile >{
   }
 
 
-
-
   //회원삭제  //상태변경으로 변경
 void CustomDialog(BuildContext context) {
     final TextEditingController customPwdController = TextEditingController();
@@ -251,19 +256,24 @@ void CustomDialog(BuildContext context) {
       'cpwd': customPwdController.text
     };
     print("sendData확인:$sendData");
+
     try {
       dio.options.headers['Authorization'] = token;
       final response = await dio.put(
           "${serverPath}/api/company/state", data: sendData);
       bool result = response.data;
+        print(result);
+
       if (!result) {
         print("변경실패");
+
 
       } else {
         print("변경성공");
         Navigator.pop(context);
-        logOut();
-
+        //logOut();
+        await prefs.remove('token');
+        Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyMainApp()));
       }
     } catch (e) {
       print(e);
@@ -278,7 +288,7 @@ void CustomDialog(BuildContext context) {
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("정말 삭제하시겠습니까?"),
+              Text("정말 탈퇴하시겠습니까?"),
               SizedBox( height: 7,),
               Divider(),
             ],
@@ -297,6 +307,7 @@ void CustomDialog(BuildContext context) {
                   controller: customPwdController,
                   obscureText: true,
                 ),
+
                 SizedBox( height: 15,),
 
               ],
@@ -315,8 +326,6 @@ void CustomDialog(BuildContext context) {
         );
       },
     );
-
-
 }
 
 

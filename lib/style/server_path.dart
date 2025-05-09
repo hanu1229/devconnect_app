@@ -8,10 +8,12 @@
 
 // 회사 로고 이미지 저장 장소 URL
 String logoUrl = "$serverPath/upload/company_logo";
+
+// String serverPath = "http://192.168.0.2:8080";
 // 192.168.40.97
 
 // 희만집pc
-String serverPath = "http://192.168.0.8:8080";
+// String serverPath = "http://192.168.0.8:8080";
 
 // 희만학원pc
 String serverPath = "http://192.168.40.97:8080";

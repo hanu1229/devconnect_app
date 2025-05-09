@@ -163,6 +163,8 @@ class _DetailProjectState extends State<DetailProject> {
     findCompany();
   }
 
+  int _currentPage = 0;
+
   @override
   Widget build(BuildContext context) {
 
@@ -172,21 +174,73 @@ class _DetailProjectState extends State<DetailProject> {
     if(images.isNotEmpty) {
       imageWidget = Container(
         height : 300,
-        child : PageView.builder(
-          controller : _imagePageController,
-          scrollDirection : Axis.horizontal,
-          itemCount : images.length,
-          itemBuilder : (context, index) {
-            String imageUrl = "$serverPath/upload/project_image/${images[index]}";
-            return Padding(
-              padding : EdgeInsets.all(5),
-              child : Container(
-                width : MediaQuery.of(context).size.width * 0.8,
-                height : 300,
-                child: Image.network(imageUrl),
+        child : Stack(
+          children : [
+            PageView.builder(
+                controller : _imagePageController,
+                onPageChanged : (index) { setState(() { _currentPage = index; }); },
+                scrollDirection : Axis.horizontal,
+                itemCount : images.length,
+                itemBuilder : (context, index) {
+                  String imageUrl = "$serverPath/upload/project_image/${images[index]}";
+                  return Padding(
+                    padding : EdgeInsets.all(5),
+                    child : Container(
+                      width : MediaQuery.of(context).size.width * 0.8,
+                      height : 300,
+                      child: Row(
+                        mainAxisAlignment : MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(width : 20),
+                          Image.network(imageUrl),
+                          SizedBox(width : 20),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+            ),
+            Positioned(
+              left : 0, top : 0, bottom : 0,
+              child: Center(
+                child: IconButton(
+                  onPressed : () {
+                    // 이전 페이지로 넘어가기
+                    if(_currentPage > 0) {
+                      _imagePageController.previousPage(duration: Duration(milliseconds : 300), curve: Curves.easeInOut);
+                    }
+                  },
+                  style : IconButton.styleFrom(
+                    shape : RoundedRectangleBorder(
+                      borderRadius : BorderRadius.circular(6),
+                      side : BorderSide(color : Color(0xFFD9D9D9), width : 2),
+                    ),
+                  ),
+                  icon : Icon(Icons.arrow_left, size : 35),
+                ),
               ),
-            );
-          }
+            ),
+            Positioned(
+              right : 0, top : 0, bottom : 0,
+              child: Center(
+                child: IconButton(
+                  onPressed : () {
+                    // 다음 페이지로 넘어가기
+                    if(_currentPage < images.length - 1) {
+                      _imagePageController.nextPage(duration: Duration(milliseconds : 300), curve: Curves.easeInOut);
+                    }
+                  },
+                  style : IconButton.styleFrom(
+                    shape : RoundedRectangleBorder(
+                      borderRadius : BorderRadius.circular(6),
+                      side : BorderSide(color : Color(0xFFD9D9D9), width : 2),
+                    ),
+                  ),
+                  icon : Icon(Icons.arrow_right, size : 35),
+                ),
+              ),
+            ),
+          ],
         ),
       );
     } else {
