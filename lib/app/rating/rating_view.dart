@@ -278,11 +278,12 @@ class _RatingViewState extends State<RatingView>{
                       //   return SizedBox(); // 빈공간 출력
                       // } // if end
                       final images = company?['cprofile'];
+                      print(">> images : $images");
                       // 이미지 유무 확인 후 없으면 기본이미지 있으면 첫번째 이미지
                       if (images == null || images.isEmpty) {
-                        imageUrl = "${serverPath}/upload/default.jpg";
+                        imageUrl = "$imageUrl/default.jpg";
                       } else {
-                        imageUrl = "${serverPath}/upload/$images";
+                        imageUrl = images;
                       } // if end
                       return InkWell( // 클릭시 이동
                         onTap: () async {
@@ -324,7 +325,7 @@ class _RatingViewState extends State<RatingView>{
                                   Container(
                                     width: 65, height: 65, // 사이즈,
                                     child: Image.network( // 웹 이미지 출력
-                                      imageUrl,
+                                      imageUrl!,
                                       fit: BoxFit.cover, // 이미지 비율 유지
                                     ),
                                   ),
@@ -388,10 +389,9 @@ class _RatingViewState extends State<RatingView>{
                       print(">> 실행");
                       // 이미지 유무 확인 후 없으면 기본이미지 있으면 첫번째 이미지
                       if (images == null || images.isEmpty) {
-                        // imageUrl = "${serverPath}/upload/$images";
+                        imageUrl = "$imageUrl/default.jpg";
                       } else {
-                        imageUrl = "${serverPath}/upload/$images";
-                        print(imageUrl);
+                        imageUrl = images;
                       } // if end
                       return InkWell( // 클릭시 이동
                         onTap: () async {

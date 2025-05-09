@@ -113,61 +113,61 @@ class _MainAppState extends State<MainApp> {
           });
         },
       ),
-      floatingActionButtonLocation:  FloatingActionButtonLocation.endDocked,
-      floatingActionButton: Container(
-        margin: EdgeInsets.only( bottom: 105, right: 10),
-        child: SpeedDial(
-          icon: Icons.add, // 기본 아이콘
-          activeIcon: Icons.close, // 활성화된 상태 아이콘
-          // spacing: 0, // + 아이콘과 열리는 아이콘의 간격
-          spaceBetweenChildren: 20, // 열렸을 때 아이콘들의 간격
-          children: [
-            SpeedDialChild(
-              label: '평가',
-              onTap: (){
-                setState(() {
-                  selectedIndex = 5;
-                });
-              },
-            ),
-            SpeedDialChild(
-              label: '개발자 로그인',
-              onTap: (){
-                setState(() {
-                  selectedIndex = 6;
-                });
-              },
-            ),
-            SpeedDialChild(
-              label: '개별평가',
-              onTap: (){
-                setState(() {
-                  selectedIndex = 8;
-                });
-              }
-            ),
-            SpeedDialChild(
-              child: Icon(Icons.home),
-              label: '홈',
-            ),
-            SpeedDialChild(
-              child: Icon(Icons.home),
-              label: '임시',
-              onTap : () async {
-                // 임시
-                Dio dio = Dio();
-                final prefs = await SharedPreferences.getInstance();
-                final token = prefs.getString("token");
-                if(token == null) { print("토큰 없음"); return; }
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder : (context) => ViewProject()),
-                );
-              }
-            ),
-          ],
-        ),
-      ),
+      // floatingActionButtonLocation:  FloatingActionButtonLocation.endDocked,
+      // floatingActionButton: Container(
+      //   margin: EdgeInsets.only( bottom: 105, right: 10),
+      //   child: SpeedDial(
+      //     icon: Icons.add, // 기본 아이콘
+      //     activeIcon: Icons.close, // 활성화된 상태 아이콘
+      //     // spacing: 0, // + 아이콘과 열리는 아이콘의 간격
+      //     spaceBetweenChildren: 20, // 열렸을 때 아이콘들의 간격
+      //     children: [
+      //       SpeedDialChild(
+      //         label: '평가',
+      //         onTap: (){
+      //           setState(() {
+      //             selectedIndex = 5;
+      //           });
+      //         },
+      //       ),
+      //       SpeedDialChild(
+      //         label: '개발자 로그인',
+      //         onTap: (){
+      //           setState(() {
+      //             selectedIndex = 6;
+      //           });
+      //         },
+      //       ),
+      //       SpeedDialChild(
+      //         label: '개별평가',
+      //         onTap: (){
+      //           setState(() {
+      //             selectedIndex = 8;
+      //           });
+      //         }
+      //       ),
+      //       SpeedDialChild(
+      //         child: Icon(Icons.home),
+      //         label: '홈',
+      //       ),
+      //       SpeedDialChild(
+      //         child: Icon(Icons.home),
+      //         label: '임시',
+      //         onTap : () async {
+      //           // 임시
+      //           Dio dio = Dio();
+      //           final prefs = await SharedPreferences.getInstance();
+      //           final token = prefs.getString("token");
+      //           if(token == null) { print("토큰 없음"); return; }
+      //           Navigator.push(
+      //             context,
+      //             MaterialPageRoute(builder : (context) => ViewProject()),
+      //           );
+      //         }
+      //       ),
+      //     ],
+      //   ),
+      // ),
     );
   }
 }

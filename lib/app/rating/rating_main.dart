@@ -216,9 +216,9 @@ class _RatingMainState extends State<RatingMain>{
             final images = company?['cprofile'];
             // 만약에 이미지가 존재하면 대표이미지 , 없으면 기본이미지 (default)
             if( images == null || images.isEmpty ){
-              imageUrl = "${serverPath}/upload/default.jpg";
+              imageUrl = "$imageUrl/default.jpg";
             }else {
-              imageUrl = "${serverPath}/upload/$images";
+              imageUrl = images;
             }
             print(company['cprofile']);              // 값 확인
             print(company.runtimeType); // 타입 확인
@@ -263,7 +263,7 @@ class _RatingMainState extends State<RatingMain>{
                         Container(
                           width: 65, height: 65, // 사이즈
                           child: Image.network( // 웹 이미지 출력
-                            imageUrl,
+                            imageUrl!,
                             fit: BoxFit.cover, // 이미지 비율 유지
                           ),
                         ),
@@ -330,9 +330,9 @@ class _RatingMainState extends State<RatingMain>{
             final images = developer?['dprofile'];
             // 만약에 이미지가 대표이미지 , 없으면 기본 이미지( default )
             if( images == null || images.isEmpty ){
-              imageUrl = "${serverPath}/upload/default.jpg";
+              imageUrl = "$imageUrl/default.jpg";
             }else{
-              imageUrl = "${serverPath}/upload/$images";
+              imageUrl = images;
           }
             return InkWell(
               onTap: () async {
@@ -375,7 +375,7 @@ class _RatingMainState extends State<RatingMain>{
                         Container(
                           width: 65, height: 65, // 사이즈
                           child: Image.network( // 웹 이미지 출력
-                            imageUrl,
+                            imageUrl!,
                             fit: BoxFit.cover, // 이미지 비율 유지
                           ),
                         ),
