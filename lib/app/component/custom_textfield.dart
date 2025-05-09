@@ -8,6 +8,8 @@ class CustomTextField extends StatelessWidget {
   final int maxLines;
   final bool readOnly;
   final bool obscureText;
+  final int? maxLines;
+  final int? maxLength;
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
   final String? Function(String?)? validator;
@@ -22,6 +24,8 @@ class CustomTextField extends StatelessWidget {
     this.errorText,
     this.keyboardType,
     this.inputFormatters,
+    this.maxLines = 1,
+    this.maxLength = 20,
     Key? key,
   }) : super(key: key);
 
@@ -38,7 +42,10 @@ class CustomTextField extends StatelessWidget {
       validator: validator,
       keyboardType: keyboardType,
       inputFormatters: inputFormatters,
+      maxLength: maxLength,
+      maxLines: maxLines,
       decoration: InputDecoration(
+        counterText:'',
         errorText: errorText,
         errorBorder: OutlineInputBorder(
           borderSide: BorderSide(
