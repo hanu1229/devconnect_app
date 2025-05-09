@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
-  final int maxLines;
   final bool readOnly;
   final bool obscureText;
   final int? maxLines;
@@ -17,7 +16,6 @@ class CustomTextField extends StatelessWidget {
 
   const CustomTextField({
     required this.controller,
-    this.maxLines = 1,
     this.readOnly = false,
     this.obscureText = false,
     this.validator,
@@ -36,7 +34,6 @@ class CustomTextField extends StatelessWidget {
 
     return TextFormField(
       controller: controller,
-      maxLines: maxLines,
       readOnly: readOnly,
       obscureText: obscureText,
       validator: validator,
