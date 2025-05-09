@@ -18,7 +18,7 @@ class CompanyMenuTabs extends StatelessWidget {
         Row(
           children: [
             _buildTab("기본 정보", 2),
-            _buildTab("프로젝트", 8),
+            _buildTab("프로젝트", 3),
             _buildTab("평가", 7),
           ],
         ),
