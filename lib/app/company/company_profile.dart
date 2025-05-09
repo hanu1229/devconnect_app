@@ -36,6 +36,9 @@ class Companyprofile extends StatefulWidget{
 class _CompanyProfileState extends State< Companyprofile >{
   Dio dio = Dio();
 
+  //오류메시지 변수
+  String errorMessage = '';
+
   // 상태변수
   XFile? profileImage;        // 이미지 파일 받기
   String? profileImageUrl;    // 이미지 url 받기
@@ -172,8 +175,8 @@ class _CompanyProfileState extends State< Companyprofile >{
 
         if(response.data == true){
           Navigator.pop(context);
-          Navigator.push(context, MaterialPageRoute(builder: (context) => (CompanyMainApp()))); // 안할시 로그아웃 사용이 불가능함
-         //widget.changePage(0); 이동후 로그아웃이 안됨
+          logOut();
+          Navigator.push(context, MaterialPageRoute(builder: (context) => MainApp()));
         }
       }catch(e){print(e);}
     }

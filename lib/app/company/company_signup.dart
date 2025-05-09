@@ -7,10 +7,19 @@ import 'dart:io';
 
 import 'package:devconnect_app/app/layout/company_main_app.dart';
 import 'package:devconnect_app/app/layout/home.dart';
+import 'package:devconnect_app/app/layout/main_app.dart';
 import 'package:devconnect_app/style/server_path.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+
+import '../component/custom_card.dart';
+import '../component/custom_imgpicker.dart';
+import '../component/custom_outlinebutton.dart';
+import '../component/custom_scrollview.dart';
+import '../component/custom_textbutton.dart';
+import '../component/custom_textfield.dart';
+import '../util/services.dart';
 
 class Signup extends StatefulWidget{
   @override
@@ -21,6 +30,8 @@ class Signup extends StatefulWidget{
 
 class _SignupState extends State<Signup>{
 
+  final _formKey = GlobalKey<FormState>();
+
   // 입력 컨트롤러
    final TextEditingController cidController = TextEditingController();
    final TextEditingController cpwdController = TextEditingController();
@@ -30,22 +41,10 @@ class _SignupState extends State<Signup>{
    final TextEditingController cemailController = TextEditingController();
    final TextEditingController cbusinessController = TextEditingController();
    Dio dio = Dio();
+
+   //이미지 변수
    XFile? selectedimage;
 
-   // 이미지 피커 사용자의 파일을 플러터로 가져오기
-   
-   void onSelectimage() async {
-     try{
-       ImagePicker picker =ImagePicker();
-       final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);//이미지 피커 객체 생성 , 이미지 여러개
-       if(pickedFile != null){
-         setState(() {
-           selectedimage = pickedFile;
-         });
-       }
-
-     }catch(e){print(e);}
-   }
 
    // 등록함수
    void onSignup() async {
@@ -61,9 +60,9 @@ class _SignupState extends State<Signup>{
        formData.fields.add(MapEntry("cbusiness", cbusinessController.text));
 
        //이미지 담기
-       if(selectedimage != null){
+
          final file = await MultipartFile.fromFile(selectedimage!.path , filename: selectedimage!.name);
-         formData.files.add(MapEntry("file", file));
+         if(file != null){formData.files.add(MapEntry("file", file));}
 
          //Dio 요청
          final response = await dio.post("${serverPath}/api/company/signup" , data: formData);
@@ -72,151 +71,200 @@ class _SignupState extends State<Signup>{
          } else{
            print("회원가입 실패 또는 응답 오류: ${response.statusCode}");
          }
-       }
+
      }catch(e){print(e);}
    }
 
-   //이미지 미리보기 함수
-   Widget ImagePreview(){
-     if(selectedimage == null){return SizedBox.shrink();}
-     return Container(
-       child: Image.file(
-           File(selectedimage!.path), // 선택된 이미지 파일의 경로를 사용하여 이미지 표시
-         fit: BoxFit.contain, // 컨테이너 안에서 이미지가 어떻게 보일지 설정 (꽉 채우거나 비율 유지 등)
-         width: 130,
-         height: 130,
-       ),
-     );
+   //아이디
+   String? idfact(String? value){
+     final idcheck = RegExp(r'^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9]{6,20}$');
+     if ( value == null || value.isEmpty ) {
+       return '아이디를 입력해주세요';
+     } else if ( !idcheck.hasMatch(value) ) {
+       return '아이디는 영어, 숫자를 모두 포함한 6~20자여야 합니다.';
+     }
+     return null;
    }
 
+  // 비밀번호
+  String? pwdfact(String? value) {
+    final passworcheck = RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+=-]).{8,20}$');
+    if (value == null || value.isEmpty) {
+      return '비밀번호를 입력해주세요';
+    } else if (!passworcheck.hasMatch(value)) {
+      return '비밀번호는 영문, 숫자, 특수문자를 모두 포함한 6~20자여야 합니다';
+    }
+    return null;
+  }
 
+
+// 전화번호 유효성 검사 함수 (모바일 및 지역 번호 포함, 하이픈 주변 공백 허용)
+  String? phonefact(String? value) {
+
+    if (value == null || value.isEmpty) {
+      return '전화번호를 입력해주세요';
+    }
+    final phonecheck = RegExp(r'^(01[0|1|6-9]|0\d{1,2})\s*-\s*\d{3,4}\s*-\s*\d{4}$');
+
+    if (!phonecheck.hasMatch(value)) {
+      return '유효한 전화번호 형식이 아닙니다. (예: 010-1234-5678, 032-123-4567, 010- 1234- 5678)';
+    }
+
+    return null;
+  }
+
+  // 이메일
+  String? emailValidator(String? value) {
+    final emailReg = RegExp(r'^[\w\.-]+@[\w\.-]+\.\w{2,}$');
+    if (value == null || value.isEmpty) {
+      return '이메일을 입력해주세요';
+    } else if (!emailReg.hasMatch(value)) {
+      return '유효한 이메일 형식이 아닙니다';
+    }
+    return null;
+  }
+
+// 주소 유효성 검사 함수
+  String? addressfact(String? value) {
+
+    if (value == null || value.trim().isEmpty) {
+      return '주소를 입력해주세요'; // 비어있다면 오류 메시지 반환
+    }
+    final addresscheck = RegExp(r'^[가-힣0-9-]+(?:\s[가-힣0-9-]+)+$'); // ?: 는 그룹을 만들지만 캡처하지 않음 (성능 미미한 향상)
+    if (!addresscheck.hasMatch(value.trim())) {
+      return '유효한 주소 형식이 아닙니다. (예: 서울 금천구 가산디지털1로 171)';
+    }
+    return null;
+  }
+
+  String? businessNumberValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return '사업자 등록번호를 입력해주세요.'; // 비어있다면 오류 메시지 반환
+    }
+    final businessNumberRegex = RegExp(r'^\d{3}-\d{2}-\d{5}$');
+    if (!businessNumberRegex.hasMatch(value)) {
+      return '유효한 사업자 등록번호 형식이 아닙니다. (예: 123-45-67890)';
+    }
+
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.blue,
-      body: Padding( // Container 대신 Padding을 사용하여 전체 여백 적용
-        padding: EdgeInsets.fromLTRB(30, 50, 30, 120),
-        child: ListView( // Column 대신 ListView 사용
-          padding: EdgeInsets.only(top: 20, bottom: 20), // ListView 내부 여백 조절 (선택 사항)
-          children: [
-            Container( // 흰색 배경의 컨테이너
-              margin: EdgeInsets.fromLTRB(0, 20, 0, 20), // 내부 여백 조정
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              padding: EdgeInsets.all(30), // 내부 패딩
+    return CustomSingleChildScrollview(
+      minHeight: 1,
+      padding: EdgeInsets.fromLTRB( 30, 60, 30, 70 ),
+      color: Colors.blueAccent,
+      children: [ CustomCard(
+          child: Form(
+              key: _formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch, // 자식들을 가로축으로 늘림
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TextField(
-                    controller: cidController, // 아이디 입력 컨트롤러
-                    decoration: InputDecoration(
-                      labelText: "id",
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
 
-                  SizedBox(height: 20),
-
-                  TextField(
-                    controller: cpwdController, // 비밀번호 입력 컨트롤러
-                    obscureText: true, // 번호 숨기기
-                    decoration: InputDecoration(
-                      labelText: "비밀번호",
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-
-                  SizedBox(height: 20),
-
-                  TextField(
-                    controller: cnameController, // 회사번호 입력 컨트롤러
-                    decoration: InputDecoration(
-                      labelText: "회사이름",
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-
-
-                  SizedBox(height: 20),
-
-                  TextField(
-                    controller: cphoneController, // 회사번호 입력 컨트롤러
-                    decoration: InputDecoration(
-                      labelText: "회사번호",
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-
-                  SizedBox(height: 20),
-
-                  TextField(
-                    controller: cadressController, // 회사주소 입력 컨트롤러 API 연결 확인 필요
-                    decoration: InputDecoration(
-                      labelText: "회사주소",
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-
-                  TextField(
-                    controller: cemailController,  // 이메일 입력 컨트롤러
-                    decoration: InputDecoration(
-                      labelText: "회사이메일",
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-
-                  SizedBox(height: 20),
-
-                  TextField(
-                    controller: cbusinessController,  // 사업자 등록 입력 컨트롤러 API 사용 고려하기
-                    decoration: InputDecoration(
-                      labelText: '사업자 등록번호',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-
-                  SizedBox(height: 20),
-
-                  // 이미지 선택 UI
-                  TextButton.icon(
-                      icon: Icon(Icons.add_a_photo),
-                      label: Text("이미지선택"),
-                      onPressed: onSelectimage),
-                      ImagePreview(),
-
-                  SizedBox(height: 20),
-
-                  ElevatedButton(
-                    onPressed: onSignup, // 회원가입 연결 함수
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                            (Set<WidgetState> states) {
-                          if (states.contains(WidgetState.pressed)) {
-                            return Colors.blue.shade700;
-                          }
-                          return Colors.blue;
-                        },
-                      ),
-                      shape: WidgetStateProperty.all<OutlinedBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
+                  Center(
+                    child: Text("기업 회원가입",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    child: Text("회원가입",style: TextStyle(color: Colors.white),
+                  ),
+                  SizedBox( height: 15, ),
+
+                  Text("아이디", style: TextStyle( fontWeight: FontWeight.bold ),),
+                  SizedBox( height: 7, ),
+                  CustomTextField(
+                      controller: cidController,
+                      validator: (value) => idfact(value)
+                  ),
+                  SizedBox( height: 12, ),
+
+                  Text("비밀번호", style: TextStyle( fontWeight: FontWeight.bold ),),
+                  SizedBox( height: 7, ),
+                  CustomTextField(
+                    controller: cpwdController,
+                    obscureText: true,
+                    validator: (value) => pwdfact(value),
+                  ),
+                  SizedBox( height: 12, ),
+
+                  Text("회사명", style: TextStyle( fontWeight: FontWeight.bold ),),
+                  SizedBox( height: 7, ),
+                  CustomTextField(
+                    controller: cnameController,
+                  ),
+                  SizedBox( height: 12, ),
+
+                  Text("회사번호", style: TextStyle( fontWeight: FontWeight.bold ),),
+                  SizedBox( height: 7, ),
+                  CustomTextField(
+                    controller: cphoneController,
+                    keyboardType: TextInputType.phone,
+                    validator: (value) => phonefact(value),
+                  ),
+                  SizedBox( height: 12, ),
+
+                  Text("이메일", style: TextStyle( fontWeight: FontWeight.bold ),),
+                  SizedBox( height: 7, ),
+                  CustomTextField(
+                    controller: cemailController,
+                    validator: (value) => emailValidator(value),
+                  ),
+                  SizedBox( height: 12, ),
+
+                  Text("주소", style: TextStyle( fontWeight: FontWeight.bold ),),
+                  SizedBox( height: 7, ),
+                  CustomTextField(
+                    controller: cadressController,
+                    validator: (value) => addressfact(value),
+                  ),
+                  SizedBox( height: 12, ),
+
+                  Text("사업자번호", style: TextStyle( fontWeight: FontWeight.bold ),),
+                  SizedBox( height: 7, ),
+                  CustomTextField(
+                    controller: cbusinessController,
+                    validator: (value) => businessNumberValidator(value),
+                  ),
+                  SizedBox( height: 12, ),
+
+                  // 이미지 선택
+                  Center(
+                    child: CustomImagePicker(
+                      onImageSelected: ( XFile image ) {
+                        setState(() {
+                          selectedimage = image;
+                        });
+                      },
                     ),
+                  ),
+                  SizedBox(height: 15),
+
+                  CustomTextButton(
+                    onPressed: () {
+                      if( _formKey.currentState!.validate() ){
+                        onSignup();
+                      }
+                    },
+                    title: "회원가입",
+                    width: double.infinity,
+                  ),
+                  SizedBox(height: 10),
+
+                  CustomOutlineButton(
+                    onPressed: () => {
+                      Navigator.pop(context),
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => MainApp())),
+                    },
+                    title: "취소",
+                    width: double.infinity,
                   ),
                 ],
-              ),
-            ),
-          ],
-        ),
-      ),
+              )
+          )
+      )],
     );
   }
 }
