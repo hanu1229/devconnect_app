@@ -5,23 +5,27 @@ import 'package:flutter/services.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
-  final int maxLines;
   final bool readOnly;
   final bool obscureText;
+  final int? maxLines;
+  final int? maxLength;
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
   final String? Function(String?)? validator;
   final String? errorText;
+  final String? hintText;
 
   const CustomTextField({
     required this.controller,
-    this.maxLines = 1,
     this.readOnly = false,
     this.obscureText = false,
     this.validator,
     this.errorText,
     this.keyboardType,
     this.inputFormatters,
+    this.maxLines = 1,
+    this.maxLength = 20,
+    this.hintText = "",
     Key? key,
   }) : super(key: key);
 
@@ -32,13 +36,16 @@ class CustomTextField extends StatelessWidget {
 
     return TextFormField(
       controller: controller,
-      maxLines: maxLines,
       readOnly: readOnly,
       obscureText: obscureText,
       validator: validator,
       keyboardType: keyboardType,
       inputFormatters: inputFormatters,
+      maxLength: maxLength,
+      maxLines: maxLines,
       decoration: InputDecoration(
+        counterText:'',
+        hintText : hintText,
         errorText: errorText,
         errorBorder: OutlineInputBorder(
           borderSide: BorderSide(

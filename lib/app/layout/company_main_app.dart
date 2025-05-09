@@ -1,4 +1,3 @@
-import 'package:devconnect_app/app/company/Company_appraise.dart';
 import 'package:devconnect_app/app/company/company_login.dart';
 import 'package:devconnect_app/app/company/company_bottombar.dart';
 import 'package:devconnect_app/app/company/company_profile.dart';
@@ -14,6 +13,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../developer/profile.dart';
 
 class CompanyMainApp extends StatefulWidget {
   @override

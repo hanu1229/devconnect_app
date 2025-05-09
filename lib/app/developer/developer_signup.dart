@@ -74,7 +74,7 @@ class _DeveloperSignUp extends State< DeveloperSignUp >{
     if ( value == null || value.isEmpty ) {
       return '아이디를 입력해주세요';
     } else if ( !idReg.hasMatch(value) ) {
-      return '아이디는 영어, 숫자를 모두 포함한 6~20자여야 합니다.';
+      return '영어, 숫자를 모두 포함한 6~20자여야 합니다.';
     }
     return null;
   }
@@ -85,7 +85,7 @@ class _DeveloperSignUp extends State< DeveloperSignUp >{
     if (value == null || value.isEmpty) {
       return '비밀번호를 입력해주세요';
     } else if (!passwordReg.hasMatch(value)) {
-      return '비밀번호는 영문, 숫자, 특수문자를 모두 포함한 6~20자여야 합니다';
+      return '영문, 숫자, 특수문자를 포함한 8~20자여야 합니다';
     }
     return null;
   }
@@ -96,7 +96,7 @@ class _DeveloperSignUp extends State< DeveloperSignUp >{
     if (value == null || value.isEmpty) {
       return '전화번호를 입력해주세요';
     } else if (!phoneReg.hasMatch(value)) {
-      return '유효한 전화번호 형식이 아닙니다. (예: 010-1234-5678)';
+      return '유효한 전화번호 형식이 아닙니다.';
     }
     return null;
   }
@@ -129,7 +129,7 @@ class _DeveloperSignUp extends State< DeveloperSignUp >{
     if (value == null || value.trim().isEmpty) {
       return '주소를 입력해주세요';
     } else if (!addressReg.hasMatch(value.trim())) {
-      return '주소는 "시/도 구/군 동" 형식으로 입력해주세요 (예: 서울특별시 강남구 역삼동)';
+      return '주소는 "시/도 구/군 동" 형식으로 입력해주세요';
     }
     return null;
   }
@@ -187,6 +187,7 @@ class _DeveloperSignUp extends State< DeveloperSignUp >{
               SizedBox( height: 7, ),
               CustomTextField( 
                 controller: dphoneController,
+                maxLength: 13,
                 keyboardType: TextInputType.phone,
                 inputFormatters: [ PhoneNumberFormatter() ],
                 validator: (value) => phoneValidator(value),
@@ -197,6 +198,7 @@ class _DeveloperSignUp extends State< DeveloperSignUp >{
               SizedBox( height: 7, ),
               CustomTextField( 
                 controller: demailController,
+                maxLength: 100,
                 validator: (value) => emailValidator(value),
               ),
               SizedBox( height: 12, ),
@@ -205,6 +207,7 @@ class _DeveloperSignUp extends State< DeveloperSignUp >{
               SizedBox( height: 7, ),
               CustomTextField(
                 controller: daddressController,
+                maxLength: 100,
                 validator: (value) => addressValidator(value),
               ),
               SizedBox( height: 12, ),
