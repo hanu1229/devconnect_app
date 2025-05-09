@@ -57,14 +57,15 @@ class _CompanyLogin extends State<Companylogin>{
       }
 
     }on DioException catch(e){
-     if(e.response == null && e.response!.statusCode == 401) {
+     if(e.response != null && e.response!.statusCode == 401) {
        print("로그인실패");
        setState(() {
-         errorMessage = "존재하지않는 회원입니다.";
+         errorMessage = "아이디와 비밀번호를 확인해주세요.";
        });
      }else {
        print("로그인오류");
        setState(() {
+         print( "확인 : $e.response!.statusCode");
          errorMessage = "로그인중 오류가 발생했습니다.";
        });
      }
@@ -83,16 +84,28 @@ class _CompanyLogin extends State<Companylogin>{
       backgroundColor: Color(0xFF0078FF),
       resizeToAvoidBottomInset : false,
       body: Container(
-        height: 420,
-        padding: EdgeInsets.fromLTRB(30, 50, 30, 120),
+        padding: EdgeInsets.fromLTRB(30, 30, 30, 70),
         margin: EdgeInsets.fromLTRB(30, 100, 30, 0),  // left, top , light, bottom
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [ // 하위 요소들 위젯
+          children: [// 하위 요소들 위젯
+
+            Center(  // 희만 추가
+              child: Text("개발자 로그인",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20
+                ),
+              ),
+            ),
+
+            SizedBox(height: 30,),
+
             SizedBox(
               width : double.infinity, // 넓이 화면 크기에 따라 자동 조절
               child:
@@ -153,9 +166,10 @@ class _CompanyLogin extends State<Companylogin>{
                 ),
               ),
             ),
+            SizedBox(height: 8,),
 
             if(errorMessage.isNotEmpty)
-              Padding(padding: EdgeInsets.only(top: 8.0),
+              Padding(padding: const EdgeInsets.only(left: 15),
                 child: Text(errorMessage,
                 style: TextStyle(
                   color: Colors.red,
@@ -166,7 +180,7 @@ class _CompanyLogin extends State<Companylogin>{
               ),
               ),
 
-            SizedBox(height: 15,),
+            SizedBox(height: 8,),
 
             SizedBox(
               width: double.infinity,
@@ -179,7 +193,7 @@ class _CompanyLogin extends State<Companylogin>{
                     foregroundColor: Colors.white,
                     textStyle: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 15,
+                      fontSize: 16,
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular( 4 ),
@@ -207,7 +221,7 @@ class _CompanyLogin extends State<Companylogin>{
                     foregroundColor: Colors.black,
                     textStyle: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 15,
+                      fontSize: 16,
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular( 4 ),
