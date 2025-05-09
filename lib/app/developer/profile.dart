@@ -94,7 +94,9 @@ class _ProfileState extends State< Profile >{
     formData.fields.add( MapEntry("daddress", daddressController.text) );
 
     final file = await MultipartFile.fromFile( profileImage!.path, filename: profileImage!.name );
-    formData.files.add( MapEntry( "dfile", file ));
+    if( profileImage != null ){
+      formData.files.add( MapEntry( "dfile", file ));
+    }
 
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
@@ -229,7 +231,7 @@ class _ProfileState extends State< Profile >{
               ),
               onPressed: () async {
                 setState(() { errorMsg = ''; });
-                if(_formKey.currentState!.validate()){
+                if( _formKey.currentState!.validate() ){
                   await onPwdChange();
                 }
               }

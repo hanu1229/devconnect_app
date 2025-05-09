@@ -40,13 +40,13 @@ class CustomBoolAlertDialog extends StatelessWidget {
             title: "취소",
           ),
           CustomTextButton(
-            onPressed: onPressed!,
+            onPressed: onPressed ?? () => Navigator.pop(context),
             title: "확인",
           ),
         ]
       : [
         CustomTextButton(
-          onPressed: onPressed!,
+          onPressed: onPressed ?? () => Navigator.pop(context),
         title: "확인",
         ),
         ],
