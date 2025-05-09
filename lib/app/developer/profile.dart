@@ -35,8 +35,20 @@ class _ProfileState extends State< Profile >{
   int mno = 0;
   XFile? profileImage;
   String? profileImageUrl;
+  String errorMsg = '';
   // 수정 상태 확인
   bool isUpdate = false;
+
+  // 비밀번호
+  String? pwdValidator(String? value) {
+    final passwordReg = RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+=-]).{8,20}$');
+    if (value == null || value.isEmpty) {
+      return '비밀번호를 입력해주세요';
+    } else if (!passwordReg.hasMatch(value)) {
+      return '영문, 숫자, 특수문자를 포함한 8~20자여야 합니다';
+    }
+    return null;
+  }
 
   @override
   void initState() {
@@ -84,41 +96,107 @@ class _ProfileState extends State< Profile >{
   TextEditingController daddressController = TextEditingController();
 
   // 상세정보 수정
-  void onUpdate( ) async {
-    FormData formData = FormData();
+  void CustomUpdateDialog(BuildContext context) {
+    final _formKey = GlobalKey<FormState>();
+    String errorMsg = '';
 
-    formData.fields.add( MapEntry("dpwd", dpwdController.text) );
-    formData.fields.add( MapEntry("dname", dnameController.text) );
-    formData.fields.add( MapEntry("dphone", dphoneController.text) );
-    formData.fields.add( MapEntry("demail", demailController.text) );
-    formData.fields.add( MapEntry("daddress", daddressController.text) );
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            Future<void> onUpdate( ) async {
+              FormData formData = FormData();
 
-    final file = await MultipartFile.fromFile( profileImage!.path, filename: profileImage!.name );
-    if( profileImage != null ){
-      formData.files.add( MapEntry( "dfile", file ));
-    }
+              formData.fields.add( MapEntry("dpwd", dpwdController.text) );
+              formData.fields.add( MapEntry("dname", dnameController.text) );
+              formData.fields.add( MapEntry("dphone", dphoneController.text) );
+              formData.fields.add( MapEntry("demail", demailController.text) );
+              formData.fields.add( MapEntry("daddress", daddressController.text) );
 
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token');
+              if( profileImage != null ){
+                final file = await MultipartFile.fromFile( profileImage!.path, filename: profileImage!.name );
+                formData.files.add( MapEntry( "dfile", file ));
+              }
 
-    try{
-      dio.options.headers['Authorization'] = token;
-      final response = await dio.put("${serverPath}/api/developer/update", data: formData);
-      final data = response.data;
-      if( data ){
-        setState(() {
-          onInfo( token );
-          isUpdate = false;
-          if (data != null && data['dprofile'] != null) {
-            profileImage = null; // XFile 제거
-            profileImageUrl = data['dprofile']; // 서버 URL 사용
-          }
+              final prefs = await SharedPreferences.getInstance();
+              final token = prefs.getString('token');
 
-        });
-      }
-    }catch( e ){ print( e ); }
-    dpwdController = TextEditingController(text: "");
-  } // f end
+              try{
+                dio.options.headers['Authorization'] = token;
+                final response = await dio.put("${serverPath}/api/developer/update", data: formData);
+                final data = response.data;
+                if( data ){
+                  showDialog(
+                    context: context,
+                    builder: (context) => CustomBoolAlertDialog( 
+                      title: "수정이 완료되었습니다.", 
+                      onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainApp( selectedIndex: 2,) )),
+                    )
+                  );
+
+                  // setState(() {
+                  //   onInfo( token );
+                  //   isUpdate = false;
+                  //   if (data != null && data['dprofile'] != null) {
+                  //     profileImage = null; // XFile 제거
+                  //     profileImageUrl = data['dprofile']; // 서버 URL 사용
+                  //   }
+                  // });
+                }
+              }catch( e ){
+                print( e );
+                setState(() { errorMsg = '비밀번호를 확인해주세요.'; });
+              }
+              dpwdController = TextEditingController(text: "");
+            } // f end
+
+            return CustomAlertDialog(
+              title: "회원정보를 수정하시겠습니까?",
+              width: 350,
+              content: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("비밀번호 입력"),
+                    SizedBox(height: 10),
+                    CustomTextField(
+                      controller: dpwdController,
+                      obscureText: true,
+                      validator: (value) =>
+                      value == null || value.isEmpty
+                          ? '비밀번호를 입력해주세요.'
+                          : null,
+                    ),
+                    if (errorMsg.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15),
+                        child: Text(
+                          errorMsg,
+                          style: TextStyle(
+                              color: Color(0xffbc443d),
+                              fontSize: 12
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              onPressed: () async {
+                setState(() { errorMsg = ''; });
+                if( _formKey.currentState!.validate() ){
+                  await onUpdate();
+                }
+              }
+            );
+          },
+        );
+      },
+    );
+  }
 
   // 비밀번호 수정 다이얼로그
   void CustomPwdDialog(BuildContext context) {
@@ -185,8 +263,6 @@ class _ProfileState extends State< Profile >{
                       validator: (value) =>
                         value == null || value.isEmpty
                             ? '현재 비밀번호를 입력해주세요.'
-                            : value.length < 3
-                            ? '비밀번호는 8자리 이상이어야 합니다.'
                             : null,
                     ),
                     if (errorMsg.isNotEmpty)
@@ -206,12 +282,7 @@ class _ProfileState extends State< Profile >{
                     CustomTextField(
                       controller: _pwdController,
                       obscureText: true,
-                      validator: (value) =>
-                      value == null || value.isEmpty
-                          ? '비밀번호를 입력해 주세요.'
-                          : value.length < 8
-                          ? '비밀번호는 8자리 이상이어야 합니다.'
-                          : null,
+                      validator: (value) => pwdValidator(value),
                     ),
                     SizedBox(height: 15),
                     Text("비밀번호 확인"),
@@ -305,6 +376,8 @@ class _ProfileState extends State< Profile >{
     );
   }
 
+  
+  
   @override
   Widget build(BuildContext context) {
 
@@ -362,6 +435,7 @@ class _ProfileState extends State< Profile >{
                           dphoneController.text = developer['dphone'];
                           demailController.text = developer['demail'];
                           daddressController.text = developer['daddress'];
+                          profileImage = null;
                         }),
                       },
                       title: "수정",
@@ -388,10 +462,10 @@ class _ProfileState extends State< Profile >{
                 CustomTextField( controller: didController, readOnly: true, ),
                 SizedBox( height: 12, ),
 
-                Text("비밀번호"),
-                SizedBox( height: 12, ),
-                CustomTextField( controller: dpwdController, ),
-                SizedBox( height: 12, ),
+                // Text("비밀번호"),
+                // SizedBox( height: 12, ),
+                // CustomTextField( controller: dpwdController, ),
+                // SizedBox( height: 12, ),
 
                 Text("전화번호"),
                 SizedBox( height: 12, ),
@@ -420,7 +494,10 @@ class _ProfileState extends State< Profile >{
                     ),
                     SizedBox( width: 15,),
 
-                    CustomTextButton( onPressed: onUpdate, title: "저장" ),
+                    CustomTextButton(
+                      title: "저장",
+                      onPressed: () => CustomUpdateDialog(context)
+                    ),
 
                   ],
                 )

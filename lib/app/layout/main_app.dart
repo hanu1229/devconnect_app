@@ -1,6 +1,7 @@
 import 'package:devconnect_app/app/company/company_login.dart';
 import 'package:devconnect_app/app/component/custombottombar.dart';
 import 'package:devconnect_app/app/developer/developer_login.dart';
+import 'package:devconnect_app/app/developer/developer_ranking.dart';
 import 'package:devconnect_app/app/developer/profile.dart';
 import 'package:devconnect_app/app/developer/profile_project.dart';
 import 'package:devconnect_app/app/developer/profile_rating.dart';
@@ -16,18 +17,31 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MainApp extends StatefulWidget {
+  final int selectedIndex;
+
+  const MainApp({
+    this.selectedIndex = 0,
+  });
+
   @override
-  State<MainApp> createState() => _MainAppState();
+  _MainAppState createState() {
+    return _MainAppState();
+  }
 }
 
 class _MainAppState extends State<MainApp> {
   int selectedIndex = 0;
 
-
   void changePage(int index) {
     setState(() {
       selectedIndex = index;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    selectedIndex = widget.selectedIndex;
   }
 
   @override
@@ -39,7 +53,7 @@ class _MainAppState extends State<MainApp> {
       WriteProject(changePage : changePage), // 1 : 프로젝트 작성 페이지
       Profile(changePage: changePage,), // 2: 프로필 기본 정보
       Text("기업 목록"), // 3 : 기업 목록
-      Text("개발자 순위"), // 4 : 개발자 순위
+      DeveloperRanking(), // 4 : 개발자 순위
       // 이동 페이지
       RatingMain(), // 5 : 평가 페이지
       DeveloperLogIn(), // 6 : 개발자 로그인 페이지
