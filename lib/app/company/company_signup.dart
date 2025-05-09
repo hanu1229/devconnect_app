@@ -143,7 +143,7 @@ class _SignupState extends State<Signup>{
     }
     final businessNumberRegex = RegExp(r'^\d{3}-\d{2}-\d{5}$');
     if (!businessNumberRegex.hasMatch(value)) {
-      return '유효한 사업자 등록번호 형식이 아닙니다. (예: 123-45-67890)';
+      return '유효한 사업자 등록번호 형식이 아닙니다.\n(예: 123-45-67890)';
     }
 
     return null;
@@ -197,7 +197,7 @@ class _SignupState extends State<Signup>{
                   ),
                   SizedBox( height: 12, ),
 
-                  Text("회사번호", style: TextStyle( fontWeight: FontWeight.bold ),),
+                  Text("회사 전화번호", style: TextStyle( fontWeight: FontWeight.bold ),),
                   SizedBox( height: 7, ),
                   CustomTextField(
                     controller: cphoneController,
@@ -211,6 +211,7 @@ class _SignupState extends State<Signup>{
                   CustomTextField(
                     controller: cemailController,
                     validator: (value) => emailValidator(value),
+                    hintText : "OOOO@example.com",
                   ),
                   SizedBox( height: 12, ),
 
@@ -219,6 +220,7 @@ class _SignupState extends State<Signup>{
                   CustomTextField(
                     controller: cadressController,
                     validator: (value) => addressfact(value),
+                    hintText : "인천시 부평구 갈산동 ...",
                   ),
                   SizedBox( height: 12, ),
 
@@ -227,6 +229,7 @@ class _SignupState extends State<Signup>{
                   CustomTextField(
                     controller: cbusinessController,
                     validator: (value) => businessNumberValidator(value),
+                    hintText : "000-00-00000",
                   ),
                   SizedBox( height: 12, ),
 

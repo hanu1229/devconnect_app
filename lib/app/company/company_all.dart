@@ -63,51 +63,53 @@ class _CompanyState extends State<CompanyAll> {
 
     // 로딩 완료후 목록표시
     return Scaffold(
-      appBar: AppBar(title: Text("회사목록")),
-      body: ListView.builder( // 리스트 뷰를 빌드 목록표시
-          itemCount: companyList.length,
-          itemBuilder: (context, index) {
-            final companyData = companyList[index]; //인덱스 회사데이터 가져오기
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical : 8),
+        child: ListView.builder( // 리스트 뷰를 빌드 목록표시
+            itemCount: companyList.length,
+            itemBuilder: (context, index) {
+              final companyData = companyList[index]; //인덱스 회사데이터 가져오기
 
-            return Center(
-              child: SizedBox(
-                width: 380.0,
+              return Center(
+                child: SizedBox(
+                  width: 380.0,
 
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                CustomCard(
-                child: Column( // 내부에 회사 정보 표시
-                crossAxisAlignment: CrossAxisAlignment.start, //  내용 왼쪽 정렬
-                  children: [
-                    Text(
-                      companyData['cname'] ?? '회사 이름 정보 없음',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                  CustomCard(
+                  child: Column( // 내부에 회사 정보 표시
+                  crossAxisAlignment: CrossAxisAlignment.start, //  내용 왼쪽 정렬
+                    children: [
+                      Text(
+                        companyData['cname'] ?? '회사 이름 정보 없음',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
 
-                    SizedBox(height: 8,),
+                      SizedBox(height: 8,),
 
-                    Text(
-                      companyData['cadress'] ?? ' 주소 정보 없음',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey[600],
+                      Text(
+                        companyData['cadress'] ?? ' 주소 정보 없음',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey[600],
+                        ),
                       ),
-                    ),
-                    // 필요한거 있을때 추가
+                      // 필요한거 있을때 추가
 
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-             SizedBox(height: 3.0),
-                  ],
+               SizedBox(height: 3.0),
+                    ],
+                  ),
                 ),
-              ),
-            );
-          }
+              );
+            }
+        ),
       ),
     );
   }
