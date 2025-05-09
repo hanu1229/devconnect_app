@@ -75,6 +75,7 @@ class _CompanyProfileState extends State< Companyprofile >{
         setState(() {
           info = data;
           profileImageUrl = data['cprofile']; /// 프로파일 이미지 받음
+          print(">> $profileImageUrl");
         });
       }
     }catch( e ){ print( e ); }
@@ -329,7 +330,7 @@ void CustomDialog(BuildContext context) {
     if( info.isEmpty ){ return Center( child: CircularProgressIndicator(), ); }
 
     final image = info['cprofile']; // 이미지 문제 있었음
-    String imgUrl = "${serverPath}/upload/${image}";
+    String imgUrl = image;
 
     // if( !isLogIn ){ Navigator.pushNamed( context, MainApp() ) }
 

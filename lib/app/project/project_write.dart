@@ -152,7 +152,7 @@ class _WriteProjectState extends State<WriteProject> {
       for(XFile image in selectedImage) {
         final file = await MultipartFile.fromFile(image.path, filename : image.name);
         print(">> ${file.filename}");
-        // formData.files.add(MapEntry("files", file));
+        formData.files.add(MapEntry("files", file));
       }
       print(formData);
       final response = await dio.post(

@@ -311,7 +311,7 @@ class _ProfileState extends State< Profile >{
     if( developer.isEmpty ){ return Center( child: CircularProgressIndicator(), ); }
 
     final image = developer['dprofile'];
-    String imgUrl = "${serverPath}/upload/${image}";
+    String imgUrl = image;
 
     return CustomSingleChildScrollview(
       children: [
