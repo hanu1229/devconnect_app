@@ -96,7 +96,7 @@ class _CompanyLogin extends State<Companylogin>{
           children: [// 하위 요소들 위젯
 
             Center(  // 희만 추가
-              child: Text("개발자 로그인",
+              child: Text("기업 로그인",
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20
