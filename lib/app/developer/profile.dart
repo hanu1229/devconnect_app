@@ -684,14 +684,14 @@ class _ProfileState extends State< Profile >{
                 runSpacing: 8,
                 children: getTechStacks.map<Widget>((stack) {
                   return Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(
                       color: Colors.blue[100],
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
                       stack['tsname'],
-                      style: TextStyle(color: Colors.black45),
+                      style: TextStyle(color: Colors.black54),
                     ),
                   );
                 }).toList(),
