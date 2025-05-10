@@ -164,7 +164,7 @@ class _HomeState extends State<Home> {
                                   height : 50,
                                   // child: Image.network("$logoUrl/${data["cprofile"]}"),
                                   // child: Image.network("${data["cprofile"]}"),
-                                  child: Image.network("https://elasticbeanstalk-ap-northeast-2-985539783988.s3.ap-northeast-2.amazonaws.com/resources/upload/company_logo/logo_small.png"),
+                                  child: Image.network("${data["cprofile"]}"),
                                 ),
                                 SizedBox(width : 15),
                                 Expanded(

@@ -192,7 +192,7 @@ class _DetailProjectState extends State<DetailProject> {
                         mainAxisAlignment : MainAxisAlignment.spaceBetween,
                         children: [
                           SizedBox(width : 20),
-                          Image.network(imageUrl),
+                          Expanded(child: Image.network(imageUrl, fit : BoxFit.scaleDown),),
                           SizedBox(width : 20),
                         ],
                       ),
