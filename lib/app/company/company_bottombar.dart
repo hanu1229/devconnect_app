@@ -85,7 +85,7 @@ class _CompanyBottomNavBarState extends State<CompanyBottomNavBar> {
 
 
     String profileUrl = company['cprofile'] != null && company['cprofile'].toString().isNotEmpty
-        ? "${serverPath}/upload/${company['cprofile']}" : "${serverPath}/upload/logo_small.png";
+        ? "${serverPath}/upload/company_logo/${company['cprofile']}" : "${serverPath}/upload/company_logo/logo_small.png";
 
     print(company['cid']);
     String? cname = isLogIn ? "${company['cid']} " : "로그인";   //기업로그인
