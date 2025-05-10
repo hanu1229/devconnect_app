@@ -156,7 +156,7 @@ class _DeveloperRanking extends State<DeveloperRanking> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 SizedBox(
-                                  width : 100,
+                                  width : 80,
                                   height : 80,
                                   child: index > -1 && index < 3
                                       ? Image.asset("assets/images/no${index + 1}_icon.png",)
@@ -177,7 +177,11 @@ class _DeveloperRanking extends State<DeveloperRanking> {
                                   ]
                                 ),
                                 SizedBox(
-                                  child: Text( "LV. ${data['dlevel']}", style: TextStyle( fontSize: 20 ), ),
+                                  child: Text( "LV. ${data['dlevel']}",
+                                    style: TextStyle(
+                                      fontSize: 20, fontWeight: FontWeight.bold
+                                    ),
+                                  ),
                                 )
                               ],
                             ),

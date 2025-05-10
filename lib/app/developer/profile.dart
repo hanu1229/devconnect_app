@@ -9,6 +9,7 @@ import 'package:devconnect_app/app/component/custom_boolalert.dart';
 import 'package:devconnect_app/app/component/custom_textbutton.dart';
 import 'package:devconnect_app/app/component/custom_textfield.dart';
 import 'package:devconnect_app/app/layout/main_app.dart';
+import 'package:devconnect_app/style/app_colors.dart';
 import 'package:devconnect_app/style/server_path.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -53,6 +54,8 @@ class _ProfileState extends State< Profile >{
   @override
   void initState() {
     loginCheck();
+    onTechStack();
+    tsFindAll();
   } // f end
 
   // 로그인 상태 확인
@@ -313,6 +316,126 @@ class _ProfileState extends State< Profile >{
     );
   }
 
+  List<dynamic> allTechStacks = [];
+  List<int> selectedStackIds = [];
+  List<dynamic> getTechStacks = [];
+  int? tslno;
+
+  // 기술 스택 목록
+  void onTechStack() async {
+    try{
+      final response = await dio.get("${serverPath}/api/techstack/findall");
+      final data = response.data;
+      if( data != null || data != [] ){
+        setState(() {
+          allTechStacks = data;
+        });
+      }
+    }catch(e){ print(e); }
+  } // f end
+
+  // 기술 스택 등록
+  void techStackRegister() async {
+    try{
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      dio.options.headers['Authorization'] = token;
+
+      final sendData = { "techStackList" : selectedStackIds, "tslno" : tslno };
+      final response = await dio.post("${serverPath}/api/techstack/list/write", data: sendData );
+      final data = response.data;
+      if( data ){
+        setState(() {
+          tsFindAll();
+        });
+      }
+    }catch(e){ print(e); }
+  } // f end
+
+  // 등록된 기술스택 조회
+  void tsFindAll() async {
+    try{
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      dio.options.headers['Authorization'] = token;
+
+      final response = await dio.get("${serverPath}/api/techstack/list/findall");
+      final data = response.data;
+        setState(() {
+          getTechStacks = data;
+          tslno = data[0]['tslno'];
+          print( getTechStacks );
+          print( tslno );
+        });
+    }catch(e){ print(e); }
+  } // f end
+
+  // 기술스택 등록 다이얼로그
+  void showTechStackDialog() {
+    List<int> tempSelected = getTechStacks
+        .map<int?>((stack) => stack['tsno'] is int ? stack['tsno'] as int : null)
+        .whereType<int>()
+        .toList();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return CustomAlertDialog(
+              width: 350,
+              title: "기술스택 선택",
+              content: SingleChildScrollView(
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: allTechStacks.map<Widget>((tech) {
+                    final tsno = tech['tsno'];
+                    final tsname = tech['tsname'];
+                    final isSelected = tempSelected.contains(tsno);
+
+                    return GestureDetector(
+                      onTap: () {
+                        setDialogState(() {
+                          isSelected ? tempSelected.remove(tsno) : tempSelected.add(tsno);
+                        });
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: isSelected ? Colors.blueAccent : AppColors.bgColor,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: isSelected ? Colors.blue : Colors.grey,
+                            width: 1,
+                          ),
+                        ),
+                        child: Text(
+                          tsname,
+                          style: TextStyle(
+                            color: isSelected ? Colors.white : Colors.black87,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+                setState(() {
+                  selectedStackIds = tempSelected;
+                });
+                techStackRegister(); // 서버 전송
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
   // 탈퇴하기
   void CustomDeleteDialog(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
@@ -375,8 +498,6 @@ class _ProfileState extends State< Profile >{
       )
     );
   }
-
-  
   
   @override
   Widget build(BuildContext context) {
@@ -558,6 +679,23 @@ class _ProfileState extends State< Profile >{
                   style: TextStyle( fontSize: 15, fontWeight: FontWeight.bold ), ),
               ),
               SizedBox( height: 15 ,),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: getTechStacks.map<Widget>((stack) {
+                  return Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.blue[100],
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      stack['tsname'],
+                      style: TextStyle(color: Colors.black45),
+                    ),
+                  );
+                }).toList(),
+              ),
 
               // 버튼
               Row(
@@ -565,7 +703,7 @@ class _ProfileState extends State< Profile >{
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     CustomOutlineButton(
-                      onPressed: () => { setState(() => { isUpdate = false }) },
+                      onPressed: () => { showTechStackDialog() },
                       title: "등록",
                     ),
                   ]
