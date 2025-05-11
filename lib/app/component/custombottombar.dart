@@ -213,6 +213,8 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                       center: CircleAvatar(
                         radius: 30,
                         backgroundImage: NetworkImage(profileUrl),
+                        // ↓ png 이미지 대응으로 기본 색상 보라색에서 변경
+                        backgroundColor : Colors.white,
                       ),
                       progressColor: Colors.blue,
                       backgroundColor: Colors.grey.shade300,
