@@ -1,7 +1,4 @@
 
-
-
-
 import 'package:devconnect_app/app/component/custom_card.dart';
 import 'package:devconnect_app/style/server_path.dart';
 import 'package:dio/dio.dart';
