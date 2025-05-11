@@ -5,8 +5,6 @@ import 'package:devconnect_app/app/component/custom_outlinebutton.dart';
 import 'package:devconnect_app/app/component/custom_scrollview.dart';
 import 'package:devconnect_app/app/component/custom_textbutton.dart';
 import 'package:devconnect_app/app/component/custom_textfield.dart';
-import 'package:devconnect_app/app/layout/company_main_app.dart';
-import 'package:devconnect_app/app/layout/home.dart';
 import 'package:devconnect_app/style/server_path.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +14,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../component/custom_alert.dart';
 import '../component/custom_boolalert.dart';
 import '../component/custom_imgpicker.dart';
-import '../component/custom_menutabs.dart';
 import '../layout/main_app.dart';
 
 class Companyprofile extends StatefulWidget{
