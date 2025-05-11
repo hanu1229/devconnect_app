@@ -32,9 +32,6 @@ class _CompanyProjectViewState extends State<CompanyProjectView> {
 
   Dio dio = Dio();
   List<dynamic> projectList = [];
-  List<dynamic> dnoList = [];
-  double updateValue = 0;
-  int? pno = 0;
 
   /// 내 프로젝트 목록 전체 가져오기
   Future<void> findAllMyProject() async {
@@ -112,59 +109,6 @@ class _CompanyProjectViewState extends State<CompanyProjectView> {
       print(e);
     }
   }
-
-  // 입력 컨트롤러
-  TextEditingController titleController = TextEditingController();
-  TextEditingController contentController = TextEditingController();
-
-  // dno 추출 05-08 이민진 추가
-  void getDno( pno ) async {
-    try{
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString("token");
-      dio.options.headers["Authorization"] = token;
-      final response = await dio.get("${serverPath}/api/project-join/getdno?pno=${pno}");
-      if( response.data != null ){
-        dnoList = response.data;
-        print( "dnoList : ${dnoList}");
-      }
-    }catch(e) { print(e); }
-  } // getDno end
-
-  // 평가등록 05-08 이민진 추가
-  void ratingWrite() async {
-    try {
-      final sendData = {
-        "dtitle": titleController.text,
-        "dcontent": contentController.text,
-        "drscore" : updateValue,
-        "pno": pno,
-        "dno": dnoList,
-      };
-      print("senddata : ${sendData}");
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString("token");
-      dio.options.headers['Authorization'] = token;
-      final response = await dio.post("${serverPath}/api/drating", data: sendData);
-      final data = response.data;
-      if( data == true ){
-        showDialog(
-            context: context,
-            builder: (context) => CustomBoolAlertDialog(
-              title: "등록 완료",
-              content: Text("평가를 등록했습니다."),
-              onPressed: () {
-                setState(() {
-                  Navigator.of(context).pop();
-                });
-              },
-            )
-        );
-      }
-    } catch (e) {
-      print(e);
-    }
-  } // ratingWrite end
 
   @override
   void initState() {
