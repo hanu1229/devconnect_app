@@ -183,7 +183,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                                       title: Text('기업 로그인'),
                                       onTap: () {
                                         Navigator.pop(context);
-                                        widget.onTap(7); // 개발자 로그인 페이지로 이동
+                                        widget.onTap(7); // 기업 로그인 페이지로 이동
                                       },
                                     ),
                                     ListTile(
