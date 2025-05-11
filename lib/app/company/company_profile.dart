@@ -43,6 +43,8 @@ class _CompanyProfileState extends State< Companyprofile >{
   // 수정 상태 확인
   bool isUpdate = false;
 
+  final _formKey = GlobalKey<FormState>();
+
   // 비밀번호
   String? pwdValidator(String? value) {
     final passwordReg = RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+=-]).{8,20}$');
