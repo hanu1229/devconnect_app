@@ -1,5 +1,8 @@
 // project_view.dart : 자신의 프로젝트 목록을 출력 하는 페이지
 
+import "package:devconnect_app/app/component/custom_alert.dart";
+import "package:devconnect_app/app/component/custom_boolalert.dart";
+import "package:devconnect_app/app/component/custom_textfield.dart";
 import "package:devconnect_app/app/project/project_detail.dart";
 import "package:devconnect_app/app/project/project_update.dart";
 import "package:devconnect_app/app/project/projectjoin_company_view.dart";
@@ -7,6 +10,7 @@ import "package:devconnect_app/style/app_colors.dart";
 import "package:devconnect_app/style/server_path.dart";
 import "package:dio/dio.dart";
 import "package:flutter/material.dart";
+import "package:flutter_rating_bar/flutter_rating_bar.dart";
 import "package:shared_preferences/shared_preferences.dart";
 
 class ViewProject extends StatefulWidget {
@@ -20,6 +24,11 @@ class _ViewProjectState extends State<ViewProject> {
 
   Dio dio = Dio();
   List<dynamic> projectList = [];
+  // 개발자 리스트
+  List<Map<String,dynamic>> developerList = [];
+  // 점수 변수
+  double updateValue = 0;
+  int? selectedDno;
 
   /// 내 프로젝트 목록 전체 가져오기
   Future<void> findAllMyProject() async {
@@ -191,6 +200,132 @@ class _ViewProjectState extends State<ViewProject> {
     );
   }
 
+  // 입력 컨트롤러
+  TextEditingController titleController = TextEditingController();
+  TextEditingController contentController = TextEditingController();
+
+  // 평가 모달을 띄우는 메서드
+  void showRatingDialog(int pno , int dno) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return CustomAlertDialog(
+          width: MediaQuery.of(context).size.width * 0.9,
+          title: "평가 등록",
+          btnTitle: "등록",
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("개발자 선택"),
+              SizedBox(height: 10),
+              DropdownButtonFormField<int>(
+                value: selectedDno,
+                hint: Text("개발자를 선택하세요"),
+                items: developerList.map((dev) {
+                  return DropdownMenuItem<int>(
+                    value: dev["dno"],
+                    child: Text(dev["dname"] ?? "이름없음"),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    selectedDno = value;
+                  });
+                },
+              ),
+              SizedBox(height: 20),
+              Text("제목"),
+              SizedBox(height: 10),
+              CustomTextField(controller: titleController),
+              SizedBox(height: 30),
+              Text("내용"),
+              SizedBox(height: 10),
+              CustomTextField(controller: contentController, maxLines: 5),
+              SizedBox(height: 20),
+              Center(
+                child: RatingBar(
+                  initialRating: updateValue,
+                  minRating: 0.5,
+                  direction: Axis.horizontal,
+                  itemCount: 5,
+                  itemSize: 40,
+                  allowHalfRating: true,
+                  onRatingUpdate: (ratingValue) {
+                    setState(() {
+                      updateValue = ratingValue;
+                    });
+                  },
+                  ratingWidget: RatingWidget(
+                    full: Icon(Icons.star, color: AppColors.ratingTextColor),
+                    half: Icon(Icons.star_half, color: AppColors.ratingTextColor),
+                    empty: Icon(Icons.star_border, color: AppColors.ratingTextColor),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Divider(),
+            ],
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+            ratingWrite(pno,dno);
+          },
+        );
+      },
+    );
+  } // showRatingDialog end
+
+  // 프로젝트 번호로 개발자 정보 찾기
+  Future<void> getDno( pno ) async {
+    try{
+      final presf = await SharedPreferences.getInstance();
+      final token = presf.getString("token");
+      dio.options.headers["Authorization"] = token;
+      final response = await dio.get("${serverPath}/api/project-join/getdno?pno=${pno}");
+      print("response.data = ${response.data}");
+      if( response.data != null ){
+        setState(() {
+          developerList = List<Map<String, dynamic>>.from(response.data);
+          print("developerList = ${developerList}");
+        });
+      }
+    }catch(e) { print( e ); }
+  } // getDno end
+
+  // 평가 등록 05-11 이민진 추가
+  void ratingWrite( int pno , int dno) async {
+    try{
+      final sendData = {
+        "dtitle": titleController.text,
+        "dcontent": contentController.text,
+        "drscore" : updateValue,
+        "pno": pno,
+        "dno": dno,
+      };
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString("token");
+      dio.options.headers['Authorization'] = token;
+      final response = await dio.post("${serverPath}/api/drating" , data: sendData );
+      final data = response.data;
+      if( data == true ) {
+        showDialog(
+            context: context,
+            builder: (context) => CustomBoolAlertDialog(
+              title: "등록 완료",
+              content: Text("평가를 등록했습니다."),
+              onPressed: () {
+                setState(() {
+                  Navigator.of(context).pop();
+                });
+              },
+            )
+        );
+      }
+    }catch(e) { print( e ); }
+  } // ratingWrite end
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -254,6 +389,32 @@ class _ViewProjectState extends State<ViewProject> {
                                             ),
                                           ),
                                           child : Text("신청 현황", style : TextStyle(color : AppColors.buttonTextColor, fontSize : 20)),
+                                        ),
+                                      ),
+                                      // 평가하기 버튼
+                                      Container(
+                                        padding: EdgeInsets.only(left: 16, top: 0, right: 16, bottom: 0),
+                                        width: MediaQuery.of(context).size.width,
+                                        child: ElevatedButton(
+                                          onPressed: () async {
+                                            Navigator.pop(context); // 모달 닫기
+                                            await getDno(project["pno"]);
+                                            if( developerList.isNotEmpty){
+                                              int dno = developerList[0]["dno"];
+                                              showRatingDialog(project["pno"],dno);
+                                            }else{
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                SnackBar(content: Text("해당 프로젝트에 등록된 개발자가 없습니다.")),
+                                              );
+                                            }
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.green,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(12),
+                                            ),
+                                          ),
+                                          child: Text("평가하기", style: TextStyle(color: AppColors.buttonTextColor, fontSize: 20)),
                                         ),
                                       ),
                                       // 수정 버튼
