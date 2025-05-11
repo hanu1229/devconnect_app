@@ -496,7 +496,6 @@ class _ProfileState extends State< Profile >{
                       SizedBox(height: 10),
                       CustomTextField(
                         controller: cacompanyController,
-                        obscureText: true,
                         validator: (value) => value == null || value.isEmpty
                             ? '기업명을 입력해주세요.'
                             : null,
@@ -744,11 +743,6 @@ class _ProfileState extends State< Profile >{
                 CustomTextField( controller: didController, readOnly: true, ),
                 SizedBox( height: 12, ),
 
-                // Text("비밀번호"),
-                // SizedBox( height: 12, ),
-                // CustomTextField( controller: dpwdController, ),
-                // SizedBox( height: 12, ),
-
                 Text("전화번호"),
                 SizedBox( height: 12, ),
                 CustomTextField( controller: dphoneController, ),
@@ -898,6 +892,7 @@ class _ProfileState extends State< Profile >{
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
