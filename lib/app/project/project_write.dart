@@ -28,6 +28,18 @@ class _WriteProjectState extends State<WriteProject> {
 
   Dio dio = Dio();
 
+  List<int> tempSelected = []; // ← 상태변수로 빼기
+
+  @override
+  void initState() {
+    super.initState();
+    onTechStack();
+    tempSelected = getTechStacks
+        .map<int?>((stack) => stack['tsno'] is int ? stack['tsno'] as int : null)
+        .whereType<int>()
+        .toList();
+  }
+
   // 탭키 제한
   final FocusNode _focusNode = FocusNode(
     onKeyEvent : (FocusNode node, KeyEvent event) {
@@ -161,56 +173,77 @@ class _WriteProjectState extends State<WriteProject> {
       );
       final data = response.data;
       print(data);
-      if(data) {
-        showModalBottomSheet(
-          context: context,
-          builder: (context) {
-            return SafeArea(
-              child: Container(
-                margin : EdgeInsets.all(16),
-                height : 100,
-                width : MediaQuery.of(context).size.width,
-                decoration : BoxDecoration(
-                  color : AppColors.bgColor,
-                  borderRadius : BorderRadius.all(Radius.circular(12)),
-                ),
-                child : Center(
-                  child : Padding(
-                    padding: EdgeInsets.symmetric(vertical : 16),
-                    child : Column(
-                      mainAxisAlignment : MainAxisAlignment.spaceAround,
-                      children : [
-                        Container(
-                          padding : EdgeInsets.only(left : 16, top : 0, right : 16, bottom : 0),
-                          width : MediaQuery.of(context).size.width,
-                          child : ElevatedButton(
-                            onPressed : () {
-                              // 모달창 삭제
-                              Navigator.pop(context);
-                              Navigator.pushReplacement(
-                                context,
-                                widget.changePage(0),
-                              );
-                              return;
-                            },
-                            style : ElevatedButton.styleFrom(
-                              backgroundColor : AppColors.buttonColor,
-                              shape : RoundedRectangleBorder(
-                                borderRadius : BorderRadius.circular(12),
+      if( data > 0 && data != null ) {
+        bool result = await ptsRegister( data );
+        if( result ){
+          showModalBottomSheet(
+            context: context,
+            builder: (context) {
+              return SafeArea(
+                child: Container(
+                  margin : EdgeInsets.all(16),
+                  height : 100,
+                  width : MediaQuery.of(context).size.width,
+                  decoration : BoxDecoration(
+                    color : AppColors.bgColor,
+                    borderRadius : BorderRadius.all(Radius.circular(12)),
+                  ),
+                  child : Center(
+                    child : Padding(
+                      padding: EdgeInsets.symmetric(vertical : 16),
+                      child : Column(
+                        mainAxisAlignment : MainAxisAlignment.spaceAround,
+                        children : [
+                          Container(
+                            padding : EdgeInsets.only(left : 16, top : 0, right : 16, bottom : 0),
+                            width : MediaQuery.of(context).size.width,
+                            child : ElevatedButton(
+                              onPressed : () {
+                                // 모달창 삭제
+                                Navigator.pop(context);
+                                Navigator.pushReplacement(
+                                  context,
+                                  widget.changePage(0),
+                                );
+                                return;
+                              },
+                              style : ElevatedButton.styleFrom(
+                                backgroundColor : AppColors.buttonColor,
+                                shape : RoundedRectangleBorder(
+                                  borderRadius : BorderRadius.circular(12),
+                                ),
                               ),
+                              child : Text("확인", style : TextStyle(color : AppColors.buttonTextColor, fontSize : 20)),
                             ),
-                            child : Text("확인", style : TextStyle(color : AppColors.buttonTextColor, fontSize : 20)),
-                          ),
-                        )
-                      ],
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
-          },
-          backgroundColor : Colors.transparent,
-        );
+              );
+            },
+            backgroundColor : Colors.transparent,
+          );
+        }
+        else{
+          Fluttertoast.showToast(
+            msg: "기술 스택 등록 실패",
+            // 메시지 유지시간
+            toastLength : Toast.LENGTH_LONG,
+            // 메시지 표시 위치 : 앱 적용
+            gravity : ToastGravity.BOTTOM,
+            // 자세한 유지시간
+            timeInSecForIosWeb : 3,
+            // 배경색
+            backgroundColor : Colors.black,
+            // 글자색
+            textColor : Colors.white,
+            // 글자크기
+            fontSize : 16,
+            webShowClose: true,
+          );
+        }
       } else {
         Fluttertoast.showToast(
           msg: "프로젝트 등록 실패",
@@ -269,6 +302,46 @@ class _WriteProjectState extends State<WriteProject> {
       ),
     );
   }
+
+  // 희만 추가 - 2025.05.12
+  // 프로젝트 기술 스택 등록
+  // 기술스택 상태변수
+  List<dynamic> allTechStacks = [];
+  List<int> selectedStackIds = [];
+  List<dynamic> getTechStacks = [];
+  int? ptsno;
+
+  // 기술 스택 목록
+  void onTechStack() async {
+    try{
+      final response = await dio.get("${serverPath}/api/techstack/findall");
+      final data = response.data;
+      if( data != null || data != [] ){
+        setState(() {
+          allTechStacks = data;
+        });
+      }
+    }catch(e){ print(e); }
+  } // f end
+
+  // 프로젝트 기술 스택 등록
+  Future<bool> ptsRegister( int pno ) async {
+    try{
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      dio.options.headers['Authorization'] = token;
+
+      final sendData = {
+        "projectTechStackList" : selectedStackIds,
+        "pno" : pno,
+        "ptsno" : ptsno
+      };
+      final response = await dio.post("${serverPath}/api/projecttechstack", data: sendData );
+      final data = response.data;
+      if( data ){ return true; }
+    }catch(e){ print(e); }
+    return false;
+  } // f end
 
   @override
   Widget build(BuildContext context) {
@@ -498,11 +571,61 @@ class _WriteProjectState extends State<WriteProject> {
                   ),
                 ),
                 SizedBox(height : 20),
+
+                CustomCard(
+                  elevation : 0,
+                  child : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("요구 기술", style : TextStyle(fontFamily : "NanumGothic", fontSize : 20, fontWeight : FontWeight.bold),),
+                      SizedBox( height: 8,),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: allTechStacks.map<Widget>((tech) {
+                          final tsno = tech['tsno'];
+                          final tsname = tech['tsname'];
+                          final isSelected = tempSelected.contains(tsno);
+
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                isSelected ? tempSelected.remove(tsno) : tempSelected.add(tsno);
+                              });
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: isSelected ? Colors.blueAccent : AppColors.bgColor,
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: isSelected ? Colors.blue : Colors.grey,
+                                  width: 1,
+                                ),
+                              ),
+                              child: Text(
+                                tsname,
+                                style: TextStyle(
+                                  color: isSelected ? Colors.white : Colors.black87,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  )
+                ),
+                SizedBox(height : 20),
                 // 등록 버튼
                 SizedBox(
                   width : MediaQuery.of(context).size.width,
                   child : ElevatedButton(
                     onPressed: () {
+                      setState(() {
+                        selectedStackIds = tempSelected;
+                      });
                       writeProject(context);
                     },
                     style : ElevatedButton.styleFrom(

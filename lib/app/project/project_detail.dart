@@ -159,11 +159,47 @@ class _DetailProjectState extends State<DetailProject> {
     return null;
   }
 
+  // 희만 추가 - 2025-05-12
+  // 프로젝트 기술스택 추가
+
+  // 기술스택 상태변수
+  List<dynamic> allTechStacks = [];
+  List<dynamic> getTechStacks = [];
+  int? ptsno;
+
+  // 프로젝트 기술 스택 조회
+  void ptsFindAll() async {
+    try{
+      final response = await dio.get("${serverPath}/api/projecttechstack/findall?pno=${widget.pno}");
+      final data = response.data;
+      setState(() {
+        getTechStacks = data;
+        ptsno = data[0]['ptsno'];
+        print( getTechStacks );
+      });
+    }catch(e){ print(e); }
+  } // f end
+
+  // 기술 스택 목록
+  void onTechStack() async {
+    try{
+      final response = await dio.get("${serverPath}/api/techstack/findall");
+      final data = response.data;
+      if( data != null || data != [] ){
+        setState(() {
+          allTechStacks = data;
+        });
+      }
+    }catch(e){ print(e); }
+  } // f end
+
   @override
   void initState() {
     super.initState();
     findProject();
     findCompany();
+    ptsFindAll();
+    onTechStack();
   }
 
   int _currentPage = 0;
@@ -304,6 +340,32 @@ class _DetailProjectState extends State<DetailProject> {
                         SizedBox(height : 5),
                         Text("${ptypeToString(project["ptype"])}", style : TextStyle(fontSize : 18),),
                         SizedBox(height : 5),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("요구 기술", style : TextStyle(fontFamily : "NanumGothic", fontSize : 20, fontWeight : FontWeight.bold),),
+                            SizedBox( height: 8,),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              children: getTechStacks.isEmpty ? [ Text("요구기술 등록 필요", style : TextStyle(fontSize : 18,), ) ]
+                                  : getTechStacks.map<Widget>((data) {
+                                return Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue[100],
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Text(
+                                    data['tsname'],
+                                    style: TextStyle(color: Colors.black54),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height : 8),
                         Text("프로젝트 기간", style : TextStyle(fontSize : 20, fontWeight : FontWeight.bold,),),
                         SizedBox(height : 5),
                         Text("$pstart ~ $pend", style : TextStyle(fontSize : 18),),
