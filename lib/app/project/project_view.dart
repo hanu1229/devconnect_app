@@ -206,6 +206,8 @@ class _ViewProjectState extends State<ViewProject> {
                   final project = projectList[index];
                   // buttonClick이 false이면 수정 및 삭제 안됨
                   bool buttonClick = true;
+                  print(">> delete_state : ${project["delete_state"]}");
+                  if(project["delete_state"] == 1) { return SizedBox.shrink(); }
                   if(project["recruitment_status"] >= 2) { buttonClick = false; }
                   return GestureDetector(
                     onTap : () {
@@ -342,6 +344,10 @@ class _ViewProjectState extends State<ViewProject> {
                                                 builder : (context) {
                                                   return AlertDialog(
                                                     title : Text("정말 삭제하시겠습니까?"),
+                                                    backgroundColor : Colors.white,
+                                                    shape : RoundedRectangleBorder(
+                                                      borderRadius : BorderRadius.circular(12),
+                                                    ),
                                                     actions : [
                                                       ElevatedButton(
                                                         onPressed : () {
@@ -349,12 +355,12 @@ class _ViewProjectState extends State<ViewProject> {
                                                           Navigator.pop(context);
                                                         },
                                                         style : ElevatedButton.styleFrom(
-                                                          backgroundColor : Colors.grey,
+                                                          backgroundColor : Colors.white,
                                                           shape : RoundedRectangleBorder(
                                                             borderRadius : BorderRadius.circular(10),
                                                           ),
                                                         ),
-                                                        child : Text("취소", style : TextStyle(color : Colors.white,),),
+                                                        child : Text("취소", style : TextStyle(color : Colors.black,),),
                                                       ),
                                                       ElevatedButton(
                                                         onPressed : () {

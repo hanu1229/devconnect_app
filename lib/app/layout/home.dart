@@ -1,12 +1,19 @@
 // home.dart : 메인 페이지
 
+import "package:devconnect_app/app/company/company_login.dart";
+import "package:devconnect_app/app/component/custom_alert.dart";
 import "package:devconnect_app/app/project/project_detail.dart";
 import "package:devconnect_app/style/app_colors.dart";
 import "package:devconnect_app/style/server_path.dart";
 import "package:dio/dio.dart";
 import "package:flutter/material.dart";
+import "package:shared_preferences/shared_preferences.dart";
 
 class Home extends StatefulWidget {
+
+  final changePage;
+
+  Home({super.key, required this.changePage});
 
   @override
   State<Home> createState() => _HomeState();
@@ -208,12 +215,67 @@ class _HomeState extends State<Home> {
                   // 모집 상태
                   int rstatus = data["recruitment_status"];
                   return GestureDetector(
-                    onTap : () {
-                      // 프로젝트 상세보기 페이지로 넘어감
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder : (context) => DetailProject(pno : data["pno"])),
-                      );
+                    onTap : () async {
+                      final prefs = await SharedPreferences.getInstance();
+                      final token = prefs.getString("token");
+                      if(token == null) {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return CustomAlertDialog(
+                              title : "비로그인 중",
+                              onCancleBtn : false,
+                              content : SizedBox(
+                                height : 120,
+                                child: Column(
+                                  children : [
+                                    SizedBox(
+                                      width : double.infinity,
+                                      child: ElevatedButton(
+                                        onPressed : () {
+                                          Navigator.pop(context);
+                                          widget.changePage(7);
+                                        },
+                                        style : ElevatedButton.styleFrom(
+                                          backgroundColor : AppColors.buttonColor,
+                                          shape : RoundedRectangleBorder(
+                                            borderRadius : BorderRadius.circular(6),
+                                          ),
+                                        ),
+                                        child : Text("기업 로그인", style : TextStyle(fontSize : 20, color : Colors.white,),),
+                                      ),
+                                    ),
+                                    SizedBox(height : 10),
+                                    SizedBox(
+                                      width : double.infinity,
+                                      child: ElevatedButton(
+                                        onPressed : () {
+                                          Navigator.pop(context);
+                                          widget.changePage(6);
+                                          },
+                                        style : ElevatedButton.styleFrom(
+                                          backgroundColor : AppColors.buttonColor,
+                                          shape : RoundedRectangleBorder(
+                                            borderRadius : BorderRadius.circular(6),
+                                          ),
+                                        ),
+                                        child : Text("개발자 로그인", style : TextStyle(fontSize : 20, color : Colors.white,),),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              onPressed : () {},
+                            );
+                          },
+                        );
+                      } else {
+                        // 프로젝트 상세보기 페이지로 넘어감
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder : (context) => DetailProject(pno : data["pno"])),
+                        );
+                      }
                     },
                     child : Padding(
                       padding : EdgeInsets.only(left : 16, top : 8, right : 16, bottom : 8),

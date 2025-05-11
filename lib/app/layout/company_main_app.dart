@@ -36,7 +36,7 @@ class _CompanyMainApp extends State<CompanyMainApp> {
   Widget build(BuildContext context) {
     // 이동할 페이지
     final List<Widget> pages = [
-      Home(),
+      Home(changePage : changePage),
       WriteProject(changePage : changePage),
       Companyprofile(changePage: changePage,), // 가운데 탭
       CompanyProjectView(changePage : changePage), // 3 : 내 프로젝트( 메뉴탭 O )

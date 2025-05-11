@@ -1,5 +1,6 @@
 // projectjoin_company_view.dart : 기업이 본인 프로젝트에 따른 신청 현황을 보는 페이지
 
+import "package:devconnect_app/app/component/custom_alert.dart";
 import "package:devconnect_app/app/component/custom_card.dart";
 import "package:devconnect_app/style/app_colors.dart";
 import "package:devconnect_app/style/server_path.dart";
@@ -154,6 +155,15 @@ class _ViewProjectJoinState extends State<ViewProjectJoin> {
     });
   }
 
+  /// 선택한 개발자의 평점 가져오기
+  Future<void> findAvg() async {
+    try {
+      final response = await dio.get("");
+    } catch(e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -186,6 +196,25 @@ class _ViewProjectJoinState extends State<ViewProjectJoin> {
                           break;
                       }
                       return GestureDetector(
+                        onTap : () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return CustomAlertDialog(
+                                title : "개발자 : ${developer["dname"]}",
+                                onPressed : () {
+
+                                },
+                                content : Column(
+                                  crossAxisAlignment : CrossAxisAlignment.start,
+                                  children : [
+                                    Text("평점 : ")
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        },
                         onLongPress : () {
                           if(developer["pjtype"] == 0) {
                             showModalBottomSheet(
