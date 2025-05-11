@@ -85,7 +85,7 @@ class _CompanyBottomNavBarState extends State<CompanyBottomNavBar> {
 
 
     String profileUrl = company['cprofile'] != null && company['cprofile'].toString().isNotEmpty
-        ? "${serverPath}/upload/${company['cprofile']}" : "${serverPath}/upload/logo_small.png";
+        ? "${serverPath}/upload/company_logo/${company['cprofile']}" : "${serverPath}/upload/company_logo/logo_small.png";
 
     print(company['cid']);
     String? cname = isLogIn ? "${company['cid']} " : "로그인";   //기업로그인
@@ -201,6 +201,8 @@ class _CompanyBottomNavBarState extends State<CompanyBottomNavBar> {
                       center: CircleAvatar(
                         radius: 30,
                         backgroundImage: NetworkImage(profileUrl),
+                        // ↓ png 이미지 대응으로 기본 색상 보라색에서 변경
+                        backgroundColor : Colors.white,
                       ),
                       progressColor: Colors.blue,
                       backgroundColor: Colors.grey.shade300,

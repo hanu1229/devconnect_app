@@ -29,6 +29,8 @@ class _DetailProjectState extends State<DetailProject> {
   String pend = "";
   String rpstart = "";
   String rpend = "";
+  // 지원 가능 여부 판단 | true : 가능, false : 불가능
+  bool apply = false;
 
   final PageController _imagePageController = PageController(initialPage : 0);
 
@@ -47,6 +49,7 @@ class _DetailProjectState extends State<DetailProject> {
           pend = project["pend"] == null ? "" : project["pend"].split("T")[0];
           rpstart = project["recruit_pstart"] == null ? "" : project["recruit_pstart"].split("T")[0];
           rpend = project["recruit_pend"] == null ? "" : project["recruit_pend"].split("T")[0];
+          if(project["recruitment_status"] == 2) { apply = true; }
         });
       }
     } catch(e) {
@@ -192,7 +195,7 @@ class _DetailProjectState extends State<DetailProject> {
                         mainAxisAlignment : MainAxisAlignment.spaceBetween,
                         children: [
                           SizedBox(width : 20),
-                          Image.network(imageUrl),
+                          Expanded(child: Image.network(imageUrl, fit : BoxFit.scaleDown),),
                           SizedBox(width : 20),
                         ],
                       ),
@@ -273,7 +276,7 @@ class _DetailProjectState extends State<DetailProject> {
                           child: Column(
                             crossAxisAlignment : CrossAxisAlignment.start,
                             children : [
-                              Text("${project["pname"]}", maxLines : 2, style : TextStyle(fontSize : 20, fontWeight : FontWeight.bold, overflow : TextOverflow.visible), softWrap : true,),
+                              Text("${project["pname"]}", maxLines : 3, style : TextStyle(fontSize : 20, fontWeight : FontWeight.bold, overflow : TextOverflow.visible), softWrap : true,),
                               SizedBox(height : 10),
                               Text("${project["cname"]}", style : TextStyle(fontSize : 16, fontWeight : FontWeight.bold),),
                               SizedBox(height : 10),
@@ -329,14 +332,14 @@ class _DetailProjectState extends State<DetailProject> {
                   SizedBox(
                     width : MediaQuery.of(context).size.width,
                     child : ElevatedButton(
-                      onPressed: () async {
+                      onPressed : apply ? () async {
                         bool result = await isLogin();
                         if(result == true) {
                           writeProjectJoin(context);
                         } else {
                           Navigator.pushReplacement(context, MaterialPageRoute(builder : (context) => DeveloperLogIn()));
                         }
-                      },
+                      } : null,
                       style : ElevatedButton.styleFrom(
                         backgroundColor : AppColors.buttonColor,
                         shape : RoundedRectangleBorder(borderRadius : BorderRadius.circular(5),),

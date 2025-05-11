@@ -131,7 +131,7 @@ class _ViewProjectState extends State<ViewProject> {
                                 borderRadius : BorderRadius.circular(12),
                               ),
                             ),
-                            child : Text("확인", style : TextStyle(color : AppColors.buttonTextColor)),
+                            child : Text("확인", style : TextStyle(fontSize : 20, color : AppColors.buttonTextColor)),
                           ),
                         )
                       ],
@@ -145,6 +145,55 @@ class _ViewProjectState extends State<ViewProject> {
         );
       }
     } catch(e) {
+      // 404 오류 시 실행
+      Navigator.pop(context);
+      showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return SafeArea(
+            child: Container(
+              margin : EdgeInsets.all(16),
+              height : 150,
+              width : MediaQuery.of(context).size.width,
+              decoration : BoxDecoration(
+                color : AppColors.bgColor,
+                borderRadius : BorderRadius.all(Radius.circular(12)),
+              ),
+              child : Center(
+                child : Padding(
+                  padding: EdgeInsets.symmetric(vertical : 16),
+                  child : Column(
+                    mainAxisAlignment : MainAxisAlignment.spaceAround,
+                    children : [
+                      Center(child : Text("삭제할 수 없습니다.", style : TextStyle(fontSize : 20, fontWeight : FontWeight.bold, color : Colors.red,),),),
+                      Container(
+                        padding : EdgeInsets.only(left : 16, top : 0, right : 16, bottom : 0),
+                        width : MediaQuery.of(context).size.width,
+                        child : ElevatedButton(
+                          onPressed : () {
+                            // 모달창 삭제
+                            Navigator.pop(context);
+                            // setState(() { findAllMyProject(); });
+                            return;
+                          },
+                          style : ElevatedButton.styleFrom(
+                            backgroundColor : AppColors.buttonColor,
+                            shape : RoundedRectangleBorder(
+                              borderRadius : BorderRadius.circular(12),
+                            ),
+                          ),
+                          child : Text("확인", style : TextStyle(fontSize : 20, color : AppColors.buttonTextColor)),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+        backgroundColor : Colors.transparent,
+      );
       print(e);
     }
   }
@@ -344,6 +393,10 @@ class _ViewProjectState extends State<ViewProject> {
                 controller : null,
                 itemCount : projectList.length,
                 itemBuilder: (context, index) {
+                  final project = projectList[index];
+                  // buttonClick이 false이면 수정 및 삭제 안됨
+                  bool buttonClick = true;
+                  if(project["recruitment_status"] >= 2) { buttonClick = false; }
                   return GestureDetector(
                     onTap : () {
                       Navigator.push(
@@ -422,15 +475,67 @@ class _ViewProjectState extends State<ViewProject> {
                                         padding : EdgeInsets.only(left : 16, top : 0, right : 16, bottom : 0),
                                         width : MediaQuery.of(context).size.width,
                                         child : ElevatedButton(
-                                          onPressed : () async {
-                                            Navigator.pop(context);
-                                            bool? result = await Navigator.push(
-                                              context,
-                                              MaterialPageRoute(builder : (context) => UpdateProject(project : projectList[index])),
-                                            );
-                                            if(result == true) { setState(() { findAllMyProject(); }); }
+                                          onPressed : buttonClick ? () async {
+                                            if(buttonClick) {
+                                              Navigator.pop(context);
+                                              bool? result = await Navigator.push(
+                                                context,
+                                                MaterialPageRoute(builder : (context) => UpdateProject(project : projectList[index])),
+                                              );
+                                              if(result == true) { setState(() { findAllMyProject(); }); }
+                                            } else {
+                                              Navigator.pop(context);
+                                              showModalBottomSheet(
+                                                context: context,
+                                                builder: (context) {
+                                                  return SafeArea(
+                                                    child: Container(
+                                                      margin : EdgeInsets.all(16),
+                                                      height : 150,
+                                                      width : MediaQuery.of(context).size.width,
+                                                      decoration : BoxDecoration(
+                                                        color : AppColors.bgColor,
+                                                        borderRadius : BorderRadius.all(Radius.circular(12)),
+                                                      ),
+                                                      child : Center(
+                                                        child : Padding(
+                                                          padding: EdgeInsets.symmetric(vertical : 16),
+                                                          child : Column(
+                                                            mainAxisAlignment : MainAxisAlignment.spaceAround,
+                                                            children : [
+                                                              Center(child : Text("수정할 수 없습니다.", style : TextStyle(fontSize : 20, fontWeight : FontWeight.bold, color : Colors.red,),),),
+                                                              Container(
+                                                                padding : EdgeInsets.only(left : 16, top : 0, right : 16, bottom : 0),
+                                                                width : MediaQuery.of(context).size.width,
+                                                                child : ElevatedButton(
+                                                                  onPressed : () {
+                                                                    // 모달창 삭제
+                                                                    Navigator.pop(context);
+                                                                    // setState(() { findAllMyProject(); });
+                                                                    return;
+                                                                  },
+                                                                  style : ElevatedButton.styleFrom(
+                                                                    backgroundColor : AppColors.buttonColor,
+                                                                    shape : RoundedRectangleBorder(
+                                                                      borderRadius : BorderRadius.circular(12),
+                                                                    ),
+                                                                  ),
+                                                                  child : Text("확인", style : TextStyle(fontSize : 20, color : AppColors.buttonTextColor)),
+                                                                ),
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                                backgroundColor : Colors.transparent,
+                                              );
+                                            }
+
                                             return;
-                                          },
+                                          } : null,
                                           style : ElevatedButton.styleFrom(
                                             backgroundColor : AppColors.buttonColor,
                                             shape : RoundedRectangleBorder(
@@ -445,9 +550,45 @@ class _ViewProjectState extends State<ViewProject> {
                                         padding : EdgeInsets.only(left : 16, top : 0, right : 16, bottom : 0),
                                         width : MediaQuery.of(context).size.width,
                                         child : ElevatedButton(
-                                          onPressed : () {
-                                            deleteProject(context, projectList[index]["pno"]);
-                                          },
+                                          onPressed : buttonClick ? () {
+                                            showDialog(
+                                              context : context,
+                                              builder : (context) {
+                                                return AlertDialog(
+                                                  title : Text("정말 삭제하시겠습니까?"),
+                                                  actions : [
+                                                    ElevatedButton(
+                                                      onPressed : () {
+                                                        Navigator.pop(context);
+                                                        Navigator.pop(context);
+                                                      },
+                                                      style : ElevatedButton.styleFrom(
+                                                        backgroundColor : Colors.grey,
+                                                        shape : RoundedRectangleBorder(
+                                                          borderRadius : BorderRadius.circular(10),
+                                                        ),
+                                                      ),
+                                                      child : Text("취소", style : TextStyle(color : Colors.white,),),
+                                                    ),
+                                                    ElevatedButton(
+                                                      onPressed : () {
+                                                        deleteProject(context, projectList[index]["pno"]);
+                                                        Navigator.pop(context);
+                                                      },
+                                                      style : ElevatedButton.styleFrom(
+                                                        backgroundColor : Colors.blue,
+                                                        shape : RoundedRectangleBorder(
+                                                          borderRadius : BorderRadius.circular(10),
+                                                        ),
+                                                      ),
+                                                      child : Text("확인", style : TextStyle(color : Colors.white,),),
+                                                    ),
+                                                  ],
+                                                );
+                                              }
+                                            );
+                                            // deleteProject(context, projectList[index]["pno"]);
+                                          } : null,
                                           style : ElevatedButton.styleFrom(
                                             backgroundColor : Colors.red,
                                             shape : RoundedRectangleBorder(

@@ -241,7 +241,7 @@ class _UpdateProjectState extends State<UpdateProject> {
                             onPressed: () async {
                               DateTime? dateTime = await showDatePicker(
                                 barrierDismissible : false,
-                                initialDate : DateTime.now(),
+                                initialDate : DateTime.parse(pstart!),
                                 context: context,
                                 firstDate: firstDate,
                                 lastDate: lastDate,
@@ -266,7 +266,7 @@ class _UpdateProjectState extends State<UpdateProject> {
                             onPressed: () async {
                               DateTime? dateTime = await showDatePicker(
                                 barrierDismissible : false,
-                                initialDate : DateTime.now(),
+                                initialDate : DateTime.parse(pend!),
                                 context: context,
                                 firstDate: firstDate,
                                 lastDate: lastDate,
@@ -301,7 +301,7 @@ class _UpdateProjectState extends State<UpdateProject> {
                             onPressed: () async {
                               DateTime? dateTime = await showDatePicker(
                                 barrierDismissible : false,
-                                initialDate : DateTime.now(),
+                                initialDate : DateTime.parse(rpstart!),
                                 context: context,
                                 firstDate: firstDate,
                                 lastDate: lastDate,
@@ -325,7 +325,7 @@ class _UpdateProjectState extends State<UpdateProject> {
                             onPressed: () async {
                               DateTime? dateTime = await showDatePicker(
                                 barrierDismissible : false,
-                                initialDate : DateTime.now(),
+                                initialDate : DateTime.parse(rpend!),
                                 context: context,
                                 firstDate: firstDate,
                                 lastDate: lastDate,
