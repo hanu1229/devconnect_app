@@ -429,6 +429,22 @@ class _ProfileState extends State< Profile >{
     );
   }
 
+  Widget customTheme(BuildContext context, Widget? child) {
+    return Theme(
+      data : Theme.of(context).copyWith(
+        dialogTheme : DialogTheme(backgroundColor : AppColors.bgColor,),
+        colorScheme : ColorScheme.light(
+          primary : AppColors.buttonColor,
+          surface : AppColors.bgColor,
+        ),
+        textButtonTheme : TextButtonThemeData(
+          style : TextButton.styleFrom(foregroundColor : AppColors.buttonColor),
+        ),
+      ),
+      child: child!,
+    );
+  }
+
   // 경력 상태변수
   List<dynamic> careerList = [];
   TextEditingController cacompanyController = TextEditingController();
@@ -507,10 +523,14 @@ class _ProfileState extends State< Profile >{
                       GestureDetector(
                         onTap: () async {
                           DateTime? picked = await showDatePicker(
+                            barrierDismissible : false,
                             context: context,
                             initialDate: DateTime.now(),
                             firstDate: DateTime(1980),
                             lastDate: DateTime(2100),
+                            builder: (context, Widget? child) {
+                              return customTheme(context, child);
+                            }
                           );
                           if (picked != null) {
                             setDialogState(() {
@@ -547,10 +567,14 @@ class _ProfileState extends State< Profile >{
                       GestureDetector(
                         onTap: () async {
                           DateTime? picked = await showDatePicker(
+                            barrierDismissible : false,
                             context: context,
                             initialDate: DateTime.now(),
                             firstDate: DateTime(1980),
                             lastDate: DateTime(2100),
+                            builder: (context, Widget? child) {
+                              return customTheme(context, child);
+                            }
                           );
                           if (picked != null) {
                             setDialogState(() {

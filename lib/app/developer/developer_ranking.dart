@@ -160,8 +160,8 @@ class _DeveloperRanking extends State<DeveloperRanking> {
                                   height : 80,
                                   child: index > -1 && index < 3
                                       ? Image.asset("assets/images/no${index + 1}_icon.png",)
-                                      : Padding(
-                                          padding: EdgeInsets.fromLTRB( 20, 0, 20, 0),
+                                      : Center(
+                                          // padding: EdgeInsets.fromLTRB( 20, 0, 20, 0),
                                           child: Text( "${index + 1}", style: TextStyle( fontSize: 50, fontWeight: FontWeight.bold ),),
                                         ),
                                 ),

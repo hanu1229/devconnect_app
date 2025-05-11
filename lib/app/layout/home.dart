@@ -145,7 +145,7 @@ class _HomeState extends State<Home> {
                       DropdownMenuItem(value : 0, child : Text("전체", overflow : TextOverflow.ellipsis,),),
                       DropdownMenuItem(value : 1, child : Text("모집 전", overflow : TextOverflow.ellipsis,),),
                       DropdownMenuItem(value : 2, child : Text("모집 중", overflow : TextOverflow.ellipsis,),),
-                      DropdownMenuItem(value : 3, child : Text("모집 후", overflow : TextOverflow.ellipsis,),),
+                      DropdownMenuItem(value : 3, child : Text("모집 완료", overflow : TextOverflow.ellipsis,),),
                     ],
                   ),
                 ),
