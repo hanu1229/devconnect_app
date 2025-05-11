@@ -897,11 +897,17 @@ class _ProfileState extends State< Profile >{
                       color: Colors.blue[100],
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Row(
                       children: [
-                        Text(data["cacompany"], style: TextStyle( fontWeight: FontWeight.bold, fontSize: 20 ),),
-                        Text("${data["caStartDate"]} ~ ${data["caEndDate"]}"),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(data["cacompany"], style: TextStyle( fontWeight: FontWeight.bold, fontSize: 20 ),),
+                            Text("${data["caStartDate"]} ~ ${data["caEndDate"]}"),
+                          ],
+                        ),
+                        IconButton(onPressed: () => {}, icon: Icon( Icons.update ) ),
+                        IconButton(onPressed: () => {}, icon: Icon( Icons.delete_forever_outlined )),
                       ],
                     )
                   );
