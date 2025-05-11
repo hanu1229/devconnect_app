@@ -91,7 +91,7 @@ class _CompanyProfileState extends State< Companyprofile >{
       if( data != '' ){
         setState(() {
           info = data;
-          profileImageUrl = data['cprofile']; /// 프로파일 이미지 받음
+          profileImageUrl = "$serverPath/upload/company_logo/${data['cprofile']}"; /// 프로파일 이미지 받음
         });
       }
     }catch( e ){ print( e ); }
@@ -147,7 +147,7 @@ class _CompanyProfileState extends State< Companyprofile >{
           isUpdate = false;
           if(data != null && data['cprofile'] != null){
             profileImage = null; // 파일제거
-            profileImageUrl = data['cprofile']; // 서버 URL 사용
+            profileImageUrl = "$serverPath/upload/company_logo/${data['cprofile']}"; // 서버 URL 사용
           }
         });
       }
@@ -385,7 +385,7 @@ class _CompanyProfileState extends State< Companyprofile >{
     if( info.isEmpty ){ return Center( child: CircularProgressIndicator(), ); }
 
     final image = info['cprofile']; // 이미지 문제 있었음
-    String imgUrl = "${serverPath}/upload/${image}";
+    String imgUrl = "${serverPath}/upload/company_logo/${image}";
 
     // if( !isLogIn ){ Navigator.pushNamed( context, MainApp() ) }
 
