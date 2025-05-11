@@ -323,7 +323,7 @@ class _Profile_Project extends State< Profile_Project >{
                             return SafeArea(
                               child: Container(
                                 margin: EdgeInsets.all(16),
-                                height: 125,
+                                height: 150,
                                 width: MediaQuery.of(context).size.width,
                                 decoration: BoxDecoration(
                                   color: AppColors.bgColor,

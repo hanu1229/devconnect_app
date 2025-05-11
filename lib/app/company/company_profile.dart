@@ -5,8 +5,6 @@ import 'package:devconnect_app/app/component/custom_outlinebutton.dart';
 import 'package:devconnect_app/app/component/custom_scrollview.dart';
 import 'package:devconnect_app/app/component/custom_textbutton.dart';
 import 'package:devconnect_app/app/component/custom_textfield.dart';
-import 'package:devconnect_app/app/layout/company_main_app.dart';
-import 'package:devconnect_app/app/layout/home.dart';
 import 'package:devconnect_app/style/server_path.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +14,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../component/custom_alert.dart';
 import '../component/custom_boolalert.dart';
 import '../component/custom_imgpicker.dart';
-import '../component/custom_menutabs.dart';
 import '../layout/main_app.dart';
 
 class Companyprofile extends StatefulWidget{
@@ -25,7 +22,7 @@ class Companyprofile extends StatefulWidget{
 
   const Companyprofile({
     required this.changePage, //Companyprofile에서 인덱스 받음
-    });
+  });
 
 
   @override
@@ -45,6 +42,8 @@ class _CompanyProfileState extends State< Companyprofile >{
   String? profileImageUrl;    // 이미지 url 받기
   // 수정 상태 확인
   bool isUpdate = false;
+
+  final _formKey = GlobalKey<FormState>();
 
   // 비밀번호
   String? pwdValidator(String? value) {
@@ -194,7 +193,7 @@ class _CompanyProfileState extends State< Companyprofile >{
                   showDialog(
                     context: context,
                     builder: (context) => CustomBoolAlertDialog(
-                      title : "비밀번호가 변경되었습니다."
+                        title : "비밀번호가 변경되었습니다."
                     ),
                   );
                 }
@@ -277,42 +276,42 @@ class _CompanyProfileState extends State< Companyprofile >{
   }
 
   //회원삭제  //상태변경으로 변경
-void CustomDialog(BuildContext context) {
+  void CustomDialog(BuildContext context) {
     final TextEditingController customPwdController = TextEditingController();
 
-  void onDelete() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token');
-    print("삭제함수 토큰 확인 : $token");
+    void onDelete() async {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      print("삭제함수 토큰 확인 : $token");
 
-    final sendData = {
-      'cid': info['cid'],
-      'cpwd': customPwdController.text
-    };
-    print("sendData확인:$sendData");
+      final sendData = {
+        'cid': info['cid'],
+        'cpwd': customPwdController.text
+      };
+      print("sendData확인:$sendData");
 
-    try {
-      dio.options.headers['Authorization'] = token;
-      final response = await dio.put(
-          "${serverPath}/api/company/state", data: sendData);
-      bool result = response.data;
+      try {
+        dio.options.headers['Authorization'] = token;
+        final response = await dio.put(
+            "${serverPath}/api/company/state", data: sendData);
+        bool result = response.data;
         print(result);
 
-      if (!result) {
-        print("변경실패");
+        if (!result) {
+          print("변경실패");
 
 
-      } else {
-        print("변경성공");
-        Navigator.pop(context);
-        //logOut();
-        await prefs.remove('token');
-        Navigator.push(context, MaterialPageRoute(builder: (context) => MainApp()));
+        } else {
+          print("변경성공");
+          Navigator.pop(context);
+          //logOut();
+          await prefs.remove('token');
+          Navigator.push(context, MaterialPageRoute(builder: (context) => MainApp()));
+        }
+      } catch (e) {
+        print(e);
       }
-    } catch (e) {
-      print(e);
     }
-  }
 
     showDialog(
       context: context,
@@ -360,7 +359,7 @@ void CustomDialog(BuildContext context) {
         );
       },
     );
-}
+  }
 
 
 
@@ -391,10 +390,10 @@ void CustomDialog(BuildContext context) {
         // 첫번째 Card
         CustomCard(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: !isUpdate ? CrossAxisAlignment.center : CrossAxisAlignment.start,
-            children: !isUpdate
-                ? // 수정버튼 클릭 전
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: !isUpdate ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+              children: !isUpdate
+                  ? // 수정버튼 클릭 전
               [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(999),
@@ -434,7 +433,7 @@ void CustomDialog(BuildContext context) {
                   ],
                 ),
               ]
-                : // 수정버튼 클릭 후
+                  : // 수정버튼 클릭 후
               [
                 Center(
                   child: CustomImagePicker(
@@ -524,15 +523,15 @@ void CustomDialog(BuildContext context) {
 
               // 버튼
               Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  CustomOutlineButton(
-                    onPressed: () => { setState(() => { updateCpw(context) }) },
-                    title: "비밀번호 변경",
-                    width: 150,
-                  ),
-                ]
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    CustomOutlineButton(
+                      onPressed: () => { setState(() => { updateCpw(context) }) },
+                      title: "비밀번호 변경",
+                      width: 150,
+                    ),
+                  ]
               ),
 
             ],

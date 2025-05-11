@@ -47,7 +47,7 @@ class _CustomImagePicker extends State< CustomImagePicker > {
           backgroundColor: Colors.grey[200],
           backgroundImage: selectedImage != null
               ? FileImage(File(selectedImage!.path))
-              : NetworkImage("${serverPath}/upload/${widget.dprofile ?? "default.jpg"}") as ImageProvider,
+              : NetworkImage("${widget.dprofile ?? "default.jpg"}") as ImageProvider,
         ),
 
         Transform.translate(
