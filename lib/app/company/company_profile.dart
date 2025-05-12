@@ -116,22 +116,17 @@ class _CompanyProfileState extends State< Companyprofile >{
     formData.fields.add(MapEntry("cemail", cemailController.text,) );
     formData.fields.add(MapEntry("cadress", cadressController.text) );
 
-    if (profileImage != null) { // <-- 이 조건문을 추가하거나, 기존에 있다면 이 안에 코드가 있는지 확인하세요.
+    if (profileImage != null) {
       try {
         final file = await MultipartFile.fromFile(profileImage!.path, filename: profileImage!.name);
         formData.files.add(MapEntry("file" , file));
       } catch (e) {
-        // 파일 경로 접근에 실패했거나, MultipartFile.fromFile 생성 중 오류가 발생한 경우
         print("프로필 이미지 파일 처리 중 오류 발생: $e");
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('프로필 이미지 파일을 처리하는 중 오류가 발생했습니다.')),
         );
-        return; // 파일 오류 발생 시 업데이트 중단
+        return;
       }
-    } else {
-      // profileImage가 null일 때, 기존 이미지 사용을 원한다면 파일 관련 필드를 추가하지 않습니다.
-      // 백엔드에서는 file 파라미터가 없으면 기존 cprofile을 유지하는 로직이 필요합니다.
-      // (이전 답변의 Java 백엔드 수정 사항과 연결됩니다.)
     }
 
     final prefs = await SharedPreferences.getInstance();
