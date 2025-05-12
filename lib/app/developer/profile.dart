@@ -341,6 +341,7 @@ class _ProfileState extends State< Profile >{
         setState(() {
           tsFindAll();
         });
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainApp( selectedIndex: 2,) ) );
       }
     }catch(e){ print(e); }
   } // f end
