@@ -100,10 +100,10 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _navItem(Icons.folder, "프로젝트", 0),
-                _navItem(Icons.article, "추천 프로젝트", 1),
+                _navItem(Icons.thumb_up, "추천 프로젝트", 1),
                 const SizedBox(width: 70), // 중앙 공간 확보
                 _navItem(Icons.article_outlined, "기업 목록", 3),
-                _navItem(Icons.compare, "개발자 순위", 4),
+                _navItem(Icons.military_tech, "개발자 순위", 4),
               ],
             ),
             Positioned(
