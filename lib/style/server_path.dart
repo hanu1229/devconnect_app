@@ -14,10 +14,10 @@ String logoUrl = "$serverPath/upload/company_logo";
 
 // 희만집pc
 // String serverPath = "http://192.168.0.8:8080";
-String serverPath = "http://121.142.161.162:80";
+// String serverPath = "http://121.142.161.162:80";
 
 // 희만학원pc
-//String serverPath = "http://192.168.40.97:8080";
+String serverPath = "http://192.168.40.97:8080";
 
 // 웅재학원pc
 // String serverPath = "http://192.168.40.38:8080";
