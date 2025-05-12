@@ -9,6 +9,7 @@ import 'package:devconnect_app/app/component/custom_boolalert.dart';
 import 'package:devconnect_app/app/component/custom_textbutton.dart';
 import 'package:devconnect_app/app/component/custom_textfield.dart';
 import 'package:devconnect_app/app/layout/main_app.dart';
+import 'package:devconnect_app/style/app_colors.dart';
 import 'package:devconnect_app/style/server_path.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -53,6 +54,9 @@ class _ProfileState extends State< Profile >{
   @override
   void initState() {
     loginCheck();
+    onTechStack();
+    tsFindAll();
+    careerFindAll();
   } // f end
 
   // 로그인 상태 확인
@@ -135,15 +139,6 @@ class _ProfileState extends State< Profile >{
                       onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainApp( selectedIndex: 2,) )),
                     )
                   );
-
-                  // setState(() {
-                  //   onInfo( token );
-                  //   isUpdate = false;
-                  //   if (data != null && data['dprofile'] != null) {
-                  //     profileImage = null; // XFile 제거
-                  //     profileImageUrl = data['dprofile']; // 서버 URL 사용
-                  //   }
-                  // });
                 }
               }catch( e ){
                 print( e );
@@ -313,6 +308,337 @@ class _ProfileState extends State< Profile >{
     );
   }
 
+  // 기술스택 상태변수
+  List<dynamic> allTechStacks = [];
+  List<int> selectedStackIds = [];
+  List<dynamic> getTechStacks = [];
+  int? tslno;
+
+  // 기술 스택 목록
+  void onTechStack() async {
+    try{
+      final response = await dio.get("${serverPath}/api/techstack/findall");
+      final data = response.data;
+      if( data != null || data != [] ){
+        setState(() {
+          allTechStacks = data;
+        });
+      }
+    }catch(e){ print(e); }
+  } // f end
+
+  // 기술 스택 등록
+  void techStackRegister() async {
+    try{
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      dio.options.headers['Authorization'] = token;
+
+      final sendData = { "techStackList" : selectedStackIds, "tslno" : tslno };
+      final response = await dio.post("${serverPath}/api/techstack/list/write", data: sendData );
+      final data = response.data;
+      if( data ){
+        setState(() {
+          tsFindAll();
+        });
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainApp( selectedIndex: 2,) ) );
+      }
+    }catch(e){ print(e); }
+  } // f end
+
+  // 등록된 기술스택 조회
+  void tsFindAll() async {
+    try{
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      dio.options.headers['Authorization'] = token;
+
+      final response = await dio.get("${serverPath}/api/techstack/list/findall");
+      final data = response.data;
+        setState(() {
+          getTechStacks = data;
+          tslno = data[0]['tslno'];
+          print( getTechStacks );
+          print( tslno );
+        });
+    }catch(e){ print(e); }
+  } // f end
+
+  // 기술스택 등록 다이얼로그
+  void showTechStackDialog() {
+    List<int> tempSelected = getTechStacks
+        .map<int?>((stack) => stack['tsno'] is int ? stack['tsno'] as int : null)
+        .whereType<int>()
+        .toList();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return CustomAlertDialog(
+              width: 350,
+              title: "기술스택 선택",
+              content: SingleChildScrollView(
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: allTechStacks.map<Widget>((tech) {
+                    final tsno = tech['tsno'];
+                    final tsname = tech['tsname'];
+                    final isSelected = tempSelected.contains(tsno);
+
+                    return GestureDetector(
+                      onTap: () {
+                        setDialogState(() {
+                          isSelected ? tempSelected.remove(tsno) : tempSelected.add(tsno);
+                        });
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: isSelected ? Colors.blueAccent : AppColors.bgColor,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: isSelected ? Colors.blue : Colors.grey,
+                            width: 1,
+                          ),
+                        ),
+                        child: Text(
+                          tsname,
+                          style: TextStyle(
+                            color: isSelected ? Colors.white : Colors.black87,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+                setState(() {
+                  selectedStackIds = tempSelected;
+                });
+                techStackRegister(); // 서버 전송
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget customTheme(BuildContext context, Widget? child) {
+    return Theme(
+      data : Theme.of(context).copyWith(
+        dialogTheme : DialogTheme(backgroundColor : AppColors.bgColor,),
+        colorScheme : ColorScheme.light(
+          primary : AppColors.buttonColor,
+          surface : AppColors.bgColor,
+        ),
+        textButtonTheme : TextButtonThemeData(
+          style : TextButton.styleFrom(foregroundColor : AppColors.buttonColor),
+        ),
+      ),
+      child: child!,
+    );
+  }
+
+  // 경력 상태변수
+  List<dynamic> careerList = [];
+  TextEditingController cacompanyController = TextEditingController();
+  TextEditingController caStartDateController = TextEditingController();
+  TextEditingController caEndDateController = TextEditingController();
+
+  // 경력 입력
+  void careerRegister() async {
+    try{
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      dio.options.headers['Authorization'] = token;
+
+      final sendData = {
+        "cacompany" : cacompanyController.text,
+        "caStartDate" : caStartDateController.text,
+        "caEndDate" : caEndDateController.text
+      };
+
+      final response = await dio.post("${serverPath}/api/career", data: sendData );
+      final data = response.data;
+      if( data ){
+        setState(() {
+          careerFindAll();
+        });
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainApp( selectedIndex: 2,) ) );
+      }
+    }catch(e){ print(e); }
+  } // f end
+
+  // 경력 조회
+  void careerFindAll() async {
+    try{
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      dio.options.headers['Authorization'] = token;
+
+      final response = await dio.get("${serverPath}/api/career/findall");
+      final data = response.data;
+      setState(() {
+        careerList = data;
+      });
+    }catch(e){ print(e); }
+  } // f end
+
+  // 기술스택 등록 다이얼로그
+  void careerDialog() {
+    final formKey = GlobalKey<FormState>();
+    String errorMsg = '';
+
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return CustomAlertDialog(
+              width: 350,
+              title: "경력 등록",
+              content: SingleChildScrollView(
+                child: Form(
+                  key: formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("기업명"),
+                      SizedBox(height: 10),
+                      CustomTextField(
+                        controller: cacompanyController,
+                        validator: (value) => value == null || value.isEmpty
+                            ? '기업명을 입력해주세요.'
+                            : null,
+                      ),
+                      SizedBox(height: 15),
+
+                      Text("시작 날짜"),
+                      SizedBox(height: 10),
+                      GestureDetector(
+                        onTap: () async {
+                          DateTime? picked = await showDatePicker(
+                            barrierDismissible : false,
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(1980),
+                            lastDate: DateTime(2100),
+                            builder: (context, Widget? child) {
+                              return customTheme(context, child);
+                            }
+                          );
+                          if (picked != null) {
+                            setDialogState(() {
+                              caStartDateController.text =
+                              "${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
+                            });
+                          }
+                        },
+                        child: AbsorbPointer(
+                          child: CustomTextField(
+                            controller: caStartDateController,
+                            obscureText: false,
+                            validator: (value) => value == null || value.isEmpty
+                                ? '시작 날짜를 선택해주세요.'
+                                : null,
+                          ),
+                        ),
+                      ),
+                      if (errorMsg.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 15),
+                          child: Text(
+                            errorMsg,
+                            style: TextStyle(
+                                color: Color(0xffbc443d),
+                                fontSize: 12
+                            ),
+                          ),
+                        ),
+                      SizedBox(height: 15),
+
+                      Text("종료 날짜"),
+                      SizedBox(height: 10),
+                      GestureDetector(
+                        onTap: () async {
+                          DateTime? picked = await showDatePicker(
+                            barrierDismissible : false,
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(1980),
+                            lastDate: DateTime(2100),
+                            builder: (context, Widget? child) {
+                              return customTheme(context, child);
+                            }
+                          );
+                          if (picked != null) {
+                            setDialogState(() {
+                              caEndDateController.text =
+                              "${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
+                            });
+                          }
+                        },
+                        child: AbsorbPointer(
+                          child: CustomTextField(
+                            controller: caEndDateController,
+                            obscureText: false,
+                            validator: (value) => value == null || value.isEmpty
+                                ? '종료 날짜를 선택해주세요.'
+                                : null,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              onPressed: () {
+                if (!formKey.currentState!.validate()) return;
+
+                DateTime? startDate = DateTime.tryParse(caStartDateController.text);
+                DateTime? endDate = DateTime.tryParse(caEndDateController.text);
+
+                if (startDate != null && endDate != null && endDate.isBefore(startDate)) {
+                  setState(() {
+                    errorMsg = '종료 날짜는 시작 날짜 이후여야 합니다.';
+                  });
+                  return;
+                }
+
+                Navigator.pop(context);
+                careerRegister(); // 서버 전송
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
+  // 경력 삭제
+  void careerDelete( int cano ) async {
+    try{
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      dio.options.headers['Authorization'] = token;
+
+      final response = await dio.delete("${serverPath}/api/career/delete?cano=${cano}");
+      final data = response.data;
+      if( data ){
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainApp( selectedIndex: 2,) ) );
+      }
+    }catch(e){ print(e); }
+  }
+
   // 탈퇴하기
   void CustomDeleteDialog(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
@@ -375,8 +701,6 @@ class _ProfileState extends State< Profile >{
       )
     );
   }
-
-  
   
   @override
   Widget build(BuildContext context) {
@@ -461,11 +785,6 @@ class _ProfileState extends State< Profile >{
                 SizedBox( height: 12, ),
                 CustomTextField( controller: didController, readOnly: true, ),
                 SizedBox( height: 12, ),
-
-                // Text("비밀번호"),
-                // SizedBox( height: 12, ),
-                // CustomTextField( controller: dpwdController, ),
-                // SizedBox( height: 12, ),
 
                 Text("전화번호"),
                 SizedBox( height: 12, ),
@@ -557,7 +876,26 @@ class _ProfileState extends State< Profile >{
                 child: Text("기술 목록",
                   style: TextStyle( fontSize: 15, fontWeight: FontWeight.bold ), ),
               ),
-              SizedBox( height: 15 ,),
+              SizedBox( height: 8,),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: getTechStacks.isEmpty ? [ Text("기술스택을 등록해주세요.") ]
+                  : getTechStacks.map<Widget>((data) {
+                  return Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.blue[100],
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      data['tsname'],
+                      style: TextStyle(color: Colors.black54),
+                    ),
+                  );
+                }).toList(),
+              ),
+              SizedBox( height: 8,),
 
               // 버튼
               Row(
@@ -565,7 +903,7 @@ class _ProfileState extends State< Profile >{
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     CustomOutlineButton(
-                      onPressed: () => { setState(() => { isUpdate = false }) },
+                      onPressed: () => { showTechStackDialog() },
                       title: "등록",
                     ),
                   ]
@@ -584,18 +922,69 @@ class _ProfileState extends State< Profile >{
                 child: Text("경력 목록",
                   style: TextStyle( fontSize: 15, fontWeight: FontWeight.bold ), ),
               ),
-              SizedBox( height: 15 ,),
+              SizedBox( height: 8,),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: careerList.isEmpty ? [ Text("경력을 등록해주세요.") ]
+                  : careerList.map<Widget>((data) {
+                  return Container(
+                    margin: EdgeInsets.symmetric(vertical: 4), // Optional: 항목 간 간격
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.blue[100],
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(data["cacompany"], style: TextStyle( fontWeight: FontWeight.bold, fontSize: 20 ),),
+                            Text("${data["caStartDate"]} ~ ${data["caEndDate"]}"),
+                          ],
+                        ),
+                        IconButton(onPressed: () => {}, icon: Icon( Icons.update ) ),
+                        IconButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => CustomBoolAlertDialog(
+                                title: "경력을 삭제하시겠습니까?",
+                                onCancleBtn: true,
+                                onPressed: () {
+                                  Navigator.of(context).pop(); // 다이얼로그 닫기
+                                  careerDelete(data["cano"]);
+                                },
+                              )
+                            );
+                          },
+                          icon: Icon(Icons.delete_forever_outlined),
+                        ),
+                      ],
+                    )
+                  );
+                }).toList(),
+              ),
+              SizedBox( height: 8,),
 
               // 버튼
               Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    CustomOutlineButton(
-                      onPressed: () => { setState(() => { isUpdate = false }) },
-                      title: "등록",
-                    ),
-                  ]
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  CustomOutlineButton(
+                    onPressed: () => {
+                      setState(() {
+                        cacompanyController = TextEditingController( text: "" );
+                        caStartDateController = TextEditingController( text: "" );
+                        caEndDateController = TextEditingController( text: "" );
+                      }),
+                      careerDialog()
+                    },
+                    title: "등록",
+                  ),
+                ]
               ),
               SizedBox( height: 15 ,),
 

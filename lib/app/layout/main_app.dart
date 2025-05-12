@@ -3,6 +3,7 @@ import 'package:devconnect_app/app/company/company_login.dart';
 import 'package:devconnect_app/app/component/custombottombar.dart';
 import 'package:devconnect_app/app/developer/developer_login.dart';
 import 'package:devconnect_app/app/developer/developer_ranking.dart';
+import 'package:devconnect_app/app/developer/developer_sortproject.dart';
 import 'package:devconnect_app/app/developer/profile.dart';
 import 'package:devconnect_app/app/developer/profile_project.dart';
 import 'package:devconnect_app/app/developer/profile_rating.dart';
@@ -50,8 +51,8 @@ class _MainAppState extends State<MainApp> {
     // 이동할 페이지
     final List<Widget> pages = [
       // 하단 바
-      Home(), // 0 : 기본 페이지
-      WriteProject(changePage : changePage), // 1 : 프로젝트 작성 페이지
+      Home(changePage : changePage), // 0 : 기본 페이지
+      DeveloperSortproject(), // 1 : 추천 프로젝트
       Profile(changePage: changePage,), // 2: 프로필 기본 정보
       CompanyAll(), // 3 : 기업 목록
       DeveloperRanking(), // 4 : 개발자 순위
@@ -68,7 +69,7 @@ class _MainAppState extends State<MainApp> {
     // 앱바 제목
     final List<String> pageTitle = [
       '프로젝트', // 0
-      '프로젝트 등록', // 1
+      '추천 프로젝트', // 1
       '계정 관리', // 2
       '기업 목록', // 3
       '개발자 순위', // 4

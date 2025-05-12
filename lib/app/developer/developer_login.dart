@@ -55,6 +55,7 @@ class _DeveloperLogInState extends State< DeveloperLogIn >{
 
   @override
   Widget build(BuildContext context) {
+    print("안녕 개발자로그인");
     return Scaffold(
       resizeToAvoidBottomInset : false,
       backgroundColor: Color(0xFF0078FF),

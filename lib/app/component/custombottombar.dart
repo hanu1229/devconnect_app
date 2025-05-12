@@ -100,10 +100,10 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _navItem(Icons.folder, "프로젝트", 0),
-                _navItem(Icons.article, "등록", 1),
+                _navItem(Icons.article, "추천 프로젝트", 1),
                 const SizedBox(width: 70), // 중앙 공간 확보
                 _navItem(Icons.article_outlined, "기업 목록", 3),
-                _navItem(Icons.article_outlined, "개발자 순위", 4),
+                _navItem(Icons.compare, "개발자 순위", 4),
               ],
             ),
             Positioned(
@@ -146,16 +146,16 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                                 children: [
                                   if (isLogIn == true) ...[
                                     ListTile(
-                                      leading: Icon(Icons.auto_graph),
-                                      title: Text("Level : ${developer['dlevel']}"),
+                                      leading: Text("Level", style: TextStyle( fontWeight: FontWeight.bold ),),
+                                      title: Text("${developer['dlevel']}"),
                                       onTap: () {
                                         Navigator.pop(context);
                                         // widget.onTap(2);
                                       },
                                     ),
                                     ListTile(
-                                      leading: Icon(Icons.auto_graph),
-                                      title: Text("Exp : ${dcurrentexp} / ${dtotalexp}"),
+                                      leading: Text("Exp", style: TextStyle( fontWeight: FontWeight.bold ),),
+                                      title: Text("${dcurrentexp} / ${dtotalexp}"),
                                       onTap: () {
                                         Navigator.pop(context);
                                         // widget.onTap(2);
@@ -183,7 +183,7 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                                       title: Text('기업 로그인'),
                                       onTap: () {
                                         Navigator.pop(context);
-                                        widget.onTap(7); // 개발자 로그인 페이지로 이동
+                                        widget.onTap(7); // 기업 로그인 페이지로 이동
                                       },
                                     ),
                                     ListTile(
@@ -213,6 +213,8 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                       center: CircleAvatar(
                         radius: 30,
                         backgroundImage: NetworkImage(profileUrl),
+                        // ↓ png 이미지 대응으로 기본 색상 보라색에서 변경
+                        backgroundColor : Colors.white,
                       ),
                       progressColor: Colors.blue,
                       backgroundColor: Colors.grey.shade300,

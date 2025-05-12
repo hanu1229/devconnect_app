@@ -80,6 +80,7 @@ class _CompanyLogin extends State<Companylogin>{
 
   @override
   Widget build(BuildContext context) {
+    print("안녕 기업로그인");
     return Scaffold(
       backgroundColor: Color(0xFF0078FF),
       resizeToAvoidBottomInset : false,
@@ -96,7 +97,7 @@ class _CompanyLogin extends State<Companylogin>{
           children: [// 하위 요소들 위젯
 
             Center(  // 희만 추가
-              child: Text("개발자 로그인",
+              child: Text("기업 로그인",
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20

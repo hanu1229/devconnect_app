@@ -8,10 +8,12 @@ class CustomAlertDialog extends StatelessWidget {
   final String title;
   final Widget content;
   final VoidCallback onPressed;
+  final bool onCancleBtn;
 
   const CustomAlertDialog({
     this.width = 200,
     this.btnTitle = "확인",
+    this.onCancleBtn = true,
     required this.title,
     required this.content,
     required this.onPressed,
@@ -40,10 +42,10 @@ class CustomAlertDialog extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
           title: "취소",
         ),
-        CustomTextButton(
+        onCancleBtn ? CustomTextButton(
           onPressed: onPressed,
           title: btnTitle,
-        ),
+        ) : SizedBox.shrink(),
       ],
     );
   }

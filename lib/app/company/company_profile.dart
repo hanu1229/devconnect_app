@@ -5,17 +5,15 @@ import 'package:devconnect_app/app/component/custom_outlinebutton.dart';
 import 'package:devconnect_app/app/component/custom_scrollview.dart';
 import 'package:devconnect_app/app/component/custom_textbutton.dart';
 import 'package:devconnect_app/app/component/custom_textfield.dart';
-import 'package:devconnect_app/app/layout/company_main_app.dart';
-import 'package:devconnect_app/app/layout/home.dart';
 import 'package:devconnect_app/style/server_path.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../component/custom_alert.dart';
 import '../component/custom_boolalert.dart';
 import '../component/custom_imgpicker.dart';
-import '../component/custom_menutabs.dart';
 import '../layout/main_app.dart';
 
 class Companyprofile extends StatefulWidget{
@@ -24,7 +22,7 @@ class Companyprofile extends StatefulWidget{
 
   const Companyprofile({
     required this.changePage, //Companyprofile에서 인덱스 받음
-    });
+  });
 
 
   @override
@@ -44,6 +42,19 @@ class _CompanyProfileState extends State< Companyprofile >{
   String? profileImageUrl;    // 이미지 url 받기
   // 수정 상태 확인
   bool isUpdate = false;
+
+  final _formKey = GlobalKey<FormState>();
+
+  // 비밀번호
+  String? pwdValidator(String? value) {
+    final passwordReg = RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+=-]).{8,20}$');
+    if (value == null || value.isEmpty) {
+      return '비밀번호를 입력해주세요';
+    } else if (!passwordReg.hasMatch(value)) {
+      return '영문, 숫자, 특수문자를 포함한 8~20자여야 합니다';
+    }
+    return null;
+  }
 
   @override
   void initState() {
@@ -106,9 +117,18 @@ class _CompanyProfileState extends State< Companyprofile >{
     formData.fields.add(MapEntry("cemail", cemailController.text,) );
     formData.fields.add(MapEntry("cadress", cadressController.text) );
 
-    final file = await MultipartFile.fromFile(profileImage!.path, filename: profileImage!.name); //경로 이름
-    formData.files.add(MapEntry("file" , file)); // 파일로 보냄
-    //print(formData);
+    if (profileImage != null) {
+      try {
+        final file = await MultipartFile.fromFile(profileImage!.path, filename: profileImage!.name);
+        formData.files.add(MapEntry("file" , file));
+      } catch (e) {
+        print("프로필 이미지 파일 처리 중 오류 발생: $e");
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('프로필 이미지 파일을 처리하는 중 오류가 발생했습니다.')),
+        );
+        return;
+      }
+    }
 
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
@@ -122,8 +142,8 @@ class _CompanyProfileState extends State< Companyprofile >{
           onInfo( token );
           isUpdate = false;
           if(data != null && data['cprofile'] != null){
-            profileImage = null; // 파일제거
-            profileImageUrl = data['cprofile']; // 서버 URL 사용
+            profileImage = null; // 파일제거 cbcb
+            profileImageUrl = "$serverPath/upload/company_logo/${data['cprofile']}"; // 서버 URL 사용
           }
         });
       }
@@ -152,134 +172,156 @@ class _CompanyProfileState extends State< Companyprofile >{
 
   // 비밀번호 수정 다이얼로그
   void updateCpw(BuildContext context) {
+    final _formKey = GlobalKey<FormState>();
     final TextEditingController currnetPwdController = TextEditingController();
     final TextEditingController newPwdController = TextEditingController();
     final TextEditingController confirmNewPwdController = TextEditingController();
 
-    if(newPwdController.text != confirmNewPwdController.text){return;}
-
-    //비밀번호 수정함수
-    void onUpdateCpw() async {
-      final sendData = {
-        'cpwd' : currnetPwdController.text,
-        'upcpwd' : newPwdController.text,
-      };
-
-      print("비밀번호 수정함수 부분 : $sendData");
-
-      try{
-        final prefs = await SharedPreferences.getInstance();
-        final token = prefs.getString('token');
-
-        dio.options.headers['Authorization'] = token;
-        final response = await dio.put("${serverPath}/api/company/pwupdate" , data: sendData);
-
-        if(response.data == true){
-          Navigator.pop(context);
-          logOut();
-          Navigator.push(context, MaterialPageRoute(builder: (context) => MainApp()));
-        }
-      }catch(e){print(e);}
-    }
+    String errorMessage = '';
 
     showDialog(
+      barrierDismissible: false,
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("비밀번호 변경"),
-              SizedBox( height: 7,),
-              Divider(),
-            ],
-          ),
-          content: SizedBox(
-            width: 350,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("현재 비밀번호"),
-                SizedBox( height: 10,),
-                CustomTextField(
-                  controller: currnetPwdController,
-                  obscureText: true,
-                ),
-                SizedBox( height: 15,),
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            Future<void> onPwdChange() async {
+              try {
+                final prefs = await SharedPreferences.getInstance();
+                final token = prefs.getString('token');
+                final sendData = {
+                  'cpwd' : currnetPwdController.text,
+                  'upcpwd' : newPwdController.text,
+                };
 
-                Text("변경할 비밀번호"),
-                SizedBox( height: 10,),
-                CustomTextField(
-                  controller:  newPwdController,
-                  obscureText: true,
-                ),
-                SizedBox( height: 15,),
+                final response = await dio.put("${serverPath}/api/company/pwupdate", data: sendData );
 
-                Text("비밀번호 확인"),
-                SizedBox( height: 10,),
-                CustomTextField(
-                  controller: confirmNewPwdController,
-                  obscureText: true,
-                ),
+                final responpwd = response.data;
+                if ( responpwd == true ) {
+                  Navigator.pop(context); // 다이얼로그 닫기
+                  onInfo(token);
+                  showDialog(
+                    context: context,
+                    builder: (context) => CustomBoolAlertDialog(
+                        title : "비밀번호가 변경되었습니다."
+                    ),
+                  );
+                }
+              } on DioException catch(e){
+                setState(() {
+                  errorMessage = e.response?.data ?? '비밀번호 변경 실패';
+                });
+              } catch(e){
+                setState(() {
+                  errorMessage = '서버 오류 발생';
+                });
+              }
+            }
 
-              ],
-            ),
-          ),
-          actions: [
-            CustomOutlineButton(
-                onPressed: () => { Navigator.pop( context ) },
-                title: "취소"
-            ),
-            CustomTextButton(
-                onPressed: onUpdateCpw,
-                title: "저장"
-            ),
-          ],
+            return CustomAlertDialog(
+                title: "비밀번호 변경",
+                width: 350,
+                content: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("현재 비밀번호"),
+                      SizedBox(height: 10),
+                      CustomTextField(
+                        controller: currnetPwdController,
+                        obscureText: true,
+                        validator: (value) =>
+                        value == null || value.isEmpty
+                            ? '현재 비밀번호를 입력해주세요.'
+                            : null,
+                      ),
+                      if (errorMessage.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 15),
+                          child: Text(
+                            errorMessage,
+                            style: TextStyle(
+                                color: Color(0xffbc443d),
+                                fontSize: 12
+                            ),
+                          ),
+                        ),
+                      SizedBox(height: 15),
+                      Text("비밀번호"),
+                      SizedBox(height: 10),
+                      CustomTextField(
+                        controller: newPwdController,
+                        obscureText: true,
+                        validator: (value) => pwdValidator(value),
+                      ),
+                      SizedBox(height: 15),
+                      Text("비밀번호 확인"),
+                      SizedBox(height: 10),
+                      CustomTextField(
+                        controller: confirmNewPwdController,
+                        obscureText: true,
+                        validator: (value) =>
+                        newPwdController.text != confirmNewPwdController.text
+                            ? '비밀번호가 일치하지 않습니다.'
+                            : currnetPwdController.text == newPwdController.text ?
+                        '기존 비밀번호와 다른 번호를 입력해주세요.'
+                            : null,
+                      ),
+                    ],
+                  ),
+                ),
+                onPressed: () async {
+                  setState(() { errorMessage = ''; });
+                  if( _formKey.currentState!.validate() ){
+                    await onPwdChange();
+                  }
+                }
+            );
+          },
         );
       },
     );
   }
 
-
   //회원삭제  //상태변경으로 변경
-void CustomDialog(BuildContext context) {
+  void CustomDialog(BuildContext context) {
     final TextEditingController customPwdController = TextEditingController();
 
-  void onDelete() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token');
-    print("삭제함수 토큰 확인 : $token");
+    void onDelete() async {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      print("삭제함수 토큰 확인 : $token");
 
-    final sendData = {
-      'cid': info['cid'],
-      'cpwd': customPwdController.text
-    };
-    print("sendData확인:$sendData");
+      final sendData = {
+        'cid': info['cid'],
+        'cpwd': customPwdController.text
+      };
+      print("sendData확인:$sendData");
 
-    try {
-      dio.options.headers['Authorization'] = token;
-      final response = await dio.put(
-          "${serverPath}/api/company/state", data: sendData);
-      bool result = response.data;
+      try {
+        dio.options.headers['Authorization'] = token;
+        final response = await dio.put(
+            "${serverPath}/api/company/state", data: sendData);
+        bool result = response.data;
         print(result);
 
-      if (!result) {
-        print("변경실패");
+        if (!result) {
+          print("변경실패");
 
 
-      } else {
-        print("변경성공");
-        Navigator.pop(context);
-        //logOut();
-        await prefs.remove('token');
-        Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyMainApp()));
+        } else {
+          print("변경성공");
+          Navigator.pop(context);
+          //logOut();
+          await prefs.remove('token');
+          Navigator.push(context, MaterialPageRoute(builder: (context) => MainApp()));
+        }
+      } catch (e) {
+        print(e);
       }
-    } catch (e) {
-      print(e);
     }
-  }
 
     showDialog(
       context: context,
@@ -327,7 +369,7 @@ void CustomDialog(BuildContext context) {
         );
       },
     );
-}
+  }
 
 
 
@@ -339,6 +381,7 @@ void CustomDialog(BuildContext context) {
     if( info.isEmpty ){ return Center( child: CircularProgressIndicator(), ); }
 
     final image = info['cprofile']; // 이미지 문제 있었음
+    // String imgUrl = "${serverPath}/upload/company_logo/${image}";
     String imgUrl = image;
 
     // if( !isLogIn ){ Navigator.pushNamed( context, MainApp() ) }
@@ -358,10 +401,10 @@ void CustomDialog(BuildContext context) {
         // 첫번째 Card
         CustomCard(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: !isUpdate ? CrossAxisAlignment.center : CrossAxisAlignment.start,
-            children: !isUpdate
-                ? // 수정버튼 클릭 전
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: !isUpdate ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+              children: !isUpdate
+                  ? // 수정버튼 클릭 전
               [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(999),
@@ -401,7 +444,7 @@ void CustomDialog(BuildContext context) {
                   ],
                 ),
               ]
-                : // 수정버튼 클릭 후
+                  : // 수정버튼 클릭 후
               [
                 Center(
                   child: CustomImagePicker(
@@ -476,7 +519,7 @@ void CustomDialog(BuildContext context) {
         SizedBox( height: 15 ,),
 
 
-        // 두번째 Card // 비밀번호 변경 card
+        // 비밀번호 변경 card
         CustomCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -491,15 +534,15 @@ void CustomDialog(BuildContext context) {
 
               // 버튼
               Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  CustomOutlineButton(
-                    onPressed: () => { setState(() => { updateCpw(context) }) },
-                    title: "비밀번호 변경",
-                    width: 150,
-                  ),
-                ]
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    CustomOutlineButton(
+                      onPressed: () => { setState(() => { updateCpw(context) }) },
+                      title: "비밀번호 변경",
+                      width: 150,
+                    ),
+                  ]
               ),
 
             ],

@@ -34,4 +34,6 @@ class AppColors {
   static const Color borderColor2 = Color(0xFFD5D5D5);
   ///
   static const Color textSubColor = Color(0xFF888888);
+  ///
+  static const Color ratingbtnColor = Color(0xFF1A209E);
 }
