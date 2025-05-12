@@ -1,7 +1,7 @@
 // String serverPath = "http://192.168.40.88:8080";
 // 192.168.40.97
 
-String serverPath = "http://springweb-env.eba-ecxdumxg.ap-northeast-2.elasticbeanstalk.com";
+String serverPath = "http://springflutter-env.eba-wcmytm7g.ap-northeast-2.elasticbeanstalk.com";
 // String serverPath = "http://raunriu.iptime.org:8080";
 
 // magnoria 집
