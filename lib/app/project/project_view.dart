@@ -358,7 +358,7 @@ class _ViewProjectState extends State<ViewProject> {
                           return SafeArea(
                             child : Container(
                               margin : EdgeInsets.all(16),
-                              height : 200,
+                              height : 230,
                               width : MediaQuery.of(context).size.width,
                               decoration : BoxDecoration(
                                 color : AppColors.bgColor,

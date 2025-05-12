@@ -88,7 +88,7 @@ class _CompanyBottomNavBarState extends State<CompanyBottomNavBar> {
         ? "${serverPath}/upload/company_logo/${company['cprofile']}" : "${serverPath}/upload/company_logo/logo_small.png";
 
     print(company['cid']);
-    String? cname = isLogIn ? "${company['cid']} " : "로그인";   //기업로그인
+    String? cname = isLogIn ? "${company['cname']} " : "로그인";   //기업로그인
 
    double? menuHeight = isLogIn ? 0.55 : 0.62;
 
