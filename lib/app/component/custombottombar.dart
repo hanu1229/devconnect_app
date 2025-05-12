@@ -146,16 +146,16 @@ class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
                                 children: [
                                   if (isLogIn == true) ...[
                                     ListTile(
-                                      leading: Icon(Icons.auto_graph),
-                                      title: Text("Level : ${developer['dlevel']}"),
+                                      leading: Text("Level", style: TextStyle( fontWeight: FontWeight.bold ),),
+                                      title: Text("${developer['dlevel']}"),
                                       onTap: () {
                                         Navigator.pop(context);
                                         // widget.onTap(2);
                                       },
                                     ),
                                     ListTile(
-                                      leading: Icon(Icons.auto_graph),
-                                      title: Text("Exp : ${dcurrentexp} / ${dtotalexp}"),
+                                      leading: Text("Exp", style: TextStyle( fontWeight: FontWeight.bold ),),
+                                      title: Text("${dcurrentexp} / ${dtotalexp}"),
                                       onTap: () {
                                         Navigator.pop(context);
                                         // widget.onTap(2);

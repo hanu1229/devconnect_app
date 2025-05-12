@@ -341,6 +341,7 @@ class _ProfileState extends State< Profile >{
         setState(() {
           tsFindAll();
         });
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainApp( selectedIndex: 2,) ) );
       }
     }catch(e){ print(e); }
   } // f end
@@ -466,9 +467,12 @@ class _ProfileState extends State< Profile >{
 
       final response = await dio.post("${serverPath}/api/career", data: sendData );
       final data = response.data;
-      setState(() {
-        careerFindAll();
-      });
+      if( data ){
+        setState(() {
+          careerFindAll();
+        });
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainApp( selectedIndex: 2,) ) );
+      }
     }catch(e){ print(e); }
   } // f end
 
@@ -618,6 +622,21 @@ class _ProfileState extends State< Profile >{
         );
       },
     );
+  }
+
+  // 경력 삭제
+  void careerDelete( int cano ) async {
+    try{
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      dio.options.headers['Authorization'] = token;
+
+      final response = await dio.delete("${serverPath}/api/career/delete?cano=${cano}");
+      final data = response.data;
+      if( data ){
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainApp( selectedIndex: 2,) ) );
+      }
+    }catch(e){ print(e); }
   }
 
   // 탈퇴하기
@@ -926,7 +945,22 @@ class _ProfileState extends State< Profile >{
                           ],
                         ),
                         IconButton(onPressed: () => {}, icon: Icon( Icons.update ) ),
-                        IconButton(onPressed: () => {}, icon: Icon( Icons.delete_forever_outlined )),
+                        IconButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => CustomBoolAlertDialog(
+                                title: "경력을 삭제하시겠습니까?",
+                                onCancleBtn: true,
+                                onPressed: () {
+                                  Navigator.of(context).pop(); // 다이얼로그 닫기
+                                  careerDelete(data["cano"]);
+                                },
+                              )
+                            );
+                          },
+                          icon: Icon(Icons.delete_forever_outlined),
+                        ),
                       ],
                     )
                   );
