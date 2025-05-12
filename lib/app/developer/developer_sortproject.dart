@@ -28,7 +28,7 @@ class _DeveloperSortproject extends State< DeveloperSortproject > {
   // 로딩 확인 변수
   bool isLoading = false;
   // 회사 로고 이미지 경로
-  String logoUrl = "$serverPath/upload/company_logo";
+  String logoUrl = "$imageUrl/company_logo";
   // ptype 확인 변수
   int? checkPtype = 0;
   // 직무 필터 선택값

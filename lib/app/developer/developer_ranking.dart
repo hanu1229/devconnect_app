@@ -23,7 +23,7 @@ class _DeveloperRanking extends State<DeveloperRanking> {
   // 로딩 확인 변수
   bool isLoading = false;
   // 회사 로고 이미지 경로
-  String logoUrl = "$serverPath/upload";
+  String logoUrl = "$imageUrl/company_logo";
   // ptype 확인 변수
   int? checkPtype = 0;
   //

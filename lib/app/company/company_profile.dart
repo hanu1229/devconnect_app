@@ -142,8 +142,8 @@ class _CompanyProfileState extends State< Companyprofile >{
           onInfo( token );
           isUpdate = false;
           if(data != null && data['cprofile'] != null){
-            profileImage = null; // 파일제거 cbcb
-            profileImageUrl = "$serverPath/upload/company_logo/${data['cprofile']}"; // 서버 URL 사용
+            profileImage = null; // 파일제거
+            profileImageUrl = "$imageUrl/company_logo/${data['cprofile']}"; // 서버 URL 사용
           }
         });
       }
