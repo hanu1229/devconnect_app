@@ -161,7 +161,7 @@ class _DeveloperSortproject extends State< DeveloperSortproject > {
                               children: [
                                 SizedBox(
                                   width : 50,
-                                  child: Image.network("$logoUrl/${data["cprofile"]}"),
+                                  child: Image.network("${data["cprofile"]}"),
                                 ),
                                 SizedBox(width : 15),
                                 Expanded(
