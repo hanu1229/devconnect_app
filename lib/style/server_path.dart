@@ -1,4 +1,4 @@
- String serverPath = "http://192.168.1.84:8080";
+ String serverPath = "http://192.168.40.24:8080";
 // 192.168.40.97
 
 
