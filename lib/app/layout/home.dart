@@ -3,6 +3,7 @@
 import "package:devconnect_app/app/company/company_login.dart";
 import "package:devconnect_app/app/component/custom_alert.dart";
 import "package:devconnect_app/app/project/project_detail.dart";
+import "package:devconnect_app/app/project/project_filter.dart";
 import "package:devconnect_app/style/app_colors.dart";
 import "package:devconnect_app/style/server_path.dart";
 import "package:dio/dio.dart";
@@ -43,6 +44,8 @@ class _HomeState extends State<Home> {
   bool scrollUp = false;
   // 검색 버튼 클릭 했는지 확인
   bool searchClick = false;
+  // 키워드 변수
+  String? keyword = "";
 
   final ScrollController _scrollController = ScrollController();
 
@@ -52,7 +55,7 @@ class _HomeState extends State<Home> {
     print(">> before : ptypeValue : $ptypeValue , checkPtype : $checkPtype");
     print(">> before : rstatusValue : $rstatusValue , checkRstatus : $checkRstatus");
 
-    if(ptypeValue != checkPtype || rstatusValue != checkRstatus) {
+    if(ptypeValue != checkPtype || rstatusValue != checkRstatus || searchClick) {
 
       hasNext = true;
       if(searchClick) {
@@ -72,9 +75,10 @@ class _HomeState extends State<Home> {
       // 테스트를 위한 딜레이
       await Future.delayed(Duration(seconds: 1));
       // 필요한 정보만 가져오기
-      String path = "$serverPath/api/project/paging?ptype=$checkPtype&rstatus=$checkRstatus&page=$page&size=$size";
+      keyword ??= "";
+      String path = "$serverPath/api/project/paging?ptype=$checkPtype&rstatus=$checkRstatus&keyword=$keyword&page=$page&size=$size";
       print(path);
-      final response = await dio.get("$serverPath/api/project/paging?ptype=$checkPtype&rstatus=$checkRstatus&page=$page&size=$size");
+      final response = await dio.get("$serverPath/api/project/paging?ptype=$checkPtype&rstatus=$checkRstatus&keyword=$keyword&page=$page&size=$size");
       final data = response.data;
       print(data);
       if(data.length < size) { hasNext = false; }
@@ -132,69 +136,33 @@ class _HomeState extends State<Home> {
               mainAxisAlignment : MainAxisAlignment.spaceBetween,
               crossAxisAlignment : CrossAxisAlignment.center,
               children : [
-                // 모집 여부 필터
-                Container(
-                  width : MediaQuery.of(context).size.width * 0.35,
-                  decoration : BoxDecoration(
-                    borderRadius : BorderRadius.circular(6),
-                    border : Border.all(color : Colors.black, width : 1),
-                  ),
-                  child: DropdownButton(
-                    padding : EdgeInsets.symmetric(horizontal : 8),
-                    isExpanded : true,
-                    // 테두리가 없어서 대체로 사용
-                    elevation : 9,
-                    dropdownColor : Colors.white,
-                    value : rstatusValue,
-                    onChanged: (value) { setState(() { rstatusValue = value; }); },
-                    underline : SizedBox.shrink(),
-                    items: [
-                      DropdownMenuItem(value : 0, child : Text("전체", overflow : TextOverflow.ellipsis,),),
-                      DropdownMenuItem(value : 1, child : Text("모집 전", overflow : TextOverflow.ellipsis,),),
-                      DropdownMenuItem(value : 2, child : Text("모집 중", overflow : TextOverflow.ellipsis,),),
-                      DropdownMenuItem(value : 3, child : Text("모집 완료", overflow : TextOverflow.ellipsis,),),
-                    ],
-                  ),
-                ),
-                // 직무 필터
-                Container(
-                  width : MediaQuery.of(context).size.width * 0.35,
-                  decoration : BoxDecoration(
-                    borderRadius : BorderRadius.circular(6),
-                    border : Border.all(color : Colors.black, width : 1),
-                  ),
-                  child: DropdownButton(
-                    padding : EdgeInsets.symmetric(horizontal : 8),
-                    isExpanded : true,
-                    // 테두리가 없어서 대체로 사용
-                    elevation : 9,
-                    dropdownColor : Colors.white,
-                    value : ptypeValue,
-                    onChanged: (value) { setState(() { ptypeValue = value; }); },
-                    underline : SizedBox.shrink(),
-                    items: [
-                      DropdownMenuItem(value : 0, child : Text("전체", overflow : TextOverflow.ellipsis,),),
-                      DropdownMenuItem(value : 1, child : Text("백엔드", overflow : TextOverflow.ellipsis,),),
-                      DropdownMenuItem(value : 2, child : Text("프론트엔드", overflow : TextOverflow.ellipsis,),),
-                    ],
-                  ),
-                ),
-                // 검색 버튼
+                //
+                Text("검색 키워드 : ${keyword == "" ? "없음" : keyword}", style : TextStyle(fontSize : 21, fontWeight : FontWeight.bold,),),
+                // 필터 페이지 버튼
                 Container(
                   decoration : BoxDecoration(
                     borderRadius : BorderRadius.circular(6),
                     border : Border.all(color : Colors.black, width : 1,),
                   ),
                   child: IconButton(
-                    onPressed : () {
-                      print(">> rstatusValue : $rstatusValue");
-                      print(">> ptypeValue : $ptypeValue");
-                      page = 0;
-                      scrollUp = true;
-                      searchClick = true;
-                      findData();
+                    onPressed : () async {
+                      final data = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder : (context) => ProjectFilter(rstatusValue : rstatusValue, ptypeValue : ptypeValue),
+                        ),
+                      );
+                      if(data != null && data["status"] == true) {
+                        rstatusValue = data["rstatusValue"];
+                        ptypeValue = data["ptypeValue"];
+                        keyword = data["keyword"];
+                        page = 0;
+                        scrollUp = true;
+                        searchClick = true;
+                        findData();
+                      }
                     },
-                    icon : Icon(Icons.search_rounded),
+                    icon : Icon(Icons.tune),
                   ),
                 ),
               ],
