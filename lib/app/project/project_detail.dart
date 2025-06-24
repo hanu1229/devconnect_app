@@ -135,6 +135,50 @@ class _DetailProjectState extends State<DetailProject> {
       }
     } catch(e) {
       print(e);
+      showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return SafeArea(
+            child: Container(
+              margin : EdgeInsets.all(16),
+              height : 100,
+              width : MediaQuery.of(context).size.width,
+              decoration : BoxDecoration(
+                color : AppColors.bgColor,
+                borderRadius : BorderRadius.all(Radius.circular(12)),
+              ),
+              child : Center(
+                child : Padding(
+                  padding: EdgeInsets.symmetric(vertical : 16),
+                  child : Column(
+                    mainAxisAlignment : MainAxisAlignment.spaceAround,
+                    children : [
+                      Container(
+                        padding : EdgeInsets.only(left : 16, top : 0, right : 16, bottom : 0),
+                        width : MediaQuery.of(context).size.width,
+                        child : ElevatedButton(
+                          onPressed : () {
+                            // 모달창 삭제
+                            Navigator.pop(context);
+                          },
+                          style : ElevatedButton.styleFrom(
+                            backgroundColor : Colors.red,
+                            shape : RoundedRectangleBorder(
+                              borderRadius : BorderRadius.circular(12),
+                            ),
+                          ),
+                          child : Text("중복지원", style : TextStyle(color : AppColors.buttonTextColor)),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+        backgroundColor : Colors.transparent,
+      );
     }
   }
 
